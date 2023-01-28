@@ -1,0 +1,39 @@
+﻿.outer-box {
+    max-height: 100%;
+    max-width: 100%;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.inner-box {
+    max-height: 100%;
+    max-width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    display: flex;
+}
+
+.white {
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+}
+
+.black {
+    flex-direction: column;
+    flex-wrap: wrap-reverse;
+}
+
+.square {
+    width: 12.5%;
+    height: 12.5%;
+}
+
+.dark {
+    background-color: saddlebrown;
+}
+
+.light {
+    background-color: mintcream;
+}
