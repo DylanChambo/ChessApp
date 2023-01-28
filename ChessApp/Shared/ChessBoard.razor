@@ -1,11 +1,28 @@
 ﻿
 <div class="outer-box">
     <div class="inner-box">
-
+        @for(int i = 1; i <= 8; i++) {
+            @for (int j = 1; j <= 8; j++)
+            {
+                <div class="square @getColour(i, j)"></div>
+            }
+        }
     </div>
 </div>
 
 
 @code {
+    private string getColour(int i, int j )
+    {
+        if ((i + j) % 2 == 0)
+        {
+            return "dark";
 
+        }
+        else
+        {
+
+            return "light";
+        }
+    }
 }
