@@ -1,0 +1,14 @@
+﻿.chessboard {
+    max-height: 100%;
+    max-width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+}
+
+.ch {
+    background-color: black;
+    max-height: 100%;
+    max-width: 100%;
+    width: 100%;
+    aspect-ratio: 1;
+}
