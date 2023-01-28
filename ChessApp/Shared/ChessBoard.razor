@@ -4,7 +4,9 @@
         @for(int i = 1; i <= 8; i++) {
             @for (int j = 1; j <= 8; j++)
             {
-                <div class="square @getColour(i, j)"></div>
+                <div class="square @getColour(i, j)">
+                    <p>@i, @j</p>
+                </div>
             }
         }
     </div>
@@ -16,13 +18,13 @@
     {
         if ((i + j) % 2 == 0)
         {
-            return "dark";
+            return "light";
 
         }
         else
         {
-
-            return "light";
+            return "dark";
+            
         }
     }
 }
