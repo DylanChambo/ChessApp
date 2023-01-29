@@ -2,23 +2,26 @@
 
  <div class="square @GetColour(file, rank)">
     <p class="file-letter">
-        @if ((rank == 0 && side == "white") || (rank == 7 && side == "black"))
+        @if ((rank == 1 && side == "white") || (rank == 8 && side == "black"))
             {
-                @ToChar(file)
+                @file
             }    
     </p>
     <p class="rank-num">
-        @if ((file == 0 && side == "white") || (file == 7 && side == "black"))
+        @if ((file == 'a' && side == "white") || (file == 'h' && side == "black"))
             {
-            @(rank + 1)
+            @rank
             }
     </p>
-    <h1>&#x2654; @piece</h1>
+    @if (piece != Piece.None)
+    {
+        <img class="piece" src="images/@(piece).svg" />
+    }
 </div>
 
 @code {
     [Parameter]
-    public int file { get; set; }
+    public char file { get; set; }
 
     [Parameter]
     public int rank { get; set; }
@@ -29,7 +32,7 @@
     [Parameter]
     public string? side { get; set; }
 
-    private string GetColour(int file, int rank)
+    private string GetColour(char file, int rank)
     {
         if ((rank + file) % 2 == 0)
         {
@@ -39,10 +42,5 @@
         {
             return "light";
         }
-    }
-
-    private char ToChar(int file)
-    {
-        return (char)(file + (int)'a');
     }
 }

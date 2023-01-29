@@ -40,6 +40,12 @@ p {
     margin: 0;
 }
 
+.piece {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+}
+
 @media (min-width: 960px) {
     p {
         font-size: 1.25rem;
