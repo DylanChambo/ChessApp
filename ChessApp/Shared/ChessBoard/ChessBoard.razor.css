@@ -25,15 +25,3 @@
     flex-wrap: wrap-reverse;
 }
 
-.square {
-    width: 12.5%;
-    height: 12.5%;
-}
-
-.dark {
-    background-color: saddlebrown;
-}
-
-.light {
-    background-color: mintcream;
-}

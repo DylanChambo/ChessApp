@@ -1,0 +1,16 @@
+﻿<div class="outer-box">
+    <div class="inner-box @side">
+        @for (int col = 0; col < 8; col++)
+        {
+            @for (int row = 0; row < 8; row++)
+            {
+               <ChessSquare col=col row=row side=@side></ChessSquare>
+            }
+        }
+    </div>
+</div>
+
+
+@code {
+    public string side = "white";
+}

@@ -1,0 +1,45 @@
+﻿ <div class="square @GetColour(col, row)">
+    <p class="file-letter">
+        @if ((row == 0 && side == "white") || (row == 7 && side == "black"))
+            {
+                @ToChar(col)
+            }    
+    </p>
+    <p class="rank-num">
+        @if ((col == 0 && side == "white") || (col == 7 && side == "black"))
+            {
+                @(row + 1)
+            }
+    </p>
+
+
+
+</div>
+
+@code {
+    [Parameter]
+    public int col { get; set; }
+
+    [Parameter]
+    public int row { get; set; }
+
+    [Parameter]
+    public string? side { get; set; }
+
+    private string GetColour(int col, int row)
+    {
+        if ((row + col) % 2 == 0)
+        {
+            return "dark";
+        }
+        else
+        {
+            return "light";
+        }
+    }
+
+    private char ToChar(int col)
+    {
+        return (char)(col + (int)'a');
+    }
+}
