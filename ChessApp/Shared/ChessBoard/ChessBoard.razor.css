@@ -15,12 +15,12 @@
     display: flex;
 }
 
-.white {
+.False {
     flex-direction: column-reverse;
     flex-wrap: wrap;
 }
 
-.black {
+.True {
     flex-direction: column;
     flex-wrap: wrap-reverse;
 }

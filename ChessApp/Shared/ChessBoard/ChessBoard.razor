@@ -1,12 +1,12 @@
-﻿@using ChessApp.Data
+﻿@using ChessApp.Data.Board
 
 <div class="outer-box">
-    <div class="inner-box @side">
+    <div class="inner-box @(board.isFlipped)">
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)
             {
-                <ChessSquare file=file rank=rank side=@side piece=@GetPiece(file, rank)>
+                <ChessSquare file=file rank=rank board=@board>
                     
                 </ChessSquare>
             }
@@ -16,48 +16,5 @@
 
 
 @code {
-    public Piece[] board = new Piece[64];
-    public string side = "white";
-
-    protected override void OnInitialized()
-    {
-        InitializeBoard();
-    }
-
-    public Piece GetPiece(int file, int rank)
-    {
-
-        return board[(file - 'a') + (8 * (rank - 1))];
-    }
-
-    public void SetPiece(int file, int rank, Piece piece)
-    {
-        board[(file - 'a') + (8 * (rank - 1))] = piece;
-    }
-
-    public void InitializeBoard()
-    {
-        for (int file = 'a'; file <= 'h'; file++)
-        {
-            SetPiece(file, 2, Piece.WhitePawn);
-            SetPiece(file, 7, Piece.BlackPawn);
-        }
-        SetPiece('a', 1, Piece.WhiteRook);
-        SetPiece('b', 1, Piece.WhiteKnight);
-        SetPiece('c', 1, Piece.WhiteBishop);
-        SetPiece('d', 1, Piece.WhiteQueen);
-        SetPiece('e', 1, Piece.WhiteKing);
-        SetPiece('f', 1, Piece.WhiteBishop);
-        SetPiece('g', 1, Piece.WhiteKnight);
-        SetPiece('h', 1, Piece.WhiteRook);
-
-        SetPiece('a', 8, Piece.BlackRook);
-        SetPiece('b', 8, Piece.BlackKnight);
-        SetPiece('c', 8, Piece.BlackBishop);
-        SetPiece('d', 8, Piece.BlackQueen);
-        SetPiece('e', 8, Piece.BlackKing);
-        SetPiece('f', 8, Piece.BlackBishop);
-        SetPiece('g', 8, Piece.BlackKnight);
-        SetPiece('h', 8, Piece.BlackRook);
-    }
+    Board board = new Board();
 }
