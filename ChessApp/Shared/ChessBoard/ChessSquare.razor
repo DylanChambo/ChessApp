@@ -1,5 +1,6 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Data.Board;
+@using Plk.Blazor.DragDrop;
 
  <div class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
@@ -14,10 +15,12 @@
             @rank
             }
     </p>
-    @if (board.GetPiece(file, rank) != Piece.None)
+    <Dropzone class="dropzone" Items=piece TItem="PieceInstance" MaxItems="2" OnItemDrop="@((p) => OnDrop(p))">
+    @if ( context.piece != Piece.None)
     {
-        <img class="piece" src="images/@(board.GetPiece(file, rank)).svg" />
+        <img class="piece" src="images/@(context.piece).svg" />
     }
+    </Dropzone>
 </div>
 
 @code {
@@ -29,4 +32,19 @@
 
     [Parameter]
     public Board board { get; set; }
+
+    List<PieceInstance> piece;
+
+    protected override void OnInitialized()
+    {
+        piece = new List<PieceInstance> { new PieceInstance(file, rank, board.GetPiece(file, rank)) };
+    }
+
+    public void OnDrop(PieceInstance p)
+    {
+        board.SetPiece(p.file, p.rank);
+        board.SetPiece(file, rank, p.piece);
+        piece = new List<PieceInstance> { new PieceInstance(file, rank, p.piece) };
+        board.DisplayBoard();
+    }
 }

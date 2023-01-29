@@ -73,6 +73,36 @@
             }
         }
 
+        public void DisplayBoard()
+        {
+            Dictionary<Piece, char> symbolFromPiece = new Dictionary<Piece, char>()
+            {
+                [Piece.None] = ' ',
+                [Piece.WhiteKing] = 'K', 
+                [Piece.WhitePawn] = 'P',
+                [Piece.WhiteBishop] = 'B',
+                [Piece.WhiteKnight] = 'N',
+                [Piece.WhiteRook] = 'R',
+                [Piece.WhiteQueen] = 'Q' ,
+                [Piece.BlackKing] = 'k',
+                [Piece.BlackPawn] = 'p',
+                [Piece.BlackBishop] = 'b',
+                [Piece.BlackKnight] = 'n',
+                [Piece.BlackRook] = 'r',
+                [Piece.BlackQueen] = 'q'
+            };  
+            
+            for (int rank = 8; rank >= 1; rank--)
+            {
+                for (char file = 'a'; file <= 'h'; file++)
+                {
+                    Console.Write(symbolFromPiece[GetPiece(file, rank)]);
+                }
+                Console.WriteLine("");
+            }
+            Console.WriteLine("");
+
+        }
         
     }
 }

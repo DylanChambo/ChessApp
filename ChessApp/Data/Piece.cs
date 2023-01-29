@@ -16,4 +16,18 @@
         BlackRook,
         BlackQueen
     }
+
+    public class PieceInstance
+    {
+        public PieceInstance(char file, int rank, Piece piece)
+        {
+            this.file = file;
+            this.rank = rank;
+            this.piece = piece;
+        }
+        public char file { get; set; }
+        public int rank { get; set; }
+        public Piece piece { get; set; }
+
+    }
 }
