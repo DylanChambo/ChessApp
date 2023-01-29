@@ -2,7 +2,7 @@
 {
     public class Board
     {
-        public static readonly string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        public static readonly string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
         public static string GetSquareColour(char file, int rank)
         {
@@ -29,13 +29,14 @@
             return board[(file - 'a') + (8 * (rank - 1))];
         }
 
-        public void SetPiece(int file, int rank, Piece piece)
+        public void SetPiece(int file, int rank, Piece piece = Piece.None)
         {
             board[(file - 'a') + (8 * (rank - 1))] = piece;
         }
 
         public void LoadFenPosition(string fen)
         {
+            board = new Piece[64];
             Dictionary<char, Piece> pieceFromSymbol = new Dictionary<char, Piece>()
             {
                 ['K'] = Piece.WhiteKing,
@@ -62,10 +63,8 @@
                 {
                     file = 'a';
                     rank--;
-                } else if(char.IsDigit(symbol)) {
-                    Console.WriteLine($"{file} {symbol}");
+                } else if(char.IsDigit(symbol)) {   
                     file += (char) char.GetNumericValue(symbol);
-                    Console.WriteLine($"{file}");
                 } else
                 {
                     SetPiece(file, rank, pieceFromSymbol[symbol]);
