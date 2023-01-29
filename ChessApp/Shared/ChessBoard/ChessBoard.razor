@@ -1,10 +1,14 @@
-﻿<div class="outer-box">
+﻿@using ChessApp.Data
+
+<div class="outer-box">
     <div class="inner-box @side">
-        @for (int col = 0; col < 8; col++)
+        @for (int file = 0; file < 8; file++)
         {
-            @for (int row = 0; row < 8; row++)
+            @for (int rank = 0; rank < 8; rank++)
             {
-               <ChessSquare col=col row=row side=@side></ChessSquare>
+                <ChessSquare file=file rank=rank side=@side piece=@GetPiece(file, rank)>
+                    
+                </ChessSquare>
             }
         }
     </div>
@@ -12,5 +16,17 @@
 
 
 @code {
+    public Piece[] board = new Piece[64];
     public string side = "white";
+
+    protected override async Task OnInitializedAsync()
+    {
+        board[0] = Piece.WhiteKing;
+    }
+    
+
+    public Piece GetPiece(int file, int rank)
+    {
+        return board[file + (8 * rank)];
+    }
 }

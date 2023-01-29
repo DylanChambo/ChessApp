@@ -1,34 +1,37 @@
-﻿ <div class="square @GetColour(col, row)">
+﻿@using ChessApp.Data;
+
+ <div class="square @GetColour(file, rank)">
     <p class="file-letter">
-        @if ((row == 0 && side == "white") || (row == 7 && side == "black"))
+        @if ((rank == 0 && side == "white") || (rank == 7 && side == "black"))
             {
-                @ToChar(col)
+                @ToChar(file)
             }    
     </p>
     <p class="rank-num">
-        @if ((col == 0 && side == "white") || (col == 7 && side == "black"))
+        @if ((file == 0 && side == "white") || (file == 7 && side == "black"))
             {
-                @(row + 1)
+            @(rank + 1)
             }
     </p>
-
-
-
+    <h1>&#x2654; @piece</h1>
 </div>
 
 @code {
     [Parameter]
-    public int col { get; set; }
+    public int file { get; set; }
 
     [Parameter]
-    public int row { get; set; }
+    public int rank { get; set; }
+
+    [Parameter]
+    public Piece piece { get; set; }
 
     [Parameter]
     public string? side { get; set; }
 
-    private string GetColour(int col, int row)
+    private string GetColour(int file, int rank)
     {
-        if ((row + col) % 2 == 0)
+        if ((rank + file) % 2 == 0)
         {
             return "dark";
         }
@@ -38,8 +41,8 @@
         }
     }
 
-    private char ToChar(int col)
+    private char ToChar(int file)
     {
-        return (char)(col + (int)'a');
+        return (char)(file + (int)'a');
     }
 }
