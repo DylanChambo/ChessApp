@@ -19,7 +19,7 @@
     public Piece[] board = new Piece[64];
     public string side = "white";
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         InitializeBoard();
     }
