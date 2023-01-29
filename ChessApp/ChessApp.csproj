@@ -6,4 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Shared\ChessBoard\ChessSquare.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Shared\ChessBoard\ChessSquare.razor.css" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,20 @@
+﻿@using ChessApp.Data.Board
+
+<div class="outer-box">
+    <div class="inner-box @(board.isFlipped)">
+        @for (char file = 'a'; file <= 'h'; file++)
+        {
+            @for (int rank = 1; rank <= 8; rank++)
+            {
+                <ChessSquare file=file rank=rank board=@board>
+                    
+                </ChessSquare>
+            }
+        }
+    </div>
+</div>
+
+
+@code {
+    Board board = new Board();
+}

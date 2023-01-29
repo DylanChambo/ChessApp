@@ -1,0 +1,32 @@
+﻿@using ChessApp.Data;
+@using ChessApp.Data.Board;
+
+ <div class="square @Board.GetSquareColour(file, rank)">
+    <p class="file-letter">
+        @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
+            {
+                @file
+            }    
+    </p>
+    <p class="rank-num">
+        @if ((file == 'a' && !board.isFlipped) || (file == 'h' && board.isFlipped))
+            {
+            @rank
+            }
+    </p>
+    @if (board.GetPiece(file, rank) != Piece.None)
+    {
+        <img class="piece" src="images/@(board.GetPiece(file, rank)).svg" />
+    }
+</div>
+
+@code {
+    [Parameter]
+    public char file { get; set; }
+
+    [Parameter]
+    public int rank { get; set; }
+
+    [Parameter]
+    public Board board { get; set; }
+}
