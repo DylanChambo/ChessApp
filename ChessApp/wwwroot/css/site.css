@@ -70,3 +70,7 @@ a, .btn-link {
 .dropzone {
     height: 100%;
 }
+
+.plk-dd-inprogess > * {
+    pointer-events: none;
+}

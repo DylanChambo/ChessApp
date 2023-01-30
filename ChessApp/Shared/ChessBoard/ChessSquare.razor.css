@@ -49,7 +49,6 @@ p {
 
 .piece:active {
     opacity: 0.2;
-    cursor: grabbing;
 }
 
 
