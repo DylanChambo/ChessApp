@@ -6,7 +6,7 @@
         {
             @for (int rank = 1; rank <= 8; rank++)
             {
-                <ChessSquare file=file rank=rank board=@board>
+                <ChessSquare file=file rank=rank board=@board change="change" OnMove="b => change = b">
                     
                 </ChessSquare>
             }
@@ -17,7 +17,7 @@
 
 @code {
     Board board = new Board();
-
+    public bool change = false;
     protected override void OnInitialized()
     {
     }

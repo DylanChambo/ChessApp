@@ -3,6 +3,7 @@
     public class Board
     {
         public static readonly string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        public static bool Update = false;
 
         public static string GetSquareColour(char file, int rank)
         {
@@ -100,7 +101,7 @@
                 }
                 Console.WriteLine("");
             }
-            Console.WriteLine("");
+            Console.WriteLine("\n");
 
         }
         
