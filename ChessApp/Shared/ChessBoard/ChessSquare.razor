@@ -42,6 +42,7 @@
 
     public void OnDrop(PieceInstance p)
     {
+        if (p.file == file && p.rank == rank) { return; }
         board.SetPiece(p.file, p.rank);
         board.SetPiece(file, rank, p.piece);
         piece = new List<PieceInstance> { new PieceInstance(file, rank, p.piece) };
