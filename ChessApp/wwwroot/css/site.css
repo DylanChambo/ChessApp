@@ -66,3 +66,11 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.dropzone {
+    height: 100%;
+}
+
+.plk-dd-inprogess > * {
+    pointer-events: none;
+}

@@ -1,7 +1,9 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Data.Board;
+@using Plk.Blazor.DragDrop;
 
  <div class="square @Board.GetSquareColour(file, rank)">
+    <Dropzone class="dropzone" Items=piece TItem="PieceInstance" MaxItems="2" OnItemDrop="@((p) => OnDrop(p))" >
     <p class="file-letter">
         @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
             {
@@ -14,13 +16,17 @@
             @rank
             }
     </p>
-    @if (board.GetPiece(file, rank) != Piece.None)
+    @if ( context.piece != Piece.None)
     {
-        <img class="piece" src="images/@(board.GetPiece(file, rank)).svg" />
+            <img class="piece" src="images/@(context.piece).svg" />
     }
+    </Dropzone>
 </div>
 
 @code {
+    [Parameter]
+    public EventCallback<bool> OnMove { get; set; }
+
     [Parameter]
     public char file { get; set; }
 
@@ -29,4 +35,26 @@
 
     [Parameter]
     public Board board { get; set; }
+
+    [Parameter]
+    public bool change { get; set; }
+
+    List<PieceInstance> piece;
+
+    protected override void OnInitialized()
+    {
+    }
+    protected override void OnParametersSet()
+    {
+        piece = new List<PieceInstance> { new PieceInstance(file, rank, board.GetPiece(file, rank)) };
+    }
+
+    public void OnDrop(PieceInstance p)
+    {
+        if (p.file == file && p.rank == rank) { return; }
+        board.SetPiece(p.file, p.rank);
+        board.SetPiece(file, rank, p.piece);
+        OnMove.InvokeAsync(true);
+        board.DisplayBoard();
+    }
 }
