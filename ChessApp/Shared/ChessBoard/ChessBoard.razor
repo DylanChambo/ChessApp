@@ -3,6 +3,8 @@
 
 <div class="outer-box">
     <div class="inner-box @(board.isFlipped)">
+        <div class="catch" @onmouseover="MouseOver">
+        </div>
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)
@@ -12,7 +14,9 @@
                 </ChessSquare>
             }
         }
+        
     </div>
+    
 </div>
 
 
@@ -21,5 +25,14 @@
     public bool change = false;
     protected override void OnInitialized()
     {
+    }
+
+    public void MouseOver(MouseEventArgs e)
+    {
+        if (board.movingPiece.piece != Piece.None)
+        {
+            board.movingPiece.piece = Piece.None;
+            board.selected = false;
+        }
     }
 }

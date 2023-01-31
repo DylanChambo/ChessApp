@@ -47,9 +47,14 @@ p {
     cursor: grab;
 }
 
-    .piece:active {
-        cursor: grabbing !important;
-    }
+.hidden {
+   opacity: 0;
+}
+
+.fade-in {
+    animation: fadeIn 0.025s;
+}
+
 
 .movingpiece {
     object-fit: contain;
@@ -59,12 +64,30 @@ p {
     margin: -25%; 
     position: absolute;
     cursor: grabbing !important;
-    z-index: 5;
+    z-index: 6;
 }
 
 
 @media (min-width: 960px) {
     p {
         font-size: 1.25rem;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        background-color: black;
+    }
+
+
+    99% {
+        opacity: 0;
+        background-color: black;
+    }
+
+    100% {
+        opacity: 1;
+        display: contents;
     }
 }

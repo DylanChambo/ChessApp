@@ -2,7 +2,7 @@
 @using ChessApp.Data.Board;
 @using Plk.Blazor.DragDrop;
 
- <div @onmousedown="MouseDown" @onmouseover="Print" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
+ <div @onmousedown="MouseDown" @onmouseover="MouseOver" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
         @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
             {
@@ -15,9 +15,9 @@
             @rank
             }
     </p>
-    @if ( piece[0].piece != Piece.None)
+    @if (piece[0].piece != Piece.None)
     {
-            <img draggable="false" class="piece" src="images/@(piece[0].piece).svg" />
+        <img draggable="false" class="piece @hidden" src="images/@(piece[0].piece).svg" />
     }
     @if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
     {
@@ -44,7 +44,7 @@
     [Parameter]
     public bool change { get; set; }
 
-    public Piece sPiece;
+    public string hidden = "";
 
     public int startX = 0;
     public int startY = 0;
@@ -61,35 +61,25 @@
         piece = new List<PieceInstance> { new PieceInstance(file, rank, board.GetPiece(file, rank)) };
     }
 
-    public void OnDrop(PieceInstance p)
-    {
-        if (p.file == file && p.rank == rank) { return; }
-        board.SetPiece(p.file, p.rank);
-        board.SetPiece(file, rank, p.piece);
-        OnMove.InvokeAsync(true);
-        
-    }
-
     public void MouseDown(MouseEventArgs e)
     {
         if (piece[0].piece == Piece.None)
         {
             return;
         }
-        Console.WriteLine($"{file}{rank}");
         startX = (int)(e.PageX);
         startY = (int)(e.PageY);
         posX = 0;
         posY = 0;
         board.movingPiece = piece[0];
-        sPiece = piece[0].piece;
         board.selected = true;
-        piece = new List<PieceInstance> { new PieceInstance(file, rank, Piece.None) };
+        hidden = "hidden";
     }
 
     public void MouseUp(MouseEventArgs e)
     {
         board.selected = false;
+        hidden = "fade-in";
     }
 
     public void MouseMove(MouseEventArgs e)
@@ -101,11 +91,10 @@
         }
     }
 
-    public void Print()
+    public void MouseOver()
     {
         if (board.movingPiece.piece != Piece.None && !board.selected)
         {
-            Console.WriteLine($"{file}{rank} {board.movingPiece.piece} {board.movingPiece.file}{board.movingPiece.rank}");
             board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
             board.SetPiece(file, rank, board.movingPiece.piece);
             board.movingPiece.piece = Piece.None;
