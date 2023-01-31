@@ -2,8 +2,7 @@
 @using ChessApp.Data.Board;
 @using Plk.Blazor.DragDrop;
 
- <div class="square @Board.GetSquareColour(file, rank)">
-    <Dropzone class="dropzone" Items=piece TItem="PieceInstance" MaxItems="2" OnItemDrop="@((p) => OnDrop(p))" >
+ <div @onmousedown="MouseDown" @onmouseover="Print" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
         @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
             {
@@ -16,12 +15,18 @@
             @rank
             }
     </p>
-    @if ( context.piece != Piece.None)
+    @if ( piece[0].piece != Piece.None)
     {
-            <img class="piece" src="images/@(context.piece).svg" />
+            <img draggable="false" class="piece" src="images/@(piece[0].piece).svg" />
     }
-    </Dropzone>
+    @if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
+    {
+        <img draggable="false" style="top: @(posY)px; left: @(posX)px" class="movingpiece" src="images/@(board.movingPiece.piece).svg" />
+    }
 </div>
+
+
+    
 
 @code {
     [Parameter]
@@ -39,6 +44,13 @@
     [Parameter]
     public bool change { get; set; }
 
+    public Piece sPiece;
+
+    public int startX = 0;
+    public int startY = 0;
+    public int posX = 0;
+    public int posY = 0;
+
     List<PieceInstance> piece;
 
     protected override void OnInitialized()
@@ -55,6 +67,50 @@
         board.SetPiece(p.file, p.rank);
         board.SetPiece(file, rank, p.piece);
         OnMove.InvokeAsync(true);
-        board.DisplayBoard();
+        
+    }
+
+    public void MouseDown(MouseEventArgs e)
+    {
+        if (piece[0].piece == Piece.None)
+        {
+            return;
+        }
+        Console.WriteLine($"{file}{rank}");
+        startX = (int)(e.PageX);
+        startY = (int)(e.PageY);
+        posX = 0;
+        posY = 0;
+        board.movingPiece = piece[0];
+        sPiece = piece[0].piece;
+        board.selected = true;
+        piece = new List<PieceInstance> { new PieceInstance(file, rank, Piece.None) };
+    }
+
+    public void MouseUp(MouseEventArgs e)
+    {
+        board.selected = false;
+    }
+
+    public void MouseMove(MouseEventArgs e)
+    {
+        if (board.selected)
+        {
+            posX = (int) e.PageX - startX;
+            posY = (int) e.PageY - startY;
+        }
+    }
+
+    public void Print()
+    {
+        if (board.movingPiece.piece != Piece.None && !board.selected)
+        {
+            Console.WriteLine($"{file}{rank} {board.movingPiece.piece} {board.movingPiece.file}{board.movingPiece.rank}");
+            board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
+            board.SetPiece(file, rank, board.movingPiece.piece);
+            board.movingPiece.piece = Piece.None;
+            OnMove.InvokeAsync(true);
+            board.DisplayBoard();
+        }
     }
 }

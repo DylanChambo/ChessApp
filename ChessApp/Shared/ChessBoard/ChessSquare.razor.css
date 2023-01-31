@@ -48,9 +48,19 @@ p {
 }
 
     .piece:active {
-        opacity: 0.2;
         cursor: grabbing !important;
     }
+
+.movingpiece {
+    object-fit: contain;
+    width: 150%;
+    height: 150%;
+    padding: 25%;
+    margin: -25%; 
+    position: absolute;
+    cursor: grabbing !important;
+    z-index: 5;
+}
 
 
 @media (min-width: 960px) {
