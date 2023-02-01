@@ -1,6 +1,5 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Data.Board;
-@using Plk.Blazor.DragDrop;
 
  <div @onmousedown="MouseDown" @onmouseover="MouseOver" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
