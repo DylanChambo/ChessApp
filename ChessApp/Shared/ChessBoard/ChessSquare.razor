@@ -1,9 +1,7 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Data.Board;
-@using Plk.Blazor.DragDrop;
 
- <div class="square @Board.GetSquareColour(file, rank)">
-    <Dropzone class="dropzone" Items=piece TItem="PieceInstance" MaxItems="2" OnItemDrop="@((p) => OnDrop(p))" >
+ <div @onmousedown="MouseDown" @onmouseover="MouseOver" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
         @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
             {
@@ -16,11 +14,14 @@
             @rank
             }
     </p>
-    @if ( context.piece != Piece.None)
+    @if (piece.piece != Piece.None)
     {
-            <img class="piece" src="images/@(context.piece).svg" />
+        <img draggable="false" class="piece @hidden" src="images/@(piece.piece).svg" />
     }
-    </Dropzone>
+    @if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
+    {
+        <img draggable="false" style="top: calc(@(posY)px - 50%); left: calc(@(posX)px - 50%)" class="movingpiece" src="images/@(board.movingPiece.piece).svg" />
+    }
 </div>
 
 @code {
@@ -39,22 +40,76 @@
     [Parameter]
     public bool change { get; set; }
 
-    List<PieceInstance> piece;
+    public string hidden = "";
+    public int startX = 0;
+    public int startY = 0;
+    public int offsetX = 0;
+    public int offsetY = 0;
+    public int posX = 0;
+    public int posY = 0;
+
+    public PieceInstance piece;
 
     protected override void OnInitialized()
     {
     }
     protected override void OnParametersSet()
     {
-        piece = new List<PieceInstance> { new PieceInstance(file, rank, board.GetPiece(file, rank)) };
+        piece = new PieceInstance(file, rank, board.GetPiece(file, rank));
     }
 
-    public void OnDrop(PieceInstance p)
+    public void MouseDown(MouseEventArgs e)
     {
-        if (p.file == file && p.rank == rank) { return; }
-        board.SetPiece(p.file, p.rank);
-        board.SetPiece(file, rank, p.piece);
-        OnMove.InvokeAsync(true);
-        board.DisplayBoard();
+        if (piece.piece == Piece.None || board.selected)
+        {
+            return;
+        }
+        startX = (int)(e.PageX);
+        startY = (int)(e.PageY);
+        offsetX = (int)(e.OffsetX);
+        offsetY = (int)(e.OffsetY);
+        posX = (int)(e.OffsetX);
+        posY = (int)(e.OffsetY);
+        board.movingPiece = piece;
+        board.selected = true;
+        hidden = "hidden";
+    }
+
+    public void MouseUp(MouseEventArgs e)
+    {
+        board.selected = false;
+        hidden = "fade-in";
+    }
+
+    public void MouseMove(MouseEventArgs e)
+    {
+        if ((e.Buttons & 1) != 1 && board.selected)
+        {
+            board.movingPiece.piece = Piece.None;
+            OnMove.InvokeAsync(true);
+            board.selected = false;
+            hidden = "";
+            return;
+        } 
+        if (board.selected)
+        {
+            posX = (int) e.PageX - startX + offsetX;
+            posY = (int) e.PageY - startY + offsetY;
+        }
+    }
+
+    public void MouseOver()
+    {
+        if (board.movingPiece.piece != Piece.None && !board.selected)
+        {
+            if (board.movingPiece != piece)
+            {
+                board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
+                board.SetPiece(file, rank, board.movingPiece.piece);
+                board.DisplayBoard();
+            }
+            board.movingPiece.piece = Piece.None;
+            OnMove.InvokeAsync(true);
+        }
     }
 }

@@ -14,8 +14,4 @@
     <Content Include="Shared\ChessBoard\ChessSquare.razor.css" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="blazor-dragdrop" Version="2.4.0" />
-  </ItemGroup>
-
 </Project>
