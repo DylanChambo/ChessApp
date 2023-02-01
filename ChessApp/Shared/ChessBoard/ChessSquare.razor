@@ -25,9 +25,6 @@
     }
 </div>
 
-
-    
-
 @code {
     [Parameter]
     public EventCallback<bool> OnMove { get; set; }
@@ -45,7 +42,6 @@
     public bool change { get; set; }
 
     public string hidden = "";
-
     public int startX = 0;
     public int startY = 0;
     public int offsetX = 0;
@@ -88,6 +84,13 @@
 
     public void MouseMove(MouseEventArgs e)
     {
+        if((e.Buttons & 1) != 1)
+        {
+            board.movingPiece.piece = Piece.None;
+            OnMove.InvokeAsync(true);
+            board.selected = false;
+            hidden = "";
+        } 
         if (board.selected)
         {
             posX = (int) e.PageX - startX + offsetX;
@@ -97,6 +100,10 @@
 
     public void MouseOver()
     {
+        if (board.movingPiece == piece)
+        {
+            return;
+        }
         if (board.movingPiece.piece != Piece.None && !board.selected)
         {
             board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
