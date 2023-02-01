@@ -15,14 +15,7 @@
     display: flex;
     user-select: none;
     position: relative;
-}
-
-.catch {
-    position: absolute;
-    width: 106%;
-    height: 106%;
-    top: -3%;
-    left: -3%;
+    overflow: hidden;
 }
 
 .False {

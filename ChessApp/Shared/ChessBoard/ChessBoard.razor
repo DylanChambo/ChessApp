@@ -3,7 +3,7 @@
 
 <div class="outer-box">
     <div class="inner-box @(board.isFlipped)">
-        <div class="catch" @onmouseover="MouseOver">
+        <div class="catch" @onmousemove="MouseOver">
         </div>
         @for (char file = 'a'; file <= 'h'; file++)
         {
@@ -29,6 +29,7 @@
 
     public void MouseOver(MouseEventArgs e)
     {
+        Console.WriteLine("Test");
         if (board.movingPiece.piece != Piece.None)
         {
             board.movingPiece.piece = Piece.None;

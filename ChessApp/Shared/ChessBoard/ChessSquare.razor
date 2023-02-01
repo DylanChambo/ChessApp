@@ -15,13 +15,13 @@
             @rank
             }
     </p>
-    @if (piece[0].piece != Piece.None)
+    @if (piece.piece != Piece.None)
     {
-        <img draggable="false" class="piece @hidden" src="images/@(piece[0].piece).svg" />
+        <img draggable="false" class="piece @hidden" src="images/@(piece.piece).svg" />
     }
     @if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
     {
-        <img draggable="false" style="top: @(posY)px; left: @(posX)px" class="movingpiece" src="images/@(board.movingPiece.piece).svg" />
+        <img draggable="false" style="top: calc(@(posY)px - 50%); left: calc(@(posX)px - 50%)" class="movingpiece" src="images/@(board.movingPiece.piece).svg" />
     }
 </div>
 
@@ -48,30 +48,34 @@
 
     public int startX = 0;
     public int startY = 0;
+    public int offsetX = 0;
+    public int offsetY = 0;
     public int posX = 0;
     public int posY = 0;
 
-    List<PieceInstance> piece;
+    public PieceInstance piece;
 
     protected override void OnInitialized()
     {
     }
     protected override void OnParametersSet()
     {
-        piece = new List<PieceInstance> { new PieceInstance(file, rank, board.GetPiece(file, rank)) };
+        piece = new PieceInstance(file, rank, board.GetPiece(file, rank));
     }
 
     public void MouseDown(MouseEventArgs e)
     {
-        if (piece[0].piece == Piece.None)
+        if (piece.piece == Piece.None || board.selected)
         {
             return;
         }
         startX = (int)(e.PageX);
         startY = (int)(e.PageY);
-        posX = 0;
-        posY = 0;
-        board.movingPiece = piece[0];
+        offsetX = (int)(e.OffsetX);
+        offsetY = (int)(e.OffsetY);
+        posX = (int)(e.OffsetX);
+        posY = (int)(e.OffsetY);
+        board.movingPiece = piece;
         board.selected = true;
         hidden = "hidden";
     }
@@ -86,8 +90,8 @@
     {
         if (board.selected)
         {
-            posX = (int) e.PageX - startX;
-            posY = (int) e.PageY - startY;
+            posX = (int) e.PageX - startX + offsetX;
+            posY = (int) e.PageY - startY + offsetY;
         }
     }
 
