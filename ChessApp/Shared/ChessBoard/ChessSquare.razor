@@ -84,12 +84,13 @@
 
     public void MouseMove(MouseEventArgs e)
     {
-        if((e.Buttons & 1) != 1)
+        if ((e.Buttons & 1) != 1 && board.selected)
         {
             board.movingPiece.piece = Piece.None;
             OnMove.InvokeAsync(true);
             board.selected = false;
             hidden = "";
+            return;
         } 
         if (board.selected)
         {
@@ -100,17 +101,16 @@
 
     public void MouseOver()
     {
-        if (board.movingPiece == piece)
-        {
-            return;
-        }
         if (board.movingPiece.piece != Piece.None && !board.selected)
         {
-            board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
-            board.SetPiece(file, rank, board.movingPiece.piece);
+            if (board.movingPiece != piece)
+            {
+                board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
+                board.SetPiece(file, rank, board.movingPiece.piece);
+                board.DisplayBoard();
+            }
             board.movingPiece.piece = Piece.None;
             OnMove.InvokeAsync(true);
-            board.DisplayBoard();
         }
     }
 }

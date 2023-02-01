@@ -45,6 +45,7 @@ p {
     width: 100%;
     height: 100%;
     cursor: grab;
+    z-index: 7;
 }
     .piece:active {
         cursor: grabbing;

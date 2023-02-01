@@ -103,7 +103,7 @@
                 }
                 Console.WriteLine("");
             }
-            Console.WriteLine("\n");
+            Console.WriteLine("--------");
 
         }
         
