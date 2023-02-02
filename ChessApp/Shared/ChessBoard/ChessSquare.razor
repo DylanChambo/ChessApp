@@ -30,6 +30,7 @@
         <img draggable="false" 
              class="piece @moving"
              src="images/@(piece).svg"
+          
              style="top: calc(@(mousePos.Y - start.Y)px - 50%); left: calc(@(mousePos.X - start.X)px - 50%)" />
     }
     
@@ -51,13 +52,13 @@
 
     async Task MouseDown(MouseEventArgs e)
     {
-        if ((e.Buttons & 1) == 1) // If Left Click
+        if (e.Button == 0) // If Left Click
         {
             start.X = (int)(e.PageX - e.OffsetX);
             start.Y = (int) (e.PageY - e.OffsetY);
-            moving = "moving";
-            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int) e.PageY) });
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
+            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int)e.PageY) });
+
             // Set the Position In the state
         }
     }
@@ -67,7 +68,7 @@
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
             // MovePiece with the Postion in the state and current
-            if (pos.Equals(movingPiece))
+            if (pos.Equals(movingPiece) && !movingPiece.Equals(new Position('0', 0)))
             {
                 await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
                 return;
