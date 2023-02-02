@@ -11,8 +11,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazorState
 (
-    (aOptions) =>
-        aOptions.Assemblies =
+    (options) =>
+        options.Assemblies =
         new Assembly[]
         {
             typeof(Program).GetTypeInfo().Assembly,

@@ -10,13 +10,13 @@ public partial class ChessState
     {
         public MovePieceHandler(IStore store): base(store) { }
 
-        ChessState ChessState => Store.GetState<ChessState>();
+        ChessState chessState => Store.GetState<ChessState>();
 
         public override Task<Unit> Handle(MovePieceAction movePieceAction, CancellationToken cancellationToken)
         {
-            Piece piece = ChessState.GetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
-            ChessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
-            ChessState.SetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
+            Piece piece = chessState.GetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
+            chessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
+            chessState.SetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
 
             return Unit.Task;
         }

@@ -44,12 +44,12 @@ p {
     object-fit: contain;
     width: 100%;
     height: 100%;
-    cursor: grab;
-    z-index: 7;
+    z-index: 1;
 }
-    .piece:active {
-        cursor: grabbing;
-    }
+
+.moving {
+    position: relative;
+}
 
 .hidden {
     opacity: 0;
@@ -58,18 +58,16 @@ p {
     animation: fadeIn 0.025s;
 }
 
-.movingpiece {
-    object-fit: contain;
-    width: 1600%;
-    height: 1600%;
-    padding: 750%;
-    margin: -750%; 
-    position: absolute;
-    z-index: 6;
+.inv {
+    position:absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 5;
 }
-.movingpiece:hover {
-    cursor: grabbing;
-}
+
 
 @media (min-width: 960px) {
     p {

@@ -5,7 +5,7 @@
 
 @inherits BlazorStateComponent
 
- <div  class="square @Board.GetSquareColour(file, rank)">
+ <div @onmousedown="MouseDown" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
         @if ((rank == 1 && !isFlipped) || (rank == 8 && isFlipped))
             {
@@ -20,12 +20,13 @@
     </p>
     @if (piece != Piece.None)
     {
-        <img draggable="false" class="piece" src="images/@(piece).svg" />
+        <img draggable="false" 
+             class="piece @moving"
+             src="images/@(piece).svg"
+         style="top: calc(@(mousePos.Y - start.Y)px - 50%); left: calc(@(mousePos.X - start.X)px - 50%)" />
     }
-    @*@if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
-    {
-        <img draggable="false" style="top: calc(@(posY)px - 50%); left: calc(@(posX)px - 50%)" class="movingpiece" src="images/@(piece).svg" />
-    }*@
+    
+    <div class="inv"></div>
 </div>
 
 @code {
@@ -38,76 +39,30 @@
     ChessState chessState => GetState<ChessState>();
     private Piece piece => chessState.GetPiece(file, rank);
     private bool isFlipped => chessState.IsFlipped;
+    public Coord mousePos => chessState.MousePos;
 
+    public Coord start = new Coord(0, 0);
+    public string moving = "";
 
-    //public string hidden = "";
-    //public int startX = 0;
-    //public int startY = 0;
-    //public int offsetX = 0;
-    //public int offsetY = 0;
-    //public int posX = 0;
-    //public int posY = 0;
+    async Task MouseDown(MouseEventArgs e)
+    {
+        if ((e.Buttons & 1) == 1) // If Left Click
+        {
+            start.X = (int)(e.PageX - e.OffsetX);
+            start.Y = (int) (e.PageY - e.OffsetY);
+            moving = "moving";
+            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int) e.PageY) });
+            
+            // Set the Position In the state
+        }
+    }
 
-    //protected override void OnInitialized()
-    //{
-    //}
-    //protected override void OnParametersSet()
-    //{
-    //    piece = new PieceInstance(file, rank, board.GetPiece(file, rank));
-    //}
-
-    //public void MouseDown(MouseEventArgs e)
-    //{
-    //    if (piece.piece == Piece.None || board.selected)
-    //    {
-    //        return;
-    //    }
-    //    startX = (int)(e.PageX);
-    //    startY = (int)(e.PageY);
-    //    offsetX = (int)(e.OffsetX);
-    //    offsetY = (int)(e.OffsetY);
-    //    posX = (int)(e.OffsetX);
-    //    posY = (int)(e.OffsetY);
-    //    board.movingPiece = piece;
-    //    board.selected = true;
-    //    hidden = "hidden";
-    //}
-
-    //public void MouseUp(MouseEventArgs e)
-    //{
-    //    board.selected = false;
-    //    hidden = "fade-in";
-    //}
-
-    //public void MouseMove(MouseEventArgs e)
-    //{
-    //    if ((e.Buttons & 1) != 1 && board.selected)
-    //    {
-    //        board.movingPiece.piece = Piece.None;
-    //        OnMove.InvokeAsync(true);
-    //        board.selected = false;
-    //        hidden = "";
-    //        return;
-    //    } 
-    //    if (board.selected)
-    //    {
-    //        posX = (int) e.PageX - startX + offsetX;
-    //        posY = (int) e.PageY - startY + offsetY;
-    //    }
-    //}
-
-    //public void MouseOver()
-    //{
-    //    if (board.movingPiece.piece != Piece.None && !board.selected)
-    //    {
-    //        if (board.movingPiece != piece)
-    //        {
-    //            board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
-    //            board.SetPiece(file, rank, board.movingPiece.piece);
-    //            board.DisplayBoard();
-    //        }
-    //        board.movingPiece.piece = Piece.None;
-    //        OnMove.InvokeAsync(true);
-    //    }
-    //}
+    public void MouseUp(MouseEventArgs e)
+    {
+        if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
+        {
+            Console.WriteLine($"MU {file}{rank}");
+            // MovePiece with the Postion in the state and current
+        }
+    }
 }

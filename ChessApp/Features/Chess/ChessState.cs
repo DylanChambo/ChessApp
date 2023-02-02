@@ -18,18 +18,21 @@ public partial class ChessState: State<ChessState>
         }
     }
 
-    private Piece[] Board { get; set; } = new Piece[64];
-    public Boolean IsFlipped { get; private set; } = false;
-    public PieceInstance MovingPiece = new PieceInstance('0', 0, Piece.None);
-    public bool Selected = false;
-
+    private Piece[] Board { get; set; }
+    public Boolean IsFlipped { get; private set; }
+    public Position MovingPositon { get; private set; }
+    public Coord MousePos { get; private set; }
     public override void Initialize()
     {
+        Board = new Piece[64];
         LoadFenPosition(DefaultFen);
+        IsFlipped = false;
+        MovingPositon = new Position('0', 0);
+        MousePos = new Coord(0, 0);
     }
 
     public Piece GetPiece(int file, int rank)
-    {
+    {  
         return Board[(file - 'a') + (8 * (rank - 1))];
     }
 
