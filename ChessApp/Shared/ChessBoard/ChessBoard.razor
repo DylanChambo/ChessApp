@@ -6,7 +6,7 @@
 @inherits BlazorStateComponent
 
 <div @onmousemove="MouseMove" class="outer-box">
-    <div class="inner-box @(isFlipped)">
+    <div oncontextmenu="return false;" class="inner-box @(isFlipped)">
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)
@@ -30,11 +30,13 @@
 
     async Task MouseMove(MouseEventArgs e)
     {
+        Console.WriteLine(e.Buttons);
         if ((e.Buttons & 1) == 1) // If left mouse is down
         {
             mouseCoord.X = (int) e.PageX;
             mouseCoord.Y = (int ) e.PageY;
-            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = mouseCoord });
+
+            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = mouseCoord }); 
         }
     }
 }
