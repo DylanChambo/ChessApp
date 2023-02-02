@@ -1,13 +1,17 @@
 ﻿@using ChessApp.Data.Board
 @using ChessApp.Data;
+@using ChessApp.Features.Chess;
+@using BlazorState;
+
+@inherits BlazorStateComponent
 
 <div class="outer-box">
-    <div class="inner-box @(board.isFlipped)">
+    <div class="inner-box @(isFlipped)">
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)
             {
-                <ChessSquare file=file rank=rank board=@board change="change" OnMove="b => change = b">
+                <ChessSquare file=file rank=rank >
                     
                 </ChessSquare>
             }
@@ -19,9 +23,6 @@
 
 
 @code {
-    Board board = new Board();
-    public bool change = false;
-    protected override void OnInitialized()
-    {
-    }
+    ChessState chessState => GetState<ChessState>();
+    private Boolean isFlipped => chessState.IsFlipped;
 }

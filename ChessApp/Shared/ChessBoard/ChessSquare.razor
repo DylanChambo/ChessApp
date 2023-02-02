@@ -1,115 +1,113 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Data.Board;
+@using BlazorState
+@using ChessApp.Features.Chess;
 
- <div @onmousedown="MouseDown" @onmouseover="MouseOver" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
+@inherits BlazorStateComponent
+
+ <div  class="square @Board.GetSquareColour(file, rank)">
     <p class="file-letter">
-        @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
+        @if ((rank == 1 && !isFlipped) || (rank == 8 && isFlipped))
             {
                 @file
             }    
     </p>
     <p class="rank-num">
-        @if ((file == 'a' && !board.isFlipped) || (file == 'h' && board.isFlipped))
+        @if ((file == 'a' && !isFlipped) || (file == 'h' && isFlipped))
             {
             @rank
             }
     </p>
-    @if (piece.piece != Piece.None)
+    @if (piece != Piece.None)
     {
-        <img draggable="false" class="piece @hidden" src="images/@(piece.piece).svg" />
+        <img draggable="false" class="piece" src="images/@(piece).svg" />
     }
-    @if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
+    @*@if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
     {
-        <img draggable="false" style="top: calc(@(posY)px - 50%); left: calc(@(posX)px - 50%)" class="movingpiece" src="images/@(board.movingPiece.piece).svg" />
-    }
+        <img draggable="false" style="top: calc(@(posY)px - 50%); left: calc(@(posX)px - 50%)" class="movingpiece" src="images/@(piece).svg" />
+    }*@
 </div>
 
 @code {
-    [Parameter]
-    public EventCallback<bool> OnMove { get; set; }
-
     [Parameter]
     public char file { get; set; }
 
     [Parameter]
     public int rank { get; set; }
 
-    [Parameter]
-    public Board board { get; set; }
+    ChessState chessState => GetState<ChessState>();
+    private Piece piece => chessState.GetPiece(file, rank);
+    private bool isFlipped => chessState.IsFlipped;
 
-    [Parameter]
-    public bool change { get; set; }
 
-    public string hidden = "";
-    public int startX = 0;
-    public int startY = 0;
-    public int offsetX = 0;
-    public int offsetY = 0;
-    public int posX = 0;
-    public int posY = 0;
+    //public string hidden = "";
+    //public int startX = 0;
+    //public int startY = 0;
+    //public int offsetX = 0;
+    //public int offsetY = 0;
+    //public int posX = 0;
+    //public int posY = 0;
 
-    public PieceInstance piece;
+    //protected override void OnInitialized()
+    //{
+    //}
+    //protected override void OnParametersSet()
+    //{
+    //    piece = new PieceInstance(file, rank, board.GetPiece(file, rank));
+    //}
 
-    protected override void OnInitialized()
-    {
-    }
-    protected override void OnParametersSet()
-    {
-        piece = new PieceInstance(file, rank, board.GetPiece(file, rank));
-    }
+    //public void MouseDown(MouseEventArgs e)
+    //{
+    //    if (piece.piece == Piece.None || board.selected)
+    //    {
+    //        return;
+    //    }
+    //    startX = (int)(e.PageX);
+    //    startY = (int)(e.PageY);
+    //    offsetX = (int)(e.OffsetX);
+    //    offsetY = (int)(e.OffsetY);
+    //    posX = (int)(e.OffsetX);
+    //    posY = (int)(e.OffsetY);
+    //    board.movingPiece = piece;
+    //    board.selected = true;
+    //    hidden = "hidden";
+    //}
 
-    public void MouseDown(MouseEventArgs e)
-    {
-        if (piece.piece == Piece.None || board.selected)
-        {
-            return;
-        }
-        startX = (int)(e.PageX);
-        startY = (int)(e.PageY);
-        offsetX = (int)(e.OffsetX);
-        offsetY = (int)(e.OffsetY);
-        posX = (int)(e.OffsetX);
-        posY = (int)(e.OffsetY);
-        board.movingPiece = piece;
-        board.selected = true;
-        hidden = "hidden";
-    }
+    //public void MouseUp(MouseEventArgs e)
+    //{
+    //    board.selected = false;
+    //    hidden = "fade-in";
+    //}
 
-    public void MouseUp(MouseEventArgs e)
-    {
-        board.selected = false;
-        hidden = "fade-in";
-    }
+    //public void MouseMove(MouseEventArgs e)
+    //{
+    //    if ((e.Buttons & 1) != 1 && board.selected)
+    //    {
+    //        board.movingPiece.piece = Piece.None;
+    //        OnMove.InvokeAsync(true);
+    //        board.selected = false;
+    //        hidden = "";
+    //        return;
+    //    } 
+    //    if (board.selected)
+    //    {
+    //        posX = (int) e.PageX - startX + offsetX;
+    //        posY = (int) e.PageY - startY + offsetY;
+    //    }
+    //}
 
-    public void MouseMove(MouseEventArgs e)
-    {
-        if ((e.Buttons & 1) != 1 && board.selected)
-        {
-            board.movingPiece.piece = Piece.None;
-            OnMove.InvokeAsync(true);
-            board.selected = false;
-            hidden = "";
-            return;
-        } 
-        if (board.selected)
-        {
-            posX = (int) e.PageX - startX + offsetX;
-            posY = (int) e.PageY - startY + offsetY;
-        }
-    }
-
-    public void MouseOver()
-    {
-        if (board.movingPiece.piece != Piece.None && !board.selected)
-        {
-            if (board.movingPiece != piece)
-            {
-                board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
-                board.SetPiece(file, rank, board.movingPiece.piece);
-                board.DisplayBoard();
-            }
-            board.movingPiece.piece = Piece.None;
-            OnMove.InvokeAsync(true);
-        }
-    }
+    //public void MouseOver()
+    //{
+    //    if (board.movingPiece.piece != Piece.None && !board.selected)
+    //    {
+    //        if (board.movingPiece != piece)
+    //        {
+    //            board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
+    //            board.SetPiece(file, rank, board.movingPiece.piece);
+    //            board.DisplayBoard();
+    //        }
+    //        board.movingPiece.piece = Piece.None;
+    //        OnMove.InvokeAsync(true);
+    //    }
+    //}
 }
