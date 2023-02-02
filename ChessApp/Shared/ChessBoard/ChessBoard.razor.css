@@ -5,6 +5,13 @@
     aspect-ratio: 1;
     display: flex;
     justify-content: center;
+    padding: 3%;
+    overflow: hidden;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
 }
 
 .inner-box {
@@ -13,9 +20,16 @@
     height: 100%;
     aspect-ratio: 1;
     display: flex;
-    user-select: none;
     position: relative;
-    overflow: hidden;
+}
+
+.box {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
 }
 
 .False {
@@ -28,3 +42,10 @@
     flex-wrap: wrap-reverse;
 }
 
+.piece {
+    object-fit: contain;
+    width: 12.5%;
+    height: 12.5%;
+    z-index: 2;
+    position: absolute;
+}

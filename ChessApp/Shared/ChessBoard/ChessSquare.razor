@@ -1,115 +1,78 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Data.Board;
+@using BlazorState
+@using ChessApp.Features.Chess;
 
- <div @onmousedown="MouseDown" @onmouseover="MouseOver" @onmousemove="MouseMove" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
+@inherits BlazorStateComponent
+
+<div @onmousedown="MouseDown" @onmouseup="MouseUp" class="square @ChessState.GetSquareColour(pos)">
     <p class="file-letter">
-        @if ((rank == 1 && !board.isFlipped) || (rank == 8 && board.isFlipped))
+        @if ((pos.Rank == 1 && !isFlipped) || (pos.Rank == 8 && isFlipped))
             {
-                @file
+                @pos.File
             }    
     </p>
     <p class="rank-num">
-        @if ((file == 'a' && !board.isFlipped) || (file == 'h' && board.isFlipped))
+        @if ((pos.File == 'a' && !isFlipped) || (pos.File == 'h' && isFlipped))
             {
-            @rank
+            @pos.Rank
             }
     </p>
-    @if (piece.piece != Piece.None)
+    @if (piece != Piece.None)
     {
-        <img draggable="false" class="piece @hidden" src="images/@(piece.piece).svg" />
+        if (pos.Equals(movingPiece))
+        {
+            moving = "moving";
+        } else
+        {
+            moving = "";
+        }
+        <img draggable="false" 
+             class="piece @moving"
+             src="images/@(piece).svg"
+             style="top: calc(@(mousePos.Y - start.Y)px - 50%); left: calc(@(mousePos.X - start.X)px - 50%)" />
     }
-    @if (board.selected && board.movingPiece.file == file && board.movingPiece.rank == rank)
-    {
-        <img draggable="false" style="top: calc(@(posY)px - 50%); left: calc(@(posX)px - 50%)" class="movingpiece" src="images/@(board.movingPiece.piece).svg" />
-    }
+    
+    <div class="inv"></div>
 </div>
 
 @code {
     [Parameter]
-    public EventCallback<bool> OnMove { get; set; }
+    public Position pos { get; set; }
 
-    [Parameter]
-    public char file { get; set; }
+    ChessState chessState => GetState<ChessState>();
+    private Piece piece => chessState.GetPiece(pos.File, pos.Rank);
+    private bool isFlipped => chessState.IsFlipped;
+    public Coord mousePos => chessState.MousePos;
+    public Position movingPiece => chessState.MovingPositon;
 
-    [Parameter]
-    public int rank { get; set; }
+    public Coord start = new Coord(0, 0);
+    public string moving = "";
 
-    [Parameter]
-    public Board board { get; set; }
-
-    [Parameter]
-    public bool change { get; set; }
-
-    public string hidden = "";
-    public int startX = 0;
-    public int startY = 0;
-    public int offsetX = 0;
-    public int offsetY = 0;
-    public int posX = 0;
-    public int posY = 0;
-
-    public PieceInstance piece;
-
-    protected override void OnInitialized()
+    async Task MouseDown(MouseEventArgs e)
     {
-    }
-    protected override void OnParametersSet()
-    {
-        piece = new PieceInstance(file, rank, board.GetPiece(file, rank));
-    }
-
-    public void MouseDown(MouseEventArgs e)
-    {
-        if (piece.piece == Piece.None || board.selected)
+        if ((e.Buttons & 1) == 1) // If Left Click
         {
-            return;
-        }
-        startX = (int)(e.PageX);
-        startY = (int)(e.PageY);
-        offsetX = (int)(e.OffsetX);
-        offsetY = (int)(e.OffsetY);
-        posX = (int)(e.OffsetX);
-        posY = (int)(e.OffsetY);
-        board.movingPiece = piece;
-        board.selected = true;
-        hidden = "hidden";
-    }
-
-    public void MouseUp(MouseEventArgs e)
-    {
-        board.selected = false;
-        hidden = "fade-in";
-    }
-
-    public void MouseMove(MouseEventArgs e)
-    {
-        if ((e.Buttons & 1) != 1 && board.selected)
-        {
-            board.movingPiece.piece = Piece.None;
-            OnMove.InvokeAsync(true);
-            board.selected = false;
-            hidden = "";
-            return;
-        } 
-        if (board.selected)
-        {
-            posX = (int) e.PageX - startX + offsetX;
-            posY = (int) e.PageY - startY + offsetY;
+            start.X = (int)(e.PageX - e.OffsetX);
+            start.Y = (int) (e.PageY - e.OffsetY);
+            moving = "moving";
+            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int) e.PageY) });
+            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
+            // Set the Position In the state
         }
     }
 
-    public void MouseOver()
+    async Task MouseUp(MouseEventArgs e)
     {
-        if (board.movingPiece.piece != Piece.None && !board.selected)
+        if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
-            if (board.movingPiece != piece)
+            // MovePiece with the Postion in the state and current
+            if (pos.Equals(movingPiece))
             {
-                board.SetPiece(board.movingPiece.file, board.movingPiece.rank);
-                board.SetPiece(file, rank, board.movingPiece.piece);
-                board.DisplayBoard();
+                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
+                return;
             }
-            board.movingPiece.piece = Piece.None;
-            OnMove.InvokeAsync(true);
-        }
+            await Mediator.Send(new ChessState.MovePieceAction { NewPosition = pos, OldPosition = movingPiece });
+    }
     }
 }
