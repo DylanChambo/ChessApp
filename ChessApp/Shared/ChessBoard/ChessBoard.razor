@@ -1,27 +1,40 @@
 ﻿@using ChessApp.Data.Board
 @using ChessApp.Data;
+@using ChessApp.Features.Chess;
+@using BlazorState;
 
-<div class="outer-box">
-    <div class="inner-box @(board.isFlipped)">
+@inherits BlazorStateComponent
+
+<div @onmousemove="MouseMove" class="outer-box">
+    <div class="inner-box @(isFlipped)">
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)
             {
-                <ChessSquare file=file rank=rank board=@board change="change" OnMove="b => change = b">
+                <ChessSquare pos="new Position(file, rank)" >
                     
                 </ChessSquare>
             }
         }
-        
+
     </div>
-    
 </div>
 
 
 @code {
-    Board board = new Board();
-    public bool change = false;
-    protected override void OnInitialized()
+    ChessState chessState => GetState<ChessState>();
+    private Boolean isFlipped => chessState.IsFlipped;
+    private Coord mousePos => chessState.MousePos;
+
+    private Coord mouseCoord = new Coord(0, 0);
+
+    async Task MouseMove(MouseEventArgs e)
     {
+        if ((e.Buttons & 1) == 1) // If left mouse is down
+        {
+            mouseCoord.X = (int) e.PageX;
+            mouseCoord.Y = (int ) e.PageY;
+            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = mouseCoord });
+        }
     }
 }
