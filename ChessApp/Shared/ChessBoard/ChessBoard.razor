@@ -6,12 +6,12 @@
 @inherits BlazorStateComponent
 
 <div @onmousemove="MouseMove" class="outer-box">
-    <div  class="inner-box @(isFlipped)">
+    <div class="inner-box @(isFlipped)">
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)
             {
-                <ChessSquare file=file rank=rank >
+                <ChessSquare pos="new Position(file, rank)" >
                     
                 </ChessSquare>
             }

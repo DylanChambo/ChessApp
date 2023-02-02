@@ -5,25 +5,32 @@
 
 @inherits BlazorStateComponent
 
- <div @onmousedown="MouseDown" @onmouseup="MouseUp" class="square @Board.GetSquareColour(file, rank)">
+<div @onmousedown="MouseDown" @onmouseup="MouseUp" class="square @ChessState.GetSquareColour(pos)">
     <p class="file-letter">
-        @if ((rank == 1 && !isFlipped) || (rank == 8 && isFlipped))
+        @if ((pos.Rank == 1 && !isFlipped) || (pos.Rank == 8 && isFlipped))
             {
-                @file
+                @pos.File
             }    
     </p>
     <p class="rank-num">
-        @if ((file == 'a' && !isFlipped) || (file == 'h' && isFlipped))
+        @if ((pos.File == 'a' && !isFlipped) || (pos.File == 'h' && isFlipped))
             {
-            @rank
+            @pos.Rank
             }
     </p>
     @if (piece != Piece.None)
     {
+        if (pos.Equals(movingPiece))
+        {
+            moving = "moving";
+        } else
+        {
+            moving = "";
+        }
         <img draggable="false" 
              class="piece @moving"
              src="images/@(piece).svg"
-         style="top: calc(@(mousePos.Y - start.Y)px - 50%); left: calc(@(mousePos.X - start.X)px - 50%)" />
+             style="top: calc(@(mousePos.Y - start.Y)px - 50%); left: calc(@(mousePos.X - start.X)px - 50%)" />
     }
     
     <div class="inv"></div>
@@ -31,15 +38,13 @@
 
 @code {
     [Parameter]
-    public char file { get; set; }
-
-    [Parameter]
-    public int rank { get; set; }
+    public Position pos { get; set; }
 
     ChessState chessState => GetState<ChessState>();
-    private Piece piece => chessState.GetPiece(file, rank);
+    private Piece piece => chessState.GetPiece(pos.File, pos.Rank);
     private bool isFlipped => chessState.IsFlipped;
     public Coord mousePos => chessState.MousePos;
+    public Position movingPiece => chessState.MovingPositon;
 
     public Coord start = new Coord(0, 0);
     public string moving = "";
@@ -52,17 +57,22 @@
             start.Y = (int) (e.PageY - e.OffsetY);
             moving = "moving";
             await Mediator.Send(new ChessState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int) e.PageY) });
-            
+            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
             // Set the Position In the state
         }
     }
 
-    public void MouseUp(MouseEventArgs e)
+    async Task MouseUp(MouseEventArgs e)
     {
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
-            Console.WriteLine($"MU {file}{rank}");
             // MovePiece with the Postion in the state and current
-        }
+            if (pos.Equals(movingPiece))
+            {
+                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
+                return;
+            }
+            await Mediator.Send(new ChessState.MovePieceAction { NewPosition = pos, OldPosition = movingPiece });
+    }
     }
 }

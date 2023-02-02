@@ -15,8 +15,11 @@ public partial class ChessState
         public override Task<Unit> Handle(MovePieceAction movePieceAction, CancellationToken cancellationToken)
         {
             Piece piece = chessState.GetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
-            chessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
             chessState.SetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
+            chessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
+            chessState.MovingPositon = new Position('0', 0);
+
+            chessState.DisplayBoard();
 
             return Unit.Task;
         }

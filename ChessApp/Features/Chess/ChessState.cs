@@ -6,9 +6,9 @@ namespace ChessApp.Features.Chess;
 public partial class ChessState: State<ChessState>
 {
     public static readonly string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    public static string GetSquareColour(char file, int rank)
+    public static string GetSquareColour(Position pos)
     {
-        if ((rank + file) % 2 == 0)
+        if ((pos.Rank + pos.File) % 2 == 0)
         {
             return "dark";
         }
