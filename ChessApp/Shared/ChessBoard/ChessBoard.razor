@@ -1,7 +1,7 @@
-﻿@using ChessApp.Data.Board
-@using ChessApp.Data;
+﻿@using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@inject IJSRuntime jsRuntime
 
 @inherits BlazorStateComponent
 
@@ -24,12 +24,21 @@
 @code {
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
+    private Boolean mobile => chessState.Mobile;
     private Coord mousePos => chessState.MousePos;
-
     private Coord mouseCoord = new Coord(0, 0);
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });
+            Console.WriteLine(mobile);
+        }
+    }
     async Task MouseMove(MouseEventArgs e)
     {
+        if (mobile) return;
         if ((e.Buttons & 1) == 1) // If left mouse is down
         {
             mouseCoord.X = (int) e.PageX;

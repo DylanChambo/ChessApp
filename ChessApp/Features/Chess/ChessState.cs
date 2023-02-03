@@ -20,6 +20,8 @@ public partial class ChessState: State<ChessState>
 
     private Piece[] Board { get; set; }
     public Boolean IsFlipped { get; private set; }
+
+    public bool Mobile { get; set; }
     public Position MovingPositon { get; private set; }
     public Coord MousePos { get; private set; }
     public override void Initialize()
