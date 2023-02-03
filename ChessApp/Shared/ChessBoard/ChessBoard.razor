@@ -30,7 +30,6 @@
 
     async Task MouseMove(MouseEventArgs e)
     {
-        Console.WriteLine(e.Buttons);
         if ((e.Buttons & 1) == 1) // If left mouse is down
         {
             mouseCoord.X = (int) e.PageX;
