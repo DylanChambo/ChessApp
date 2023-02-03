@@ -51,6 +51,10 @@ p {
     position: relative;
 }
 
+.selected {
+    background-color: rgb(255, 216, 0, 0.3);
+}
+
 .hidden {
     opacity: 0;
 }

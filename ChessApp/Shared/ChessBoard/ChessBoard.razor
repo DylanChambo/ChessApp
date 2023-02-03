@@ -2,6 +2,7 @@
 @using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@inject IJSRuntime jsRuntime
 
 @inherits BlazorStateComponent
 
@@ -25,9 +26,17 @@
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
     private Coord mousePos => chessState.MousePos;
-
+    public bool mobile;
     private Coord mouseCoord = new Coord(0, 0);
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            mobile = await jsRuntime.InvokeAsync<bool>("isDevice");
+            Console.WriteLine(mobile);
+        }
+    }
     async Task MouseMove(MouseEventArgs e)
     {
         if ((e.Buttons & 1) == 1) // If left mouse is down
