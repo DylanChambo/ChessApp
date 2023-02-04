@@ -101,6 +101,10 @@
         if (!movingPiece.Equals(new Position('0', 0)) && possibleMoves.Contains(pos))
         {
             await Mediator.Send(new ChessState.MovePieceAction { NewPosition = pos, OldPosition = movingPiece });
+        } else if (movingPiece.Equals(pos))
+        {
+            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+
         } else
         {
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
