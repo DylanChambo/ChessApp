@@ -32,8 +32,7 @@
     {
         if (firstRender)
         {
-            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });
-            Console.WriteLine(mobile);
+            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });        
         }
     }
     async Task MouseMove(MouseEventArgs e)

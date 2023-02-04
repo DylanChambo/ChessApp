@@ -19,6 +19,8 @@ public partial class ChessState
             chessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
             chessState.MovingPositon = new Position('0', 0);
 
+            // TODO: Calculate all posible moves into a AllPossibleMoves Dictionary<Position, Position[]>
+
             chessState.DisplayBoard();
 
             return Unit.Task;
