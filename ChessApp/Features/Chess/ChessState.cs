@@ -1,5 +1,6 @@
 ﻿using BlazorState;
 using ChessApp.Data;
+using System.IO.Pipelines;
 using static ChessApp.Features.Chess.ChessState;
 
 namespace ChessApp.Features.Chess;
@@ -167,19 +168,20 @@ public partial class ChessState : State<ChessState>
         }
         else if (piece == Piece.WhiteBishop || piece == Piece.BlackBishop)
         {
-
+            BishopMove(MovingPositon.File, MovingPositon.Rank, side);
         }
         else if (piece == Piece.WhiteRook || piece == Piece.BlackRook)
         {
-
+            RookMove(MovingPositon.File, MovingPositon.Rank, side);
         }
         else if (piece == Piece.WhiteQueen || piece == Piece.BlackQueen)
         {
-
+            BishopMove(MovingPositon.File, MovingPositon.Rank, side);
+            RookMove(MovingPositon.File, MovingPositon.Rank, side);
         }
         else if (piece == Piece.WhiteKing || piece == Piece.BlackKing)
         {
-
+            KingMove(MovingPositon.File, MovingPositon.Rank, side);
         }
     } 
 
@@ -227,6 +229,81 @@ public partial class ChessState : State<ChessState>
                     {
                         PiecePossibleMoves.Add(new Position((char)(file + f), rank + r));
                     }
+                }
+            }
+        }
+    }
+
+    public void BishopMove (char file, int rank, Side side)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int k = 1;
+                while (true) {
+                    Piece piece = GetPiece(file + k * i, rank + k * j);
+                    if (piece == Piece.None)
+                    {
+                        PiecePossibleMoves.Add(new Position((char)(file + k * i), rank + k * j));
+
+                    } else if (IsOpposition(piece, side)) {
+                        PiecePossibleMoves.Add(new Position((char)(file + k * i), rank + k * j));
+                        break;
+                    } 
+                    else { 
+                        break;
+                    }
+                    k++;
+                }
+               
+            }
+        }
+    }
+
+    public void RookMove(char file, int rank, Side side)
+    {
+
+        for (int i = 0; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int k = 1;
+                while (true)
+                {
+                    int l = 1 - i;
+                    Piece piece = GetPiece(file + (k * j * i), rank + (k * j * l));
+                    if (piece == Piece.None)
+                    {
+                        PiecePossibleMoves.Add(new Position((char)(file + (k * j * i)), rank + (k * j * l)));
+                    }
+                    else if (IsOpposition(piece, side))
+                    {
+                        PiecePossibleMoves.Add(new Position((char)(file + (k * j * i)), rank + (k * j * l)));
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    k++;
+                }
+            }
+        }
+
+    }
+
+    public void KingMove(char file, int rank, Side side)
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0) { continue; }
+                Piece piece = GetPiece(file + i, rank + j);
+                if (piece == Piece.None || IsOpposition(piece, side))
+                {
+                    PiecePossibleMoves.Add(new Position((char)(file + i), rank + j));
                 }
             }
         }
