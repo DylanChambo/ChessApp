@@ -47,7 +47,7 @@
     }
 </div>
 
-    @code {
+@code {
     [Parameter]
     public Position pos { get; set; }
 
@@ -81,6 +81,11 @@
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
             // MovePiece with the Postion in the state and current
+            if (!possibleMoves.Contains(pos))
+            {
+                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+                return;
+            }
             if (pos.Equals(movingPiece) && !movingPiece.Equals(new Position('0', 0)))
             {
                 await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
@@ -93,7 +98,7 @@
     async Task TouchUp(TouchEventArgs e)
     {
         if (!mobile) return;
-        if (!movingPiece.Equals(new Position('0', 0)))
+        if (!movingPiece.Equals(new Position('0', 0)) && possibleMoves.Contains(pos))
         {
             await Mediator.Send(new ChessState.MovePieceAction { NewPosition = pos, OldPosition = movingPiece });
         } else

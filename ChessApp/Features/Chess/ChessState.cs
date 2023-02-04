@@ -132,10 +132,6 @@ public partial class ChessState : State<ChessState>
         if (piece == Piece.WhitePawn || piece == Piece.BlackPawn)
         {
             PiecePossibleMoves = PawnMove(MovingPositon.File, MovingPositon.Rank, piece);
-            foreach (Position pos in PiecePossibleMoves)
-            {
-                Console.WriteLine($"{pos.File}{pos.Rank}");
-            }
         }
     }
 
