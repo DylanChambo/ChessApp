@@ -18,6 +18,8 @@ public partial class ChessState
             chessState.SetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
             chessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
             chessState.MovingPositon = new Position('0', 0);
+            chessState.PiecePossibleMoves.Clear();
+            chessState.SideToMove = chessState.SideToMove == Side.White ? Side.Black : Side.White;
 
             chessState.DisplayBoard();
 

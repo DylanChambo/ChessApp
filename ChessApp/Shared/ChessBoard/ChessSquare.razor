@@ -40,6 +40,11 @@
     }
     
     <div class="inv"></div>
+    @if (possibleMoves.Contains(pos))
+    {
+        string empty = piece == Piece.None ? "empty" : "";
+        <div class="move-circle @empty"></div>
+    }
 </div>
 
 @code {
@@ -51,6 +56,7 @@
     private bool isFlipped => chessState.IsFlipped;
     public Coord mousePos => chessState.MousePos;
     public Position movingPiece => chessState.MovingPositon;
+    public List<Position> possibleMoves => chessState.PiecePossibleMoves;
     public bool mobile => chessState.Mobile;
 
     public Coord start = new Coord(0, 0);
@@ -75,6 +81,11 @@
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
             // MovePiece with the Postion in the state and current
+            if (!possibleMoves.Contains(pos))
+            {
+                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+                return;
+            }
             if (pos.Equals(movingPiece) && !movingPiece.Equals(new Position('0', 0)))
             {
                 await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
@@ -87,9 +98,13 @@
     async Task TouchUp(TouchEventArgs e)
     {
         if (!mobile) return;
-        if (!movingPiece.Equals(new Position('0', 0)))
+        if (!movingPiece.Equals(new Position('0', 0)) && possibleMoves.Contains(pos))
         {
             await Mediator.Send(new ChessState.MovePieceAction { NewPosition = pos, OldPosition = movingPiece });
+        } else if (movingPiece.Equals(pos))
+        {
+            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+
         } else
         {
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });

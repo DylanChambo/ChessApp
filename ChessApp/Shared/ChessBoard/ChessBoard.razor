@@ -25,26 +25,32 @@
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
     private Boolean mobile => chessState.Mobile;
-    private Coord mousePos => chessState.MousePos;
+    private Position mousePos => chessState.MovingPositon;
     private Coord mouseCoord = new Coord(0, 0);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });
-            Console.WriteLine(mobile);
+            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });        
         }
     }
     async Task MouseMove(MouseEventArgs e)
     {
         if (mobile) return;
+
         if ((e.Buttons & 1) == 1) // If left mouse is down
         {
             mouseCoord.X = (int) e.PageX;
             mouseCoord.Y = (int ) e.PageY;
 
             await Mediator.Send(new ChessState.MoveMouseAction { MousePos = mouseCoord }); 
+        } else
+        {
+            if (!mousePos.Equals(new Position('0', 0)))
+            {
+                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+            }
         }
     }
 }

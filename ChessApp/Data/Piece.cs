@@ -14,7 +14,8 @@
         BlackKnight,
         BlackBishop,
         BlackRook,
-        BlackQueen
+        BlackQueen,
+        Null
     }
 
     public class PieceInstance
