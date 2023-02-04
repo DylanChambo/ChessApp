@@ -126,73 +126,111 @@ public partial class ChessState : State<ChessState>
             }
         }
     }
+    public bool IsOpposition(Piece piece, Side side)
+    {
+        return side == Side.White ? IsBlack(piece) : IsWhite(piece);
+    }
+
+    public bool IsBlack(Piece piece)
+    {
+        return (Piece.BlackKing <= piece && piece <= Piece.BlackQueen);
+    }
+
+    public bool IsWhite(Piece piece)
+    {
+        return (Piece.WhiteKing <= piece && piece <= Piece.WhiteQueen);
+    }
     public void SetPieceMoves()
     {
         Piece piece = GetPiece(MovingPositon.File, MovingPositon.Rank);
+        Side side;
+
+        if (IsWhite(piece) && SideToMove == Side.White)
+        {
+            side = Side.White;
+        }
+        else if (IsBlack(piece) && SideToMove == Side.Black)
+        {
+            side = Side.Black;
+        } else
+        {
+            return;
+        }
+
         if (piece == Piece.WhitePawn || piece == Piece.BlackPawn)
         {
-            PiecePossibleMoves = PawnMove(MovingPositon.File, MovingPositon.Rank, piece);
+            PawnMove(MovingPositon.File, MovingPositon.Rank, side);
         }
-    }
+        else if (piece == Piece.WhiteKnight || piece == Piece.BlackKnight)
+        {
+            KnightMove(MovingPositon.File, MovingPositon.Rank, side);
+        }
+        else if (piece == Piece.WhiteBishop || piece == Piece.BlackBishop)
+        {
 
-    public bool IsOpposition(int file, int rank, Side side)
+        }
+        else if (piece == Piece.WhiteRook || piece == Piece.BlackRook)
+        {
+
+        }
+        else if (piece == Piece.WhiteQueen || piece == Piece.BlackQueen)
+        {
+
+        }
+        else if (piece == Piece.WhiteKing || piece == Piece.BlackKing)
+        {
+
+        }
+    } 
+
+    public void PawnMove(char file, int rank, Side side)
     {
-        Piece piece = GetPiece(file, rank);
-        if (side == Side.White)
-        {
-            return (Piece.BlackKing <= piece && piece <= Piece.BlackQueen);
-        } else
-        {
-            return (Piece.WhiteKing <= piece && piece <= Piece.WhiteQueen);
-        }
-    }
-
-    public List<Position> PawnMove(char file, int rank, Piece piece)
-    {
-        // TODO add en passant
-        List<Position> positions = new List<Position> {};
-        int direction;
-        Side side;
-        if (piece == Piece.WhitePawn)
-        {
-            direction = 1;
-            side = Side.White;
-
-        } else
-        {
-            direction = -1;
-            side = Side.Black;
-        }
+        // TODO: add en passant
+        int direction = side == Side.White ? 1 : -1;
         
         // Check if they can move forward
-        if (GetPiece(file, rank + direction) == Piece.None && GetPiece(file, rank + direction) != Piece.Null)
+        if (GetPiece(file, rank + direction) == Piece.None)
         {
-            positions.Add(new Position(file, rank + direction));
+            PiecePossibleMoves.Add(new Position(file, rank + direction));
             // Double moves on first turn
-            if (side == Side.White && GetPiece(file, rank + direction * 2) == Piece.None && rank == 2)
+            if (GetPiece(file, rank + direction * 2) == Piece.None && ((side == Side.White && rank == 2) || (side == Side.Black && rank == 7))) 
             {
-                positions.Add(new Position(file, rank + direction * 2));
-            }
-            else if (side == Side.Black && GetPiece(file, rank + direction * 2) == Piece.None && rank == 7)
-            {
-                positions.Add(new Position(file, rank + direction * 2));
+                PiecePossibleMoves.Add(new Position(file, rank + direction * 2));
             }
         }
 
         // Check if they can move forward attacking kingside
-        if (IsOpposition(file + 1, rank + direction, side))
+        if (IsOpposition(GetPiece(file + 1, rank + direction), side))
         {
-            positions.Add(new Position((char)(file + 1), rank + direction));
+            PiecePossibleMoves.Add(new Position((char)(file + 1), rank + direction));
         }
 
         // Check if they can move forward attacking queenside
-        if (IsOpposition(file - 1, rank + direction, side))
+        if (IsOpposition(GetPiece(file - 1, rank + direction), side))
         {
-            positions.Add(new Position((char)(file - 1), rank + direction));
+            PiecePossibleMoves.Add(new Position((char)(file - 1), rank + direction));
         }
+    }
 
-        return positions;
-    }   
+    public void KnightMove (char file, int rank, Side side)
+    {
+        for (int k = 1; k <=2; k++)
+        {
+            for (int i = -1; i <= 1; i += 2)
+            {
+                for (int j = -1; j <= 1; j += 2)
+                {
+                    int r = k == 1 ? 2 * i : 1 * i;
+                    int f = k * j;
+                    Piece piece = GetPiece(file + f, rank + r);
+                    if (piece == Piece.None || IsOpposition(piece, side))
+                    {
+                        PiecePossibleMoves.Add(new Position((char)(file + f), rank + r));
+                    }
+                }
+            }
+        }
+    }
 
     public void DisplayBoard()
     {
