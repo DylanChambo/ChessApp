@@ -1,6 +1,7 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@using ChessApp.Features.Mouse;
 @inject IJSRuntime jsRuntime
 
 @inherits BlazorStateComponent
@@ -44,7 +45,7 @@
             mouseCoord.X = (int) e.PageX;
             mouseCoord.Y = (int ) e.PageY;
 
-            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = mouseCoord }); 
+            await Mediator.Send(new MouseState.MoveMouseAction { MousePos = mouseCoord }); 
         } else
         {
             if (!mousePos.Equals(new Position('0', 0)))

@@ -41,6 +41,7 @@ p {
 }
 
 .piece {
+    position: relative;
     object-fit: contain;
     width: 100%;
     height: 100%;
@@ -48,11 +49,16 @@ p {
 }
 
 .moving {
-    position: relative;
+    z-index: 3;
 }
 
 .selected {
     background-color: rgb(255, 216, 0, 0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .hidden {
@@ -60,6 +66,7 @@ p {
 }
 .fade-in {
     animation: fadeIn 0.025s;
+    z-index: 1;
 }
 
 .inv {

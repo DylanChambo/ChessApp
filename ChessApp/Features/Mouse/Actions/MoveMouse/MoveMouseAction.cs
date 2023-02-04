@@ -1,9 +1,9 @@
 ﻿using BlazorState;
 using ChessApp.Data;
 
-namespace ChessApp.Features.Chess;
+namespace ChessApp.Features.Mouse;
 
-public partial class ChessState
+public partial class MouseState
 {
     public class MoveMouseAction: IAction
     {

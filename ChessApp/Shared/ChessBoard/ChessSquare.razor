@@ -1,6 +1,7 @@
 ﻿@using ChessApp.Data;
 @using BlazorState
 @using ChessApp.Features.Chess;
+@using ChessApp.Features.Mouse;
 
 @inherits BlazorStateComponent
 
@@ -8,27 +9,24 @@
     <p class="file-letter">
         @if ((pos.Rank == 1 && !isFlipped) || (pos.Rank == 8 && isFlipped))
             {
-                @pos.File
-            }    
+            @pos.File
+        }    
     </p>
     <p class="rank-num">
         @if ((pos.File == 'a' && !isFlipped) || (pos.File == 'h' && isFlipped))
-            {
+        {
             @pos.Rank
-            }
+        }
     </p>
     @if (piece != Piece.None)
     {
-        
-        if (pos.Equals(movingPiece)) 
+        string Y = "0";
+        string X = "0";
+        if (pos.Equals(movingPiece) && !mobile)
         {
-            if (mobile) // If mobile
-            {
-                moving = "selected";
-            } else
-            {
-                moving = "moving";
-            }
+            Y = $"calc({mousePos.Y - start.Y}px - 50%)";
+            X = $"calc({mousePos.X - start.X}px - 50%)";
+            moving = "moving";
         } else
         {
             moving = "";
@@ -36,14 +34,18 @@
         <img draggable="false" 
              class="piece @moving"
              src="images/@(piece).svg"
-             style="top: calc(@(mousePos.Y - start.Y)px - 50%); left: calc(@(mousePos.X - start.X)px - 50%)" />
+         style="top: @Y; left: @X;" />
     }
-    
+
     <div class="inv"></div>
     @if (possibleMoves.Contains(pos))
     {
         string empty = piece == Piece.None ? "empty" : "";
         <div class="move-circle @empty"></div>
+    }
+    @if (movingPiece.Equals(pos))
+    {
+        <div class="selected"></div>
     }
 </div>
 
@@ -54,10 +56,12 @@
     ChessState chessState => GetState<ChessState>();
     private Piece piece => chessState.GetPiece(pos.File, pos.Rank);
     private bool isFlipped => chessState.IsFlipped;
-    public Coord mousePos => chessState.MousePos;
     public Position movingPiece => chessState.MovingPositon;
     public List<Position> possibleMoves => chessState.PiecePossibleMoves;
     public bool mobile => chessState.Mobile;
+
+    MouseState mouseState => GetState<MouseState>();
+    public Coord mousePos => mouseState.MousePos;
 
     public Coord start = new Coord(0, 0);
     public string moving = "";
@@ -71,7 +75,7 @@
             start.X = (int)(e.PageX - e.OffsetX);
             start.Y = (int) (e.PageY - e.OffsetY);
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
-            await Mediator.Send(new ChessState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int)e.PageY) });
+            await Mediator.Send(new MouseState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int)e.PageY) });
         }
     }
 
