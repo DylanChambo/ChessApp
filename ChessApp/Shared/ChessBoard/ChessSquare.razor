@@ -40,9 +40,14 @@
     }
     
     <div class="inv"></div>
+    @if (possibleMoves.Contains(pos))
+    {
+        string empty = piece == Piece.None ? "empty" : "";
+        <div class="move-circle @empty"></div>
+    }
 </div>
 
-@code {
+    @code {
     [Parameter]
     public Position pos { get; set; }
 
@@ -51,6 +56,7 @@
     private bool isFlipped => chessState.IsFlipped;
     public Coord mousePos => chessState.MousePos;
     public Position movingPiece => chessState.MovingPositon;
+    public List<Position> possibleMoves => chessState.PiecePossibleMoves;
     public bool mobile => chessState.Mobile;
 
     public Coord start = new Coord(0, 0);

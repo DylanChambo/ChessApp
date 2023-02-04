@@ -25,7 +25,7 @@ public partial class ChessState : State<ChessState>
 
     private Piece[] Board { get; set; }
     public Position MovingPositon { get; private set; }
-    public List<Position>? PiecePossibleMoves { get; set; }
+    public List<Position> PiecePossibleMoves { get; set; }
 
     public Side SideToMove { get; private set; }
     public Castling WhiteCastling;
@@ -37,6 +37,7 @@ public partial class ChessState : State<ChessState>
     public override void Initialize()
     {
         Board = new Piece[64];
+        PiecePossibleMoves = new List<Position> { };
         LoadFenPosition(DefaultFen);
         IsFlipped = false;
         MovingPositon = new Position('0', 0);
