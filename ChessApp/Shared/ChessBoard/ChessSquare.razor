@@ -53,7 +53,13 @@
     [Parameter]
     public Position pos { get; set; }
 
-    ChessState chessState => GetState<ChessState>();
+    ChessState chessState { 
+        get {
+            render = true;
+            return GetState<ChessState>();
+        }
+    }
+
     private Piece piece => chessState.Board.GetPiece(pos.File, pos.Rank);
     private bool isFlipped => chessState.IsFlipped;
     public Position movingPiece => chessState.MovingPositon;
@@ -66,6 +72,21 @@
 
     public Coord start = new Coord(0, 0);
     public string moving = "";
+    public bool render = false;
+
+    protected override bool ShouldRender()
+    {   
+        if (render)
+        {
+            render = false;
+            return true;
+        }
+        if (movingPiece.Equals(pos))
+        {
+            return true;
+        }
+        return false;
+    }
 
     async Task MouseDown(MouseEventArgs e)
     {

@@ -22,6 +22,7 @@ public class Chessboard
 
     public Piece GetPiece(int file, int rank)
     {
+        Console.WriteLine($"{(char)file}{rank}");
         if ('a' <= file && file <= 'h')
         {
             if (1 <= rank && rank <= 8)
