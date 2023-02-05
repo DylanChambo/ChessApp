@@ -1,12 +1,10 @@
 ﻿.chess-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: start;
-}
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: start; }
+
 @media (min-width: 641px) {
-    .chess-container {
-        align-items: center;
-    }
-}
+  .chess-container {
+    align-items: center; } }

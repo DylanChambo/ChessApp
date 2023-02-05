@@ -7,15 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Shared\ChessBoard\ChessSquare.razor.css" />
+    <Content Remove="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Shared\ChessBoard\ChessSquare.razor.css" />
+    <None Remove="Shared\ChessBoard\ChessSquare.razor.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Shared\ChessBoard\ChessSquare.razor.scss" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
