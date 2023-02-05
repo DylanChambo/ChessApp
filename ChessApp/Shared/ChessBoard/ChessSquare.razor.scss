@@ -1,0 +1,122 @@
+﻿.square {
+    width: 12.5%;
+    height: 12.5%;
+    position: relative;
+}
+
+.dark {
+    background-color: saddlebrown;
+}
+
+.light {
+    background-color: mintcream;
+    
+}
+
+.light p {
+    color: saddlebrown;
+}
+
+.dark p {
+    color: mintcream;
+}
+
+p {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.rank-num {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    margin: 0;
+}
+
+.file-letter {
+    position: absolute;
+    right: 3%;
+    bottom: 0;
+    margin: 0;
+}
+
+.piece {
+    position: relative;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.moving {
+    z-index: 3;
+}
+
+.selected {
+    background-color: rgb(255, 216, 0, 0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    opacity: 0;
+}
+.fade-in {
+    animation: fadeIn 0.025s;
+    z-index: 1;
+}
+
+.inv {
+    position:absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+}
+
+.move-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+    background-color: black;
+    opacity: 0.4;
+    border-radius: 9999px;
+    z-index: 1;
+}
+
+.empty {
+    width: 40%;
+    height: 40%;
+    margin: 30%;
+}
+
+@media (min-width: 960px) {
+    p {
+        font-size: 1.25rem;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        background-color: black;
+    }
+
+
+    99% {
+        opacity: 0;
+        background-color: black;
+    }
+
+    100% {
+        opacity: 1;
+        display: contents;
+    }
+}
