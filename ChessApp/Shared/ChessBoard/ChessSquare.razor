@@ -5,7 +5,7 @@
 
 @inherits BlazorStateComponent
 
-<div @onmousedown="MouseDown" @onmouseup="MouseUp" @ontouchend="TouchUp" class="square @ChessState.GetSquareColour(pos)">
+<div @onmousedown="MouseDown" @onmouseup="MouseUp" @ontouchend="TouchUp" @onmouseover="MouseEnter" @onmouseleave="MouseLeave" class="square @ChessState.GetSquareColour(pos)">
     <p class="file-letter">
         @if ((pos.Rank == 1 && !isFlipped) || (pos.Rank == 8 && isFlipped))
             {
@@ -76,6 +76,7 @@
             start.Y = (int) (e.PageY - e.OffsetY);
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
             await Mediator.Send(new MouseState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int)e.PageY) });
+            await Mediator.Send(new MouseState.ChangeCursorAction { Cursor = "grabbing" });
         }
     }
 
@@ -84,6 +85,7 @@
         if (mobile) return;
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
+            await Mediator.Send(new MouseState.ChangeCursorAction { Cursor = "" });
             // MovePiece with the Postion in the state and current
             if (!possibleMoves.Contains(pos))
             {
@@ -113,7 +115,26 @@
         {
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
         }
+    }
 
-        
+    async Task MouseEnter(MouseEventArgs e)
+    {
+        if (mobile) return;
+        if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
+        {
+            if (piece != Piece.None)
+            {
+                await Mediator.Send(new MouseState.ChangeCursorAction { Cursor = "grab" });
+            }
+        }
+    }
+
+    async Task MouseLeave(MouseEventArgs e)
+    {
+        if (mobile) return;
+        if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
+        {
+            await Mediator.Send(new MouseState.ChangeCursorAction { Cursor = "" });
+        }
     }
 }
