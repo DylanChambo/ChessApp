@@ -22,7 +22,6 @@ public partial class ChessState : State<ChessState>
 
     public Boolean IsFlipped { get; private set; }
     public bool Mobile { get; set; }
-    public Coord MousePos { get; private set; }
 
     private Piece[] Board { get; set; }
     public Position MovingPositon { get; private set; }
@@ -42,7 +41,6 @@ public partial class ChessState : State<ChessState>
         LoadFenPosition(DefaultFen);
         IsFlipped = false;
         MovingPositon = new Position('0', 0);
-        MousePos = new Coord(0, 0);
         // TODO: Calculate all posible moves into a Dictionary<Position, Position[]>
     }
 

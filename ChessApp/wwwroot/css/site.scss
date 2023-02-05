@@ -1,0 +1,17 @@
+@import "colours.scss";
+
+* {
+    margin: 0;
+}
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #262421;
+    overflow: hidden;
+    color: $text-color;
+}
+
+.link {
+    color: $text-color;
+    text-decoration: none;
+}
