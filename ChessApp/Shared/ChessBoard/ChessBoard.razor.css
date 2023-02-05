@@ -7,12 +7,15 @@
   justify-content: center;
   padding: 3%;
   overflow: hidden;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
-}
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none; }
 
 .inner-box {
   max-height: 100%;
@@ -20,8 +23,7 @@
   height: 100%;
   aspect-ratio: 1;
   display: flex;
-  position: relative;
-}
+  position: relative; }
 
 .box {
   height: 100%;
@@ -29,23 +31,19 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 5;
-}
+  z-index: 5; }
 
 .False {
   flex-direction: column-reverse;
-  flex-wrap: wrap;
-}
+  flex-wrap: wrap; }
 
 .True {
   flex-direction: column;
-  flex-wrap: wrap-reverse;
-}
+  flex-wrap: wrap-reverse; }
 
 .piece {
   object-fit: contain;
   width: 12.5%;
   height: 12.5%;
   z-index: 2;
-  position: absolute;
-}
+  position: absolute; }
