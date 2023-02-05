@@ -1,6 +1,6 @@
 ﻿namespace ChessApp.Data;
 
-public class Coord
+public struct Coord
 {
     public Coord(int x, int y)
     {

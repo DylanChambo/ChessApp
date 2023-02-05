@@ -14,8 +14,7 @@ public partial class MouseState
 
         public override Task<Unit> Handle(MoveMouseAction moveMouseAction, CancellationToken cancellationToken)
         {
-            mouseState.MousePos.X = moveMouseAction.MousePos.X;
-            mouseState.MousePos.Y = moveMouseAction.MousePos.Y;
+            mouseState.MousePos = moveMouseAction.MousePos;
             return Unit.Task;
         }
     }
