@@ -9,6 +9,7 @@ public class MoveGenerator
     public static void GenerateMoves(Chessboard board, bool checking = false)
     {
         board.Moves = new List<Move>();
+        board.Check = false;
         for (int rank = 1; rank <= 8; rank++)
         {
             for (char file = 'a'; file <= 'h'; file++)
@@ -75,40 +76,73 @@ public class MoveGenerator
     {
         return (Piece.WhiteKing <= piece && piece <= Piece.WhiteQueen);
     }
+
+    public static bool IsKing(Piece piece)
+    {
+        return (Piece.WhiteKing == piece || piece == Piece.BlackKing);
+    }
     public static void PawnMove(char file, int rank, Side side, Chessboard board, bool checking = false)
     {
         // TODO: add en passant
         int direction = side == Side.White ? 1 : -1;
+        Piece piece;
+        Move move;
 
         // Check if they can move forward
-        if (board.GetPiece(file, rank + direction) == Piece.None && !checking)
+        piece = board.GetPiece(file, rank + direction);
+        if (piece == Piece.None && !checking)
         {
-            Move move = new Move(new Position(file, rank), new Position(file, rank + direction));
+            move = new Move(new Position(file, rank), new Position(file, rank + direction));
             if (NotCheck(board, move))
             {
                 board.Moves.Add(move);
             }
             // Double moves on first turn
-            if (board.GetPiece(file, rank + direction * 2) == Piece.None && ((side == Side.White && rank == 2) || (side == Side.Black && rank == 7)))
+            piece = board.GetPiece(file, rank + direction * 2);
+            if (piece == Piece.None && ((side == Side.White && rank == 2) || (side == Side.Black && rank == 7)))
             {
-                Move move2 = new Move(new Position(file, rank), new Position(file, rank + direction * 2));
-                if (NotCheck(board, move2))
+                move = new Move(new Position(file, rank), new Position(file, rank + direction * 2));
+                if (NotCheck(board, move))
                 {
-                    board.Moves.Add(move2);
+                    board.Moves.Add(move);
                 }
             }
         }
 
         // Check if they can move forward attacking kingside
-        if (IsOpposition(board.GetPiece(file + 1, rank + direction), side))
+        piece = board.GetPiece(file + 1, rank + direction);
+        if (IsOpposition(piece, side))
         {
-            board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction)));
+            move = new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction));
+            if (IsKing(piece))
+            {
+                board.Check = true;
+            }
+            if (!checking)
+            {
+                if (NotCheck(board, move))
+                {
+                    board.Moves.Add(move);
+                }
+            }
         }
 
         // Check if they can move forward attacking queenside
-        if (IsOpposition(board.GetPiece(file - 1, rank + direction), side))
+        piece = board.GetPiece(file - 1, rank + direction);
+        if (IsOpposition(piece, side))
         {
-            board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction)));
+            move = new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction));
+            if (IsKing(piece))
+            {
+                board.Check = true;
+            }
+            if (!checking)
+            {
+                if (NotCheck(board, move))
+                {
+                    board.Moves.Add(move);
+                }
+            }
         }
     }
 
@@ -125,7 +159,18 @@ public class MoveGenerator
                     Piece piece = board.GetPiece(file + f, rank + r);
                     if (piece == Piece.None || IsOpposition(piece, side))
                     {
-                        board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + f), rank + r)));
+                        Move move = new Move(new Position(file, rank), new Position((char)(file + f), rank + r));
+                        if (IsKing(piece))
+                        {
+                            board.Check = true;
+                        }
+                        if (!checking)
+                        {
+                            if (NotCheck(board, move))
+                            { 
+                                board.Moves.Add(move);
+                            }
+                        }
                     }
                 }
             }
@@ -142,23 +187,32 @@ public class MoveGenerator
                 while (true)
                 {
                     Piece piece = board.GetPiece(file + k * i, rank + k * j);
+                    Move move = new Move(new Position(file, rank), new Position((char)(file + k * i), rank + k * j));
                     if (piece == Piece.None)
                     {
-                        board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + k * i), rank + k * j)));
-
+                        if (!checking)
+                        {
+                            if (NotCheck(board, move))
+                            {
+                                board.Moves.Add(move);
+                            }
+                        }
                     }
                     else if (IsOpposition(piece, side))
                     {
-                        if (checking) {
-                            if (piece == Piece.WhiteKing || piece == Piece.BlackKing)
+                        if (IsKing(piece))
+                        {
+                            board.Check = true;
+                        }
+                        if (!checking) 
+                        {
+                            if (NotCheck(board, move)) 
                             {
-                                board.Check = true;
-                            } else
-                            {
-                                board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + k * i), rank + k * j)));
-                                break;
+
+                                board.Moves.Add(move);
                             }
                         }
+                        break;
                     }
                     else
                     {
@@ -182,13 +236,30 @@ public class MoveGenerator
                 {
                     int l = 1 - i;
                     Piece piece = board.GetPiece(file + (k * j * i), rank + (k * j * l));
+                    Move move = new Move(new Position(file, rank), new Position((char)(file + (k * j * i)), rank + (k * j * l)));
                     if (piece == Piece.None)
                     {
-                        board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + (k * j * i)), rank + (k * j * l))));
+                        if (!checking)
+                        {
+                            if (NotCheck(board, move))
+                            {
+                                board.Moves.Add(move);
+                            }
+                        }
                     }
                     else if (IsOpposition(piece, side))
                     {
-                        board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + (k * j * i)), rank + (k * j * l))));
+                        if (IsKing(piece))
+                        {
+                            board.Check = true;
+                        }
+                        if (!checking)
+                        {
+                            if (NotCheck(board, move))
+                            {
+                                board.Moves.Add(move);
+                            }
+                        }
                         break;
                     }
                     else
@@ -211,7 +282,18 @@ public class MoveGenerator
                 Piece piece = board.GetPiece(file + i, rank + j);
                 if (piece == Piece.None || IsOpposition(piece, side))
                 {
-                    board.Moves.Add(new Move(new Position(file, rank), new Position((char)(file + i), rank + j)));
+                    Move move = new Move(new Position(file, rank), new Position((char)(file + i), rank + j));
+                    if (IsKing(piece))
+                    {
+                        board.Check = true;
+                    }
+                    if (!checking)
+                    {
+                        if (NotCheck(board, move))
+                        {
+                            board.Moves.Add(move);
+                        }
+                    }
                 }
             }
         }
