@@ -8,6 +8,12 @@ public struct Position
         Rank = rank;
     }
 
+    public Position()
+    {
+        File = (char)0;
+        Rank = 0;
+    }
+
     public char File { get; set; }
     public int Rank { get; set; }
 

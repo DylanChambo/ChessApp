@@ -10,6 +10,7 @@ public class MoveGenerator
     {
         board.Moves = new List<Move>();
         board.Check = false;
+
         for (int rank = 1; rank <= 8; rank++)
         {
             for (char file = 'a'; file <= 'h'; file++)

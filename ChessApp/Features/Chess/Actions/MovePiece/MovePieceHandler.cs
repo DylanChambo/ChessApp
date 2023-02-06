@@ -15,10 +15,11 @@ public partial class ChessState
         public override Task<Unit> Handle(MovePieceAction movePieceAction, CancellationToken cancellationToken)
         {
             chessState.Board.Move(movePieceAction.Move);
+            
             chessState.MovingPositon = new Position('0', 0);
-            MoveGenerator.GenerateMoves(chessState.Board);
-            // If There are no moves the game is over. Check if in Check. If no moves and in check
-            chessState.Board.DisplayBoard();
+
+            chessState.Board.PostMove();
+            
 
             return Unit.Task;
         }

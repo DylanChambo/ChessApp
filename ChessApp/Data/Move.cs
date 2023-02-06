@@ -9,5 +9,11 @@
             StartSquare = startSquare;
             TargetSquare = targetSquare;
         }
+
+        public Move()
+        {
+            StartSquare = new Position();
+            TargetSquare = new Position();
+        }
     }
 }

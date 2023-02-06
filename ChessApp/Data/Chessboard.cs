@@ -60,6 +60,34 @@ public class Chessboard
         SideToMove = SideToMove == Side.White ? Side.Black : Side.White;
     }
 
+    public void PostMove()
+    {
+        MoveGenerator.GenerateMoves(this);
+        isCheck();
+
+        DisplayBoard();
+        if (Moves.Count == 0)
+        {
+            if (Check)
+            {
+                Console.WriteLine("Checkmate");
+            }
+            else
+            {
+                Console.WriteLine("Stalemate");
+
+            }
+        }
+    }
+
+    public void isCheck()
+    {
+        Chessboard temp = new Chessboard(this);
+        temp.SideToMove = temp.SideToMove == Side.White ? Side.Black : Side.White;
+        Check = !MoveGenerator.NotCheck(temp);
+    }
+
+
     public void DisplayBoard()
     {
         Dictionary<Piece, char> symbolFromPiece = new Dictionary<Piece, char>()
