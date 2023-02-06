@@ -1,4 +1,6 @@
-﻿using ChessApp.Features.Chess;
+﻿using AnyClone;
+using ChessApp.Features.Chess;
+using static ChessApp.Features.Chess.ChessState;
 
 namespace ChessApp.Data;
 
@@ -18,11 +20,15 @@ public class Chessboard
         Board = new Piece[64];
         WhiteCastling = new Castling();
         BlackCastling = new Castling();
-}
+    }
+
+    public Chessboard(Chessboard board)
+    {
+        board.CloneTo(this);
+    }
 
     public Piece GetPiece(int file, int rank)
     {
-        Console.WriteLine($"{(char)file}{rank}");
         if ('a' <= file && file <= 'h')
         {
             if (1 <= rank && rank <= 8)
@@ -42,6 +48,14 @@ public class Chessboard
                 Board[(file - 'a') + (8 * (rank - 1))] = piece;
             }
         }
+    }
+
+    public void Move(Move move)
+    {
+        Piece piece = GetPiece(move.StartSquare.File, move.StartSquare.Rank);
+        SetPiece(move.StartSquare.File, move.StartSquare.Rank);
+        SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, piece);
+        SideToMove = SideToMove == Side.White ? Side.Black : Side.White;
     }
 
     public void DisplayBoard()
