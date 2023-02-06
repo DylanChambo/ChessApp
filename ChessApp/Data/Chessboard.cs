@@ -15,6 +15,8 @@ public class Chessboard
     public int FullmoveCount { get; set; }
     public List<Move> Moves { get; set; }
 
+    public bool Check { get; set; }
+
     public Chessboard() 
     {
         Board = new Piece[64];
