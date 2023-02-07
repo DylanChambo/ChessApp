@@ -8,6 +8,8 @@ public class Chessboard
 {
     public Piece[] Board { get; set; }
     public Side SideToMove { get; set; }
+
+    public GameState GameState { get; set; }
     public Castling WhiteCastling { get; set; }
     public Castling BlackCastling { get; set; }
     public char epFile { get; set; } 
@@ -22,11 +24,13 @@ public class Chessboard
         Board = new Piece[64];
         WhiteCastling = new Castling();
         BlackCastling = new Castling();
+        GameState = GameState.Playing;
     }
 
     public Chessboard(Chessboard board)
     {
         board.CloneTo(this);
+        GameState = GameState.None;
     }
 
     public Piece GetPiece(int file, int rank)
@@ -71,11 +75,12 @@ public class Chessboard
             if (Check)
             {
                 Console.WriteLine("Checkmate");
+                GameState = SideToMove == Side.White ? GameState.BlackWin : GameState.WhiteWin;
             }
             else
             {
                 Console.WriteLine("Stalemate");
-
+                GameState = GameState.Draw;
             }
         }
     }
