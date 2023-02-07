@@ -8,7 +8,6 @@ public class Chessboard
 {
     public Piece[] Board { get; set; }
     public Side SideToMove { get; set; }
-
     public GameState GameState { get; set; }
     public Castling WhiteCastling { get; set; }
     public Castling BlackCastling { get; set; }
@@ -25,6 +24,8 @@ public class Chessboard
         WhiteCastling = new Castling();
         BlackCastling = new Castling();
         GameState = GameState.Playing;
+        FenUtils.PopulateDefaultBoard(this);
+        MoveGenerator.GenerateMoves(this);
     }
 
     public Chessboard(Chessboard board)
@@ -56,31 +57,31 @@ public class Chessboard
         }
     }
 
-    public void Move(Move move)
+    public void Move(Move move, bool tempMove = false)
     {
         Piece piece = GetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, piece);
         SideToMove = SideToMove == Side.White ? Side.Black : Side.White;
-    }
 
-    public void PostMove()
-    {
-        MoveGenerator.GenerateMoves(this);
-        isCheck();
-
-        DisplayBoard();
-        if (Moves.Count == 0)
+        if(!tempMove)
         {
-            if (Check)
+            MoveGenerator.GenerateMoves(this);
+            isCheck();
+
+            DisplayBoard();
+            if (Moves.Count == 0)
             {
-                Console.WriteLine("Checkmate");
-                GameState = SideToMove == Side.White ? GameState.BlackWin : GameState.WhiteWin;
-            }
-            else
-            {
-                Console.WriteLine("Stalemate");
-                GameState = GameState.Draw;
+                if (Check)
+                {
+                    Console.WriteLine("Checkmate");
+                    GameState = SideToMove == Side.White ? GameState.BlackWin : GameState.WhiteWin;
+                }
+                else
+                {
+                    Console.WriteLine("Stalemate");
+                    GameState = GameState.Draw;
+                }
             }
         }
     }

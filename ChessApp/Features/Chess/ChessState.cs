@@ -14,8 +14,7 @@ public partial class ChessState : State<ChessState>
 
     public override void Initialize()
     {
-        Board = FenUtils.GenDefaultBoard();
-        MoveGenerator.GenerateMoves(Board);
+        Board = new Chessboard();
         IsFlipped = false;
         Mobile = false;
         MovingPositon = new Position('0', 0);

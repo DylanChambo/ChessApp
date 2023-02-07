@@ -6,14 +6,13 @@ public class FenUtils
 {
     private static readonly string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    public static Chessboard GenDefaultBoard()
+    public static Chessboard PopulateDefaultBoard(Chessboard board)
     {
-        return GenBoardFromFen(DefaultFen);
+        return PopulateBoardFromFen(board, DefaultFen);
     }
 
-    public static Chessboard GenBoardFromFen(string fen)
+    public static Chessboard PopulateBoardFromFen(Chessboard board, string fen)
     {
-        Chessboard board = new Chessboard();
         Dictionary<char, Piece> pieceFromSymbol = new Dictionary<char, Piece>()
         {
             ['K'] = Piece.WhiteKing,
