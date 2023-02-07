@@ -50,16 +50,13 @@ p {
   height: 100%; }
 
 .win {
-  background-color: rgba(76, 255, 0, 0.5);
-}
+  background-color: rgba(76, 255, 0, 0.5); }
 
 .lose {
-  background-color: rgba(255, 0, 0, 0.5);
-}
+  background-color: rgba(255, 0, 0, 0.5); }
 
 .draw {
-  background-color: rgba(0, 148, 255, 0.5);
-}
+  background-color: rgba(0, 148, 255, 0.5); }
 
 .hidden {
   opacity: 0; }
