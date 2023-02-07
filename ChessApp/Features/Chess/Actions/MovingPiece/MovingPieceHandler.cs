@@ -16,8 +16,6 @@ public partial class ChessState
         public override Task<Unit> Handle(MovingPieceAction movingPieceAction, CancellationToken cancellationToken)
         {
             chessState.MovingPositon = movingPieceAction.MovingPos;
-            chessState.PiecePossibleMoves.Clear();
-            chessState.SetPieceMoves();
 
             return Unit.Task;
         }
