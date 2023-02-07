@@ -14,14 +14,8 @@ public partial class ChessState
 
         public override Task<Unit> Handle(MovePieceAction movePieceAction, CancellationToken cancellationToken)
         {
-            Piece piece = chessState.GetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
-            chessState.SetPiece(movePieceAction.OldPosition.File, movePieceAction.OldPosition.Rank);
-            chessState.SetPiece(movePieceAction.NewPosition.File, movePieceAction.NewPosition.Rank, piece);
+            chessState.Board.Move(movePieceAction.Move);
             chessState.MovingPositon = new Position('0', 0);
-            chessState.PiecePossibleMoves.Clear();
-            chessState.SideToMove = chessState.SideToMove == Side.White ? Side.Black : Side.White;
-
-            chessState.DisplayBoard();
 
             return Unit.Task;
         }
