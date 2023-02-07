@@ -1,15 +1,12 @@
 ﻿* {
-  margin: 0;
-}
+  margin: 0; }
 
 html, body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: #262421;
   overflow: hidden;
-  color: #ffffff;
-}
+  color: #ffffff; }
 
 .link {
   color: #ffffff;
-  text-decoration: none;
-}
+  text-decoration: none; }
