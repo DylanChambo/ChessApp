@@ -66,6 +66,7 @@
     public bool canMoveTo => chessState.Board.Moves.Contains(new Move(movingPiece, pos));
     private Piece piece => chessState.Board.GetPiece(pos.File, pos.Rank);
     public List<Move> moves => chessState.Board.Moves;
+    public Move move => chessState.Board.Moves.First(m => m.Equals(new Move(movingPiece, pos)));
     public GameState gameState => chessState.Board.GameState;
 
     MouseState mouseState => GetState<MouseState>();
@@ -119,7 +120,7 @@
                 await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
                 return;
             }
-            await Mediator.Send(new ChessState.MovePieceAction { Move = new Move(movingPiece, pos) });
+            await Mediator.Send(new ChessState.MovePieceAction { Move = move });
         } 
     }
 
@@ -128,7 +129,7 @@
         if (!mobile) return;
         if (!movingPiece.Equals(new Position('0', 0)) && canMoveTo)
         {
-            await Mediator.Send(new ChessState.MovePieceAction { Move = new Move(movingPiece, pos) });
+            await Mediator.Send(new ChessState.MovePieceAction { Move = move });
         } else if (movingPiece.Equals(pos))
         {
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
@@ -138,6 +139,8 @@
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
         }
     }
+
+   
 
     public bool Selected()
     {

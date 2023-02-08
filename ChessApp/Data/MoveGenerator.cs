@@ -100,6 +100,26 @@ public class MoveGenerator
             }
         }
     }
+
+    public static MoveFlag CanEnPassant(char file, int rank, Side side, Chessboard board)
+    {
+        // Check for En Passant
+        if (side == Side.White)
+        {
+            if (rank == 5 && board.epFile == file)
+            {
+                return MoveFlag.EnPassant;
+            }
+        } else
+        {
+            if (rank == 4 && board.epFile == file)
+            {
+                return MoveFlag.EnPassant;
+            }
+        }
+        return MoveFlag.None; ;
+    }
+
     public static void PawnMove(char file, int rank, Side side, Chessboard board, bool checking = false)
     {
         // TODO: add en passant
@@ -120,7 +140,7 @@ public class MoveGenerator
             piece = board.GetPiece(file, rank + direction * 2);
             if (piece == Piece.None && ((side == Side.White && rank == 2) || (side == Side.Black && rank == 7)))
             {
-                move = new Move(new Position(file, rank), new Position(file, rank + direction * 2));
+                move = new Move(new Position(file, rank), new Position(file, rank + direction * 2), MoveFlag.PawnDoubleMove);
                 if (NotCheck(board, move))
                 {
                     board.Moves.Add(move);
@@ -129,20 +149,24 @@ public class MoveGenerator
         }
 
         // Check if they can move forward attacking kingside
+        MoveFlag flag = CanEnPassant((char)(file - 1), rank, side, board);
         piece = board.GetPiece(file + 1, rank + direction);
-        if (IsOpposition(piece, side))
+        if (IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
-            move = new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction));
+            move = new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction), flag);
             AddMove(piece, move, board, checking);
         }
 
         // Check if they can move forward attacking queenside
+        flag = CanEnPassant((char)(file - 1), rank, side, board);
         piece = board.GetPiece(file - 1, rank + direction);
-        if (IsOpposition(piece, side))
+        if (IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
-            move = new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction));
+            move = new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction), flag);
             AddMove(piece, move, board, checking);
         }
+
+        
     }
 
     public static void KnightMove(char file, int rank, Side side, Chessboard board, bool checking = false)

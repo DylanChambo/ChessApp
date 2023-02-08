@@ -1,4 +1,6 @@
-﻿namespace ChessApp.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ChessApp.Data;
 
 public struct Move
 {
@@ -17,6 +19,19 @@ public struct Move
         StartSquare = new Position();
         TargetSquare = new Position();
         MoveFlag = MoveFlag.None;
+    }
+
+    public override bool Equals([NotNullWhen(true)] object? obj)
+    {
+        if (obj != null)
+        {
+            if (obj.GetType() == this.GetType())
+            {
+                Move objMove = (Move)obj;
+                return this.StartSquare.Equals(objMove.StartSquare) && this.TargetSquare.Equals(objMove.TargetSquare);
+            }
+        }
+        return false;
     }
 }
 
