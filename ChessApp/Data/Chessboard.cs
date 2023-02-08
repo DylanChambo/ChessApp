@@ -77,6 +77,18 @@ public class Chessboard
                     SetPiece(move.TargetSquare.File, move.TargetSquare.Rank + 1);
                 }
                 break;
+            case MoveFlag.Castling:
+                Piece rook = SideToMove == Side.White? Piece.WhiteRook : Piece.BlackRook;
+                if (move.TargetSquare.File == 'g')
+                {
+                    SetPiece('h', move.TargetSquare.Rank);
+                    SetPiece('f', move.TargetSquare.Rank, rook);
+                } else
+                {
+                    SetPiece('a', move.TargetSquare.Rank);
+                    SetPiece('d', move.TargetSquare.Rank, rook);
+                }
+                break;
             default:
                 break;
         }
