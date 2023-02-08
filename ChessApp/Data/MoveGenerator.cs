@@ -276,7 +276,7 @@ public class MoveGenerator
                 board.Moves.Add(move);
             }
         }
-        else if (board.GetPiece('b', backRank) == Piece.None && board.GetPiece('c', backRank) == Piece.None && board.GetPiece('d', backRank) == Piece.None)
+        if (board.GetPiece('b', backRank) == Piece.None && board.GetPiece('c', backRank) == Piece.None && board.GetPiece('d', backRank) == Piece.None)
         {
             Move middleMove = new Move(new Position(file, rank), new Position((char)(file - 1), rank));
             Move move = new Move(new Position(file, rank), new Position((char)(file - 2), rank), MoveFlag.Castling);
