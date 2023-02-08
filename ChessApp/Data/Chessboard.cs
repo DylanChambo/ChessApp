@@ -1,6 +1,4 @@
 ﻿using AnyClone;
-using ChessApp.Features.Chess;
-using static ChessApp.Features.Chess.ChessState;
 
 namespace ChessApp.Data;
 
@@ -62,10 +60,32 @@ public class Chessboard
         Piece piece = GetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, piece);
+        
+        epFile = '-';
+        switch (move.MoveFlag)
+        {
+            case MoveFlag.PawnDoubleMove:
+                epFile = move.TargetSquare.File;
+                break;
+            case MoveFlag.EnPassant:
+                if (SideToMove == Side.White)
+                {
+                    Console.WriteLine(GetPiece(move.TargetSquare.File, move.TargetSquare.Rank - 1));
+                    SetPiece(move.TargetSquare.File, move.TargetSquare.Rank - 1);
+                } else
+                {
+                    SetPiece(move.TargetSquare.File, move.TargetSquare.Rank + 1);
+                }
+                break;
+            default:
+                break;
+        }
+
         SideToMove = SideToMove == Side.White ? Side.Black : Side.White;
 
-        if(!tempMove)
+        if (!tempMove)
         {
+            
             MoveGenerator.GenerateMoves(this);
             isCheck();
 
