@@ -149,7 +149,7 @@ public class MoveGenerator
         }
 
         // Check if they can move forward attacking kingside
-        MoveFlag flag = CanEnPassant((char)(file - 1), rank, side, board);
+        MoveFlag flag = CanEnPassant((char)(file + 1), rank, side, board);
         piece = board.GetPiece(file + 1, rank + direction);
         if (IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
