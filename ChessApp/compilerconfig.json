@@ -1,38 +1,30 @@
-[
+﻿[
   {
     "outputFile": "wwwroot/css/site.css",
-    "inputFile": "wwwroot/css/site.scss",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "wwwroot/css/site.scss"
   },
   {
     "outputFile": "Pages/Index.razor.css",
-    "inputFile": "Pages/Index.razor.scss",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Pages/Index.razor.scss"
   },
   {
     "outputFile": "Shared/MainLayout.razor.css",
-    "inputFile": "Shared/MainLayout.razor.scss",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Shared/MainLayout.razor.scss"
   },
   {
     "outputFile": "Shared/ChessBoard/ChessSquare.razor.css",
-    "inputFile": "Shared/ChessBoard/ChessSquare.razor.scss",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Shared/ChessBoard/ChessSquare.razor.scss"
   },
   {
     "outputFile": "Shared/ChessBoard/ChessBoard.razor.css",
-    "inputFile": "Shared/ChessBoard/ChessBoard.razor.scss",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Shared/ChessBoard/ChessBoard.razor.scss"
   },
   {
     "outputFile": "Shared/NavMenu.razor.css",
-    "inputFile": "Shared/NavMenu.razor.scss",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Shared/NavMenu.razor.scss"
+  },
+  {
+    "outputFile": "Shared/ChessBoard/Promotion.razor.css",
+    "inputFile": "Shared/ChessBoard/Promotion.razor.scss"
   }
 ]
