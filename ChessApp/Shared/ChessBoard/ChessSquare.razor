@@ -48,9 +48,9 @@
         <div class="selected @color"></div>
     }
 </div>
-@if (pos.File == 'a' && pos.Rank == 1)
+@if (promotion)
 {
-    <Promotion></Promotion>
+    <Promotion side="@chessState.Board.SideToMove" moves="@promotionMoves" OnMoveSelect="PromotionSelect"></Promotion>
 }
 
 @code {
@@ -63,7 +63,6 @@
             return GetState<ChessState>();
         }
     }
-
     private bool isFlipped => chessState.IsFlipped;
     public Position movingPiece => chessState.MovingPositon;
     public bool mobile => chessState.Mobile;
@@ -79,6 +78,8 @@
     public string moving = "";
     public string color = "";
     public bool render = false;
+    public bool promotion = false;
+    public List<Move> promotionMoves = new List<Move> { };
 
     protected override bool ShouldRender()
     {   
@@ -153,7 +154,18 @@
         else
         {
             Console.WriteLine("Promotion");
+            promotion = true;
+            Move move = moves.FirstOrDefault();
+            chessState.Board.MovePiece(move);
+            promotionMoves = moves.ToList();
+            promotionMoves.ForEach(move => Console.WriteLine(move.MoveFlag));
         }
+    }
+
+    async Task PromotionSelect(Move move)
+    {
+        promotion = false;
+        await Mediator.Send(new ChessState.MovePieceAction { Move = move });
     }
 
     public bool Selected()
