@@ -55,12 +55,17 @@ public class Chessboard
         }
     }
 
-    public void Move(Move move, bool tempMove = false)
+    public void MovePiece(Move move)
     {
         Piece piece = GetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, piece);
-        
+    }
+
+    public void Move(Move move, bool tempMove = false)
+    {
+        MovePiece(move);
+
         epFile = '-';
         switch (move.MoveFlag)
         {
@@ -88,6 +93,22 @@ public class Chessboard
                     SetPiece('a', move.TargetSquare.Rank);
                     SetPiece('d', move.TargetSquare.Rank, rook);
                 }
+                break;
+            case MoveFlag.PromoteToQueen:
+                Piece queen = SideToMove == Side.White ? Piece.WhiteQueen : Piece.BlackQueen;
+                SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, queen);
+                break;
+            case MoveFlag.PromoteToKnight:
+                Piece knight = SideToMove == Side.White ? Piece.WhiteKnight : Piece.BlackKnight;
+                SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, knight);
+                break;
+            case MoveFlag.PromoteToRook:
+                rook = SideToMove == Side.White ? Piece.WhiteRook : Piece.BlackRook;
+                SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, rook);
+                break;
+            case MoveFlag.PromoteToBishop:
+                Piece bishop = SideToMove == Side.White ? Piece.WhiteBishop : Piece.BlackBishop;
+                SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, bishop);
                 break;
             default:
                 break;
