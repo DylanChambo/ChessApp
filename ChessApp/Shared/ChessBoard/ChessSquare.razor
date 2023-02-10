@@ -100,6 +100,7 @@
         if (mobile) return;
         if (e.Button == 0) // If Left Click
         {
+            if (piece == Piece.None) { return; }
             // Set the Position In the state
             start.X = (int)(e.PageX - e.OffsetX);
             start.Y = (int) (e.PageY - e.OffsetY);
@@ -140,6 +141,7 @@
 
         } else
         {
+            if (piece == Piece.None) { return; }
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
         }
     }
@@ -153,12 +155,11 @@
         }
         else
         {
-            Console.WriteLine("Promotion");
-            promotion = true;
-            Move move = moves.FirstOrDefault();
-            chessState.Board.MovePiece(move);
             promotionMoves = moves.ToList();
-            promotionMoves.ForEach(move => Console.WriteLine(move.MoveFlag));
+            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+            Move move = promotionMoves.FirstOrDefault();
+            chessState.Board.MovePiece(move);
+            promotion = true;
         }
     }
 
