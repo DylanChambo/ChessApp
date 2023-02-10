@@ -1,4 +1,6 @@
 ﻿using AnyClone;
+using ChessApp.Features.Chess;
+using System;
 
 namespace ChessApp.Data;
 
@@ -13,8 +15,10 @@ public class Chessboard
     public int HalfmoveClock { get; set; }
     public int FullmoveCount { get; set; }
     public List<Move> Moves { get; set; }
-
     public bool Check { get; set; }
+
+    public Player WhitePlayer { get; set; }
+    public Player BlackPlayer { get; set; }
 
     public Chessboard() 
     {
@@ -121,6 +125,7 @@ public class Chessboard
             
             MoveGenerator.GenerateMoves(this);
             isCheck();
+            Console.WriteLine($"Move, {Check}");
 
             DisplayBoard();
             if (Moves.Count == 0)
@@ -136,6 +141,36 @@ public class Chessboard
                     GameState = GameState.Draw;
                 }
             }
+            
+            if (GameState == GameState.Playing)
+            {
+                if (SideToMove == Side.White && WhitePlayer != Player.This)
+                {
+                    OpponentMove(WhitePlayer);
+                }
+                else if (SideToMove == Side.Black && BlackPlayer != Player.This)
+                {
+                    OpponentMove(BlackPlayer);
+                }
+            }
+            
+        }
+
+        
+    }
+
+   public void OpponentMove(Player player)
+    {
+        Console.WriteLine(player);
+
+        if (player == Player.RandomBot)
+        {
+            Chessboard board = new Chessboard(this);
+            Moves.Clear();
+            Random random = new Random();
+            int randomNum = random.Next(board.Moves.Count);
+            Move move = board.Moves[randomNum];
+            Move(move);
         }
     }
 
@@ -146,6 +181,12 @@ public class Chessboard
         Check = !MoveGenerator.NotCheck(temp);
     }
 
+    public void StartGame(Player White = Player.This, Player Black = Player.This)
+    {
+        WhitePlayer = White;
+        BlackPlayer = Black;
+        GameState = GameState.Playing;
+    }
 
     public void DisplayBoard()
     {
@@ -194,4 +235,11 @@ public class Castling
 {
     public bool KingSide { get; set; }
     public bool QueenSide { get; set; }
+}
+
+public enum Player
+{
+    This,
+    RandomBot,
+    OnlinePlayer
 }
