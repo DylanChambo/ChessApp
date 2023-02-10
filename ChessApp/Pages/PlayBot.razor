@@ -16,9 +16,27 @@
 @code {
     ChessState chessState => GetState<ChessState>();
 
-    protected override void OnInitialized()
+    async protected override Task OnInitializedAsync()
     {
         chessState.Initialize();
-        chessState.Board.StartGame(Black: Player.RandomBot);
+        await Mediator.Send(new ChessState.StartGameAction(White: Player.RandomBot, Black: Player.RandomBot));
     }
-}}
+
+
+    async protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (chessState.Board.GameState == GameState.Playing)
+        {
+            if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.This)
+            {
+                await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.WhitePlayer) });
+            }
+            else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.This)
+            {
+                await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.BlackPlayer) });
+            }
+            else return;
+        }
+    }
+
+}

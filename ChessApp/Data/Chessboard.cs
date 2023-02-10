@@ -140,38 +140,24 @@ public class Chessboard
                     Console.WriteLine("Stalemate");
                     GameState = GameState.Draw;
                 }
-            }
-            
-            if (GameState == GameState.Playing)
-            {
-                if (SideToMove == Side.White && WhitePlayer != Player.This)
-                {
-                    OpponentMove(WhitePlayer);
-                }
-                else if (SideToMove == Side.Black && BlackPlayer != Player.This)
-                {
-                    OpponentMove(BlackPlayer);
-                }
-            }
-            
-        }
-
-        
+            } 
+        } 
     }
 
-   public void OpponentMove(Player player)
+   public Move OpponentMove(Player player)
     {
         Console.WriteLine(player);
-
+        
         if (player == Player.RandomBot)
         {
+            Thread.Sleep(200);
             Chessboard board = new Chessboard(this);
             Moves.Clear();
             Random random = new Random();
             int randomNum = random.Next(board.Moves.Count);
-            Move move = board.Moves[randomNum];
-            Move(move);
+            return board.Moves[randomNum];
         }
+        return new Move();
     }
 
     public void isCheck()
