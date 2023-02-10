@@ -17,11 +17,11 @@ public class MoveGenerator
             {
                 Piece piece = board.GetPiece(file, rank);
                 Side side;
-                if (IsWhite(piece) && board.SideToMove == Side.White)
+                if (PieceUtils.IsWhite(piece) && board.SideToMove == Side.White)
                 {
                     side = Side.White;
                 }
-                else if (IsBlack(piece) && board.SideToMove == Side.Black)
+                else if (PieceUtils.IsBlack(piece) && board.SideToMove == Side.Black)
                 {
                     side = Side.Black;
                 }
@@ -57,30 +57,6 @@ public class MoveGenerator
                 }
             }
         }
-
-
-
-
-    }
-
-    public static bool IsOpposition(Piece piece, Side side)
-    {
-        return side == Side.White ? IsBlack(piece) : IsWhite(piece);
-    }
-
-    public static bool IsBlack(Piece piece)
-    {
-        return (Piece.BlackKing <= piece && piece <= Piece.BlackQueen);
-    }
-
-    public static bool IsWhite(Piece piece)
-    {
-        return (Piece.WhiteKing <= piece && piece <= Piece.WhiteQueen);
-    }
-
-    public static bool IsKing(Piece piece)
-    {
-        return (Piece.WhiteKing == piece || piece == Piece.BlackKing);
     }
 
     public static void AddMove(Piece piece, Move move, Chessboard board, bool checking, Piece pawnPiece = Piece.None)
@@ -88,7 +64,7 @@ public class MoveGenerator
 
         if (checking)
         {
-            if (IsKing(piece))
+            if (PieceUtils.IsKing(piece))
             {
                 board.Check = true;
             }

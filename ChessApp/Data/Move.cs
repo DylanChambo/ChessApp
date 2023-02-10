@@ -46,3 +46,9 @@ public enum MoveFlag
     PromoteToRook,
     PromoteToBishop
 }
+
+public class Castling
+{
+    public bool KingSide { get; set; }
+    public bool QueenSide { get; set; }
+}
