@@ -53,10 +53,7 @@ public class MoveGenerator
                 }
                 else if (piece == Piece.WhiteKing || piece == Piece.BlackKing)
                 {
-                    if (!checking)
-                    {
-                        KingMove(file, rank, side, board, checking);
-                    }
+                    KingMove(file, rank, side, board, checking);
                 }
             }
         }
@@ -297,7 +294,9 @@ public class MoveGenerator
         // Check for Castling
         CheckCastling(board);
         int backRank = side == Side.White ? 1 : 8;
-        if (board.GetPiece('f', backRank) == Piece.None && board.GetPiece('g', backRank) == Piece.None)
+        bool canCastle = side == Side.White ? board.WhiteCastling.KingSide : board.BlackCastling.KingSide;
+        // Kingside
+        if (board.GetPiece('f', backRank) == Piece.None && board.GetPiece('g', backRank) == Piece.None && canCastle)
         {
             Move middleMove = new Move(new Position(file, rank), new Position((char)(file + 1), rank));
             Move move = new Move(new Position(file, rank), new Position((char)(file + 2), rank), MoveFlag.Castling);
@@ -305,7 +304,9 @@ public class MoveGenerator
                 board.Moves.Add(move);
             }
         }
-        if (board.GetPiece('b', backRank) == Piece.None && board.GetPiece('c', backRank) == Piece.None && board.GetPiece('d', backRank) == Piece.None)
+        // Queenside
+        canCastle = side == Side.White ? board.WhiteCastling.QueenSide : board.BlackCastling.QueenSide;
+        if (board.GetPiece('b', backRank) == Piece.None && board.GetPiece('c', backRank) == Piece.None && board.GetPiece('d', backRank) == Piece.None && canCastle)
         {
             Move middleMove = new Move(new Position(file, rank), new Position((char)(file - 1), rank));
             Move move = new Move(new Position(file, rank), new Position((char)(file - 2), rank), MoveFlag.Castling);
@@ -337,18 +338,18 @@ public class MoveGenerator
 
         if (board.GetPiece('e', 8) != Piece.BlackKing)
         {
-            board.WhiteCastling.KingSide = false;
-            board.WhiteCastling.QueenSide = false;
+            board.BlackCastling.KingSide = false;
+            board.BlackCastling.QueenSide = false;
         }
         else
         {
             if (board.GetPiece('h', 8) != Piece.BlackRook)
             {
-                board.WhiteCastling.KingSide = false;
+                board.BlackCastling.KingSide = false;
             }
             if (board.GetPiece('a', 8) != Piece.BlackRook)
             {
-                board.WhiteCastling.QueenSide = false;
+                board.BlackCastling.QueenSide = false;
             }
         }
     }
