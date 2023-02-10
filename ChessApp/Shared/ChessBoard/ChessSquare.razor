@@ -98,6 +98,7 @@
     async Task MouseDown(MouseEventArgs e)
     {
         if (mobile) return;
+        if (gameState != GameState.Playing) return;
         if (e.Button == 0) // If Left Click
         {
             if (piece == Piece.None) { return; }
@@ -112,6 +113,7 @@
     async Task MouseUp(MouseEventArgs e)
     {
         if (mobile) return;
+        if (gameState != GameState.Playing) return;
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
             // MovePiece with the Postion in the state and current
@@ -132,6 +134,7 @@
     async Task TouchUp(TouchEventArgs e)
     {
         if (!mobile) return;
+        if (gameState != GameState.Playing) return;
         if (!movingPiece.Equals(new Position('0', 0)) && canMoveTo)
         {
             await Move();
@@ -177,7 +180,8 @@
             return true;
         } else if (gameState != GameState.Playing && MoveGenerator.IsKing(piece))
         {
-            if (gameState == GameState.Draw)
+            if (gameState == GameState.None) { return false; }
+            else if (gameState == GameState.Draw)
             {
                 color = "draw";
             }

@@ -21,7 +21,7 @@ public class Chessboard
         Board = new Piece[64];
         WhiteCastling = new Castling();
         BlackCastling = new Castling();
-        GameState = GameState.Playing;
+        GameState = GameState.None;
         FenUtils.PopulateDefaultBoard(this);
         MoveGenerator.GenerateMoves(this);
     }

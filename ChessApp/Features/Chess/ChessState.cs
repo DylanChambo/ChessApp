@@ -11,6 +11,10 @@ public partial class ChessState : State<ChessState>
 
     public Chessboard Board { get; private set; }
 
+    public Player WhitePlayer { get; set; }
+
+    public Player BlackPlayer { get; set; }
+
     public override void Initialize()
     {
         Board = new Chessboard();
@@ -18,4 +22,18 @@ public partial class ChessState : State<ChessState>
         Mobile = false;
         MovingPositon = new Position('0', 0);
     }
+
+    public void StartGame(Player White = Player.This, Player Black = Player.This)
+    {
+        WhitePlayer = White;
+        BlackPlayer = Black;
+        Board.GameState = GameState.Playing;
+    }
+}
+
+public enum Player
+{
+    This,
+    Bot,
+    OnlinePlayer
 }

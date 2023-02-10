@@ -1,13 +1,13 @@
-﻿@page "/"
+﻿@page "/play-bot"
 
 @using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
 @using ChessApp.Shared.ChessBoard
 
-@inherits BlazorStateComponent
 
-<PageTitle>Play Chess</PageTitle>
+@inherits BlazorStateComponent
+<PageTitle>Play Bot</PageTitle>
 
 <div class="chess-container">
     <ChessBoard></ChessBoard>
@@ -19,6 +19,5 @@
     protected override void OnInitialized()
     {
         chessState.Initialize();
-        chessState.StartGame();
     }
-}
+}}
