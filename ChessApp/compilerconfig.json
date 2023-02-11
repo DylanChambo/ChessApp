@@ -26,5 +26,9 @@
   {
     "outputFile": "Shared/ChessBoard/Promotion.razor.css",
     "inputFile": "Shared/ChessBoard/Promotion.razor.scss"
+  },
+  {
+    "outputFile": "Shared/ChessBoard/PlayerBar.razor.css",
+    "inputFile": "Shared/ChessBoard/PlayerBar.razor.scss"
   }
 ]

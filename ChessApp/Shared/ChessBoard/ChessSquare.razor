@@ -178,7 +178,7 @@
         {
             color = "";
             return true;
-        } else if (gameState != GameState.Playing && MoveGenerator.IsKing(piece))
+        } else if (gameState != GameState.Playing && PieceUtils.IsKing(piece))
         {
             if (gameState == GameState.None) { return false; }
             else if (gameState == GameState.Draw)

@@ -28,7 +28,7 @@ public class Chessboard
         BlackCastling = new Castling();
         GameState = GameState.None;
         FenUtils.PopulateDefaultBoard(this);
-        Material = PieceUtils.CalcMaterial(this);
+        PieceUtils.CalcMaterial(this);
         MoveGenerator.GenerateMoves(this);
     }
 
@@ -64,19 +64,6 @@ public class Chessboard
     public void MovePiece(Move move)
     {
         Piece piece = GetPiece(move.StartSquare.File, move.StartSquare.Rank);
-        Piece targetPiece = GetPiece(move.StartSquare.File, move.StartSquare.Rank);
-
-        if (targetPiece != Piece.None)
-        {
-            if (SideToMove == Side.White)
-            {
-                Material.Black -= PieceUtils.GetPieceValue(targetPiece);
-            } else
-            {
-                Material.White -= PieceUtils.GetPieceValue(targetPiece);
-            }
-        }
-
         SetPiece(move.StartSquare.File, move.StartSquare.Rank);
         SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, piece);
     }
@@ -84,7 +71,7 @@ public class Chessboard
     public void Move(Move move, bool tempMove = false)
     {
         MovePiece(move);
-
+        
         epFile = '-';
         switch (move.MoveFlag)
         {
@@ -94,7 +81,6 @@ public class Chessboard
             case MoveFlag.EnPassant:
                 if (SideToMove == Side.White)
                 {
-                    Console.WriteLine(GetPiece(move.TargetSquare.File, move.TargetSquare.Rank - 1));
                     SetPiece(move.TargetSquare.File, move.TargetSquare.Rank - 1);
                 } else
                 {
@@ -116,55 +102,28 @@ public class Chessboard
             case MoveFlag.PromoteToQueen:
                 Piece queen = SideToMove == Side.White ? Piece.WhiteQueen : Piece.BlackQueen;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, queen);
-                if (SideToMove == Side.White)
-                {
-                    Material.White += PieceUtils.Queen - PieceUtils.Pawn;
-                }
-                else
-                {
-                    Material.Black += PieceUtils.Queen - PieceUtils.Pawn;
-                }
+                
                 break;
             case MoveFlag.PromoteToKnight:
                 Piece knight = SideToMove == Side.White ? Piece.WhiteKnight : Piece.BlackKnight;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, knight);
-                if (SideToMove == Side.White)
-                {
-                    Material.White += PieceUtils.Knight - PieceUtils.Pawn;
-                }
-                else
-                {
-                    Material.Black += PieceUtils.Knight - PieceUtils.Pawn;
-                }
+                
                 break;
             case MoveFlag.PromoteToRook:
                 rook = SideToMove == Side.White ? Piece.WhiteRook : Piece.BlackRook;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, rook);
-                if (SideToMove == Side.White)
-                {
-                    Material.White += PieceUtils.Rook - PieceUtils.Pawn;
-                }
-                else
-                {
-                    Material.Black += PieceUtils.Rook - PieceUtils.Pawn;
-                }
+               
                 break;
             case MoveFlag.PromoteToBishop:
                 Piece bishop = SideToMove == Side.White ? Piece.WhiteBishop : Piece.BlackBishop;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, bishop);
-                if (SideToMove == Side.White)
-                {
-                    Material.White += PieceUtils.Bishop - PieceUtils.Pawn;
-                }
-                else
-                {
-                    Material.Black += PieceUtils.Bishop - PieceUtils.Pawn;
-                }
+                
                 break;
             default:
                 break;
         }
 
+        PieceUtils.CalcMaterial(this);
         SideToMove = SideToMove == Side.White ? Side.Black : Side.White;
 
         if (!tempMove)
@@ -221,7 +180,7 @@ public class Chessboard
         Check = !MoveGenerator.NotCheck(temp);
     }
 
-    public void StartGame(Player White = Player.This, Player Black = Player.This)
+    public void StartGame(Player White = Player.You, Player Black = Player.You)
     {
         WhitePlayer = White;
         BlackPlayer = Black;
@@ -275,7 +234,7 @@ public class Chessboard
 
 public enum Player
 {
-    This,
+    You,
     RandomBot,
     SmartBot,
     OnlinePlayer

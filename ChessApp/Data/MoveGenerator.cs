@@ -156,7 +156,7 @@ public class MoveGenerator
         MoveFlag flag = CanEnPassant((char)(file + 1), rank, side, board);
         Piece pawnPiece = board.GetPiece(file, rank);
         piece = board.GetPiece(file + 1, rank + direction);
-        if (IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
+        if (PieceUtils.IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
             move = new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction), flag);
             AddMove(piece, move, board, checking, pawnPiece);
@@ -165,7 +165,7 @@ public class MoveGenerator
         // Check if they can move forward attacking queenside
         flag = CanEnPassant((char)(file - 1), rank, side, board);
         piece = board.GetPiece(file - 1, rank + direction);
-        if (IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
+        if (PieceUtils.IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
             move = new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction), flag);
             AddMove(piece, move, board, checking, pawnPiece);
@@ -185,7 +185,7 @@ public class MoveGenerator
                     int r = k == 1 ? 2 * i : 1 * i;
                     int f = k * j;
                     Piece piece = board.GetPiece(file + f, rank + r);
-                    if (piece == Piece.None || IsOpposition(piece, side))
+                    if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                     {
                         Move move = new Move(new Position(file, rank), new Position((char)(file + f), rank + r));
                         AddMove(piece, move, board, checking);
@@ -205,7 +205,7 @@ public class MoveGenerator
                 while (true)
                 {
                     Piece piece = board.GetPiece(file + k * i, rank + k * j);
-                    if (piece == Piece.None || IsOpposition(piece, side))
+                    if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                     {
                         Move move = new Move(new Position(file, rank), new Position((char)(file + k * i), rank + k * j));
                         AddMove(piece, move, board, checking);
@@ -233,7 +233,7 @@ public class MoveGenerator
                 {
                     int l = 1 - i;
                     Piece piece = board.GetPiece(file + (k * j * i), rank + (k * j * l));
-                    if (piece == Piece.None || IsOpposition(piece, side))
+                    if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                     {
                         Move move = new Move(new Position(file, rank), new Position((char)(file + (k * j * i)), rank + (k * j * l)));
                         AddMove(piece, move, board, checking);
@@ -257,7 +257,7 @@ public class MoveGenerator
             {
                 if (i == 0 && j == 0) { continue; }
                 Piece piece = board.GetPiece(file + i, rank + j);
-                if (piece == Piece.None || IsOpposition(piece, side))
+                if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                 {
                     Move move = new Move(new Position(file, rank), new Position((char)(file + i), rank + j));
                     AddMove(piece, move, board, checking);

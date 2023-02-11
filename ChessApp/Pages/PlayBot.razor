@@ -27,11 +27,11 @@
     {
         if (chessState.Board.GameState == GameState.Playing)
         {
-            if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.This)
+            if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.You)
             {
                 await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.WhitePlayer) });
             }
-            else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.This)
+            else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.You)
             {
                 await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.BlackPlayer) });
             }

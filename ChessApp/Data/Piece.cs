@@ -72,7 +72,7 @@ public class PieceUtils
         return (Piece.WhiteQueen == piece || piece == Piece.BlackQueen);
     }
 
-    public static Material CalcMaterial(Chessboard board)
+    public static void CalcMaterial(Chessboard board)
     {
         Material material = new Material();
         for (char file = 'a'; file <= 'h'; file++)
@@ -89,7 +89,7 @@ public class PieceUtils
                 } 
             }
         }
-        return material;
+        board.Material = material;
     }
 
     public static int GetPieceValue(Piece piece)
