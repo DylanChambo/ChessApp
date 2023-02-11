@@ -8,6 +8,9 @@
 
 <div @onmousemove="MouseMove" class="outer-box">
     <div oncontextmenu="return false;" class="inner-box @(isFlipped)">
+        <PlayerBar side="Side.White"></PlayerBar>
+        <PlayerBar side="Side.Black"></PlayerBar>
+
         @for (char file = 'a'; file <= 'h'; file++)
         {
             @for (int rank = 1; rank <= 8; rank++)

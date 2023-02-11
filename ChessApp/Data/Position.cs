@@ -10,11 +10,16 @@ public struct Position
 
     public Position()
     {
-        File = (char)0;
+        File = '0';
         Rank = 0;
     }
 
     public char File { get; set; }
     public int Rank { get; set; }
+
+    public override string ToString()
+    {
+        return File.ToString() + Rank.ToString();
+    }
 
 }

@@ -12,10 +12,12 @@
 
   <ItemGroup>
     <None Remove="Shared\ChessBoard\ChessSquare.razor.scss" />
+    <None Remove="Shared\ChessBoard\PlayerBar.razor.scss" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Shared\ChessBoard\ChessSquare.razor.scss" />
+    <Content Include="Shared\ChessBoard\PlayerBar.razor.scss" />
   </ItemGroup>
 
   <ItemGroup>

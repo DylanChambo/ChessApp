@@ -17,11 +17,11 @@ public class MoveGenerator
             {
                 Piece piece = board.GetPiece(file, rank);
                 Side side;
-                if (IsWhite(piece) && board.SideToMove == Side.White)
+                if (PieceUtils.IsWhite(piece) && board.SideToMove == Side.White)
                 {
                     side = Side.White;
                 }
-                else if (IsBlack(piece) && board.SideToMove == Side.Black)
+                else if (PieceUtils.IsBlack(piece) && board.SideToMove == Side.Black)
                 {
                     side = Side.Black;
                 }
@@ -57,49 +57,60 @@ public class MoveGenerator
                 }
             }
         }
-
-
-
-
     }
 
-    public static bool IsOpposition(Piece piece, Side side)
+    public static void AddMove(Piece piece, Move move, Chessboard board, bool checking, Piece pawnPiece = Piece.None)
     {
-        return side == Side.White ? IsBlack(piece) : IsWhite(piece);
-    }
 
-    public static bool IsBlack(Piece piece)
-    {
-        return (Piece.BlackKing <= piece && piece <= Piece.BlackQueen);
-    }
-
-    public static bool IsWhite(Piece piece)
-    {
-        return (Piece.WhiteKing <= piece && piece <= Piece.WhiteQueen);
-    }
-
-    public static bool IsKing(Piece piece)
-    {
-        return (Piece.WhiteKing == piece || piece == Piece.BlackKing);
-    }
-
-    public static void AddMove(Piece piece, Move move, Chessboard board, bool checking)
-    {
-  
         if (checking)
         {
-            if (IsKing(piece))
+            if (PieceUtils.IsKing(piece))
             {
                 board.Check = true;
             }
-        } else 
-        { 
+        } else
+        {
             if (NotCheck(board, move))
             {
-                board.Moves.Add(move);
+                
+                if ((pawnPiece == Piece.WhitePawn && move.TargetSquare.Rank == 8) || (pawnPiece == Piece.BlackPawn && move.TargetSquare.Rank == 1))
+                {
+                    move.MoveFlag = MoveFlag.PromoteToQueen;
+                    board.Moves.Add(move);
+                    move.MoveFlag = MoveFlag.PromoteToKnight;
+                    board.Moves.Add(move);
+                    move.MoveFlag = MoveFlag.PromoteToRook;
+                    board.Moves.Add(move);
+                    move.MoveFlag = MoveFlag.PromoteToBishop;
+                    board.Moves.Add(move);
+                }
+                else
+                {
+                    board.Moves.Add(move);
+                }
             }
         }
     }
+
+    public static MoveFlag CanEnPassant(char file, int rank, Side side, Chessboard board)
+    {
+        // Check for En Passant
+        if (side == Side.White)
+        {
+            if (rank == 5 && board.epFile == file)
+            {
+                return MoveFlag.EnPassant;
+            }
+        } else
+        {
+            if (rank == 4 && board.epFile == file)
+            {
+                return MoveFlag.EnPassant;
+            }
+        }
+        return MoveFlag.None; ;
+    }
+
     public static void PawnMove(char file, int rank, Side side, Chessboard board, bool checking = false)
     {
         // TODO: add en passant
@@ -114,13 +125,26 @@ public class MoveGenerator
             move = new Move(new Position(file, rank), new Position(file, rank + direction));
             if (NotCheck(board, move))
             {
-                board.Moves.Add(move);
+                if ((side == Side.White && rank + direction == 8) || (side == Side.Black && rank + direction == 1))
+                {
+                    move.MoveFlag = MoveFlag.PromoteToQueen;
+                    board.Moves.Add(move);
+                    move.MoveFlag = MoveFlag.PromoteToKnight;
+                    board.Moves.Add(move);
+                    move.MoveFlag = MoveFlag.PromoteToRook;
+                    board.Moves.Add(move);
+                    move.MoveFlag = MoveFlag.PromoteToBishop;
+                    board.Moves.Add(move);
+                } else
+                { 
+                    board.Moves.Add(move);
+                }
             }
             // Double moves on first turn
             piece = board.GetPiece(file, rank + direction * 2);
             if (piece == Piece.None && ((side == Side.White && rank == 2) || (side == Side.Black && rank == 7)))
             {
-                move = new Move(new Position(file, rank), new Position(file, rank + direction * 2));
+                move = new Move(new Position(file, rank), new Position(file, rank + direction * 2), MoveFlag.PawnDoubleMove);
                 if (NotCheck(board, move))
                 {
                     board.Moves.Add(move);
@@ -129,20 +153,25 @@ public class MoveGenerator
         }
 
         // Check if they can move forward attacking kingside
+        MoveFlag flag = CanEnPassant((char)(file + 1), rank, side, board);
+        Piece pawnPiece = board.GetPiece(file, rank);
         piece = board.GetPiece(file + 1, rank + direction);
-        if (IsOpposition(piece, side))
+        if (PieceUtils.IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
-            move = new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction));
-            AddMove(piece, move, board, checking);
+            move = new Move(new Position(file, rank), new Position((char)(file + 1), rank + direction), flag);
+            AddMove(piece, move, board, checking, pawnPiece);
         }
 
         // Check if they can move forward attacking queenside
+        flag = CanEnPassant((char)(file - 1), rank, side, board);
         piece = board.GetPiece(file - 1, rank + direction);
-        if (IsOpposition(piece, side))
+        if (PieceUtils.IsOpposition(piece, side) || flag == MoveFlag.EnPassant)
         {
-            move = new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction));
-            AddMove(piece, move, board, checking);
+            move = new Move(new Position(file, rank), new Position((char)(file - 1), rank + direction), flag);
+            AddMove(piece, move, board, checking, pawnPiece);
         }
+
+
     }
 
     public static void KnightMove(char file, int rank, Side side, Chessboard board, bool checking = false)
@@ -156,7 +185,7 @@ public class MoveGenerator
                     int r = k == 1 ? 2 * i : 1 * i;
                     int f = k * j;
                     Piece piece = board.GetPiece(file + f, rank + r);
-                    if (piece == Piece.None || IsOpposition(piece, side))
+                    if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                     {
                         Move move = new Move(new Position(file, rank), new Position((char)(file + f), rank + r));
                         AddMove(piece, move, board, checking);
@@ -176,7 +205,7 @@ public class MoveGenerator
                 while (true)
                 {
                     Piece piece = board.GetPiece(file + k * i, rank + k * j);
-                    if (piece == Piece.None || IsOpposition(piece, side))
+                    if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                     {
                         Move move = new Move(new Position(file, rank), new Position((char)(file + k * i), rank + k * j));
                         AddMove(piece, move, board, checking);
@@ -204,7 +233,7 @@ public class MoveGenerator
                 {
                     int l = 1 - i;
                     Piece piece = board.GetPiece(file + (k * j * i), rank + (k * j * l));
-                    if (piece == Piece.None || IsOpposition(piece, side))
+                    if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                     {
                         Move move = new Move(new Position(file, rank), new Position((char)(file + (k * j * i)), rank + (k * j * l)));
                         AddMove(piece, move, board, checking);
@@ -228,11 +257,75 @@ public class MoveGenerator
             {
                 if (i == 0 && j == 0) { continue; }
                 Piece piece = board.GetPiece(file + i, rank + j);
-                if (piece == Piece.None || IsOpposition(piece, side))
+                if (piece == Piece.None || PieceUtils.IsOpposition(piece, side))
                 {
                     Move move = new Move(new Position(file, rank), new Position((char)(file + i), rank + j));
                     AddMove(piece, move, board, checking);
                 }
+            }
+        }
+
+
+
+        // Check for Castling
+        CheckCastling(board);
+        int backRank = side == Side.White ? 1 : 8;
+        bool canCastle = side == Side.White ? board.WhiteCastling.KingSide : board.BlackCastling.KingSide;
+        // Kingside
+        if (board.GetPiece('f', backRank) == Piece.None && board.GetPiece('g', backRank) == Piece.None && canCastle)
+        {
+            Move middleMove = new Move(new Position(file, rank), new Position((char)(file + 1), rank));
+            Move move = new Move(new Position(file, rank), new Position((char)(file + 2), rank), MoveFlag.Castling);
+            if (NotCheck(board, middleMove) && NotCheck(board, move)) {
+                board.Moves.Add(move);
+            }
+        }
+        // Queenside
+        canCastle = side == Side.White ? board.WhiteCastling.QueenSide : board.BlackCastling.QueenSide;
+        if (board.GetPiece('b', backRank) == Piece.None && board.GetPiece('c', backRank) == Piece.None && board.GetPiece('d', backRank) == Piece.None && canCastle)
+        {
+            Move middleMove = new Move(new Position(file, rank), new Position((char)(file - 1), rank));
+            Move move = new Move(new Position(file, rank), new Position((char)(file - 2), rank), MoveFlag.Castling);
+            if (NotCheck(board, middleMove) && NotCheck(board, move))
+            {
+                board.Moves.Add(move);
+            }
+        }
+
+    }
+
+    public static void CheckCastling(Chessboard board)
+    {
+        if (board.GetPiece('e', 1) != Piece.WhiteKing)
+        {
+            board.WhiteCastling.KingSide = false;
+            board.WhiteCastling.QueenSide = false;
+        } else
+        {
+            if (board.GetPiece('h', 1) != Piece.WhiteRook)
+            {
+                board.WhiteCastling.KingSide = false;
+            }
+            if (board.GetPiece('a', 1) != Piece.WhiteRook)
+            {
+                board.WhiteCastling.QueenSide = false;
+            }
+        }
+
+        if (board.GetPiece('e', 8) != Piece.BlackKing)
+        {
+            board.BlackCastling.KingSide = false;
+            board.BlackCastling.QueenSide = false;
+        }
+        else
+        {
+            if (board.GetPiece('h', 8) != Piece.BlackRook)
+            {
+                board.BlackCastling.KingSide = false;
+            }
+            if (board.GetPiece('a', 8) != Piece.BlackRook)
+            {
+                board.BlackCastling.QueenSide = false;
             }
         }
     }

@@ -6,12 +6,12 @@ public class FenUtils
 {
     private static readonly string DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    public static Chessboard PopulateDefaultBoard(Chessboard board)
+    public static void PopulateDefaultBoard(Chessboard board)
     {
-        return PopulateBoardFromFen(board, DefaultFen);
+        PopulateBoardFromFen(board, DefaultFen);
     }
 
-    public static Chessboard PopulateBoardFromFen(Chessboard board, string fen)
+    public static void PopulateBoardFromFen(Chessboard board, string fen)
     {
         Dictionary<char, Piece> pieceFromSymbol = new Dictionary<char, Piece>()
         {
@@ -39,6 +39,7 @@ public class FenUtils
         board.BlackCastling.KingSide = castlingRights.Contains('k');
         board.BlackCastling.QueenSide = castlingRights.Contains('q');
 
+        board.epFile = '-';
         if (fenSplit.Length > 3 && fenSplit[3] != "-")
         {
             board.epFile = fenSplit[3][0];
@@ -72,7 +73,5 @@ public class FenUtils
                 file++;
             }
         }
-
-        return board;
     }
 }

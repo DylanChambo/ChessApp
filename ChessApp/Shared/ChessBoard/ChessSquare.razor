@@ -48,6 +48,10 @@
         <div class="selected @color"></div>
     }
 </div>
+@if (promotion)
+{
+    <Promotion side="@chessState.Board.SideToMove" moves="@promotionMoves" OnMoveSelect="PromotionSelect"></Promotion>
+}
 
 @code {
     [Parameter]
@@ -59,13 +63,12 @@
             return GetState<ChessState>();
         }
     }
-
     private bool isFlipped => chessState.IsFlipped;
     public Position movingPiece => chessState.MovingPositon;
     public bool mobile => chessState.Mobile;
     public bool canMoveTo => chessState.Board.Moves.Contains(new Move(movingPiece, pos));
     private Piece piece => chessState.Board.GetPiece(pos.File, pos.Rank);
-    public List<Move> moves => chessState.Board.Moves;
+    public IEnumerable<Move> moves => chessState.Board.Moves.Where(m => m.Equals(new Move(movingPiece, pos)));
     public GameState gameState => chessState.Board.GameState;
 
     MouseState mouseState => GetState<MouseState>();
@@ -75,6 +78,8 @@
     public string moving = "";
     public string color = "";
     public bool render = false;
+    public bool promotion = false;
+    public List<Move> promotionMoves = new List<Move> { };
 
     protected override bool ShouldRender()
     {   
@@ -93,8 +98,10 @@
     async Task MouseDown(MouseEventArgs e)
     {
         if (mobile) return;
+        if (gameState != GameState.Playing) return;
         if (e.Button == 0) // If Left Click
         {
+            if (piece == Piece.None) { return; }
             // Set the Position In the state
             start.X = (int)(e.PageX - e.OffsetX);
             start.Y = (int) (e.PageY - e.OffsetY);
@@ -106,6 +113,7 @@
     async Task MouseUp(MouseEventArgs e)
     {
         if (mobile) return;
+        if (gameState != GameState.Playing) return;
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
             // MovePiece with the Postion in the state and current
@@ -119,24 +127,49 @@
                 await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
                 return;
             }
-            await Mediator.Send(new ChessState.MovePieceAction { Move = new Move(movingPiece, pos) });
+            await Move();
         } 
     }
 
     async Task TouchUp(TouchEventArgs e)
     {
         if (!mobile) return;
+        if (gameState != GameState.Playing) return;
         if (!movingPiece.Equals(new Position('0', 0)) && canMoveTo)
         {
-            await Mediator.Send(new ChessState.MovePieceAction { Move = new Move(movingPiece, pos) });
+            await Move();
         } else if (movingPiece.Equals(pos))
         {
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
 
         } else
         {
+            if (piece == Piece.None) { return; }
             await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
         }
+    }
+
+    async Task Move()
+    {
+        if (moves.Count() == 1)
+        {
+
+            await Mediator.Send(new ChessState.MovePieceAction { Move = moves.FirstOrDefault() });
+        }
+        else
+        {
+            promotionMoves = moves.ToList();
+            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+            Move move = promotionMoves.FirstOrDefault();
+            chessState.Board.MovePiece(move);
+            promotion = true;
+        }
+    }
+
+    async Task PromotionSelect(Move move)
+    {
+        promotion = false;
+        await Mediator.Send(new ChessState.MovePieceAction { Move = move });
     }
 
     public bool Selected()
@@ -145,9 +178,10 @@
         {
             color = "";
             return true;
-        } else if (gameState != GameState.Playing && MoveGenerator.IsKing(piece))
+        } else if (gameState != GameState.Playing && PieceUtils.IsKing(piece))
         {
-            if (gameState == GameState.Draw)
+            if (gameState == GameState.None) { return false; }
+            else if (gameState == GameState.Draw)
             {
                 color = "draw";
             }
