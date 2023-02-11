@@ -3,14 +3,13 @@
 @using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
-@using ChessApp.Shared.ChessBoard
 
 
 @inherits BlazorStateComponent
 <PageTitle>Play Bot</PageTitle>
 
 <div class="chess-container">
-    <ChessBoard></ChessBoard>
+    
 </div>
 
 @code {
@@ -18,25 +17,24 @@
 
     async protected override Task OnInitializedAsync()
     {
-        chessState.Initialize();
-        await Mediator.Send(new ChessState.StartGameAction(White: Player.You, Black: Player.SmartBot));
+        chessState.Init();
     }
 
 
-    async protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (chessState.Board.GameState == GameState.Playing)
-        {
-            if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.You)
-            {
-                await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.WhitePlayer) });
-            }
-            else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.You)
-            {
-                await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.BlackPlayer) });
-            }
-            else return;
-        }
-    }
+    //async protected override Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (chessState.Board.GameState == GameState.Playing)
+    //    {
+    //        if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.You)
+    //        {
+    //            await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.WhitePlayer) });
+    //        }
+    //        else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.You)
+    //        {
+    //            await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.BlackPlayer) });
+    //        }
+    //        else return;
+    //    }
+    //}
 
 }

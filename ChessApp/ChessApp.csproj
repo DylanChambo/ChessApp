@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,17 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Shared\ChessBoard\**" />
+    <Content Remove="Shared\ChessBoard\**" />
+    <EmbeddedResource Remove="Shared\ChessBoard\**" />
+    <None Remove="Shared\ChessBoard\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="compilerconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Shared\ChessBoard\ChessSquare.razor.scss" />
-    <None Remove="Shared\ChessBoard\PlayerBar.razor.scss" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Shared\ChessBoard\ChessSquare.razor.scss" />
-    <Content Include="Shared\ChessBoard\PlayerBar.razor.scss" />
   </ItemGroup>
 
   <ItemGroup>
