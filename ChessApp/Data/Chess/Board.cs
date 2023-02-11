@@ -4,9 +4,9 @@ namespace ChessApp.Data.Chess;
 
 public class Board
 {
-    const int VirtualBoardSize = 120;
-    const int BoardSize = 64;
-    const int MaxGameMoves = 2048;
+    public const int VirtualBoardSize = 120;
+    public const int BoardSize = 64;
+    public const int MaxGameMoves = 2048;
     public int[] Squares { get; set; }
     public ulong[] Pawns { get; set; }
     public int[] KingSquare { get; set; }
@@ -26,8 +26,6 @@ public class Board
 
     public Undo[] History { get; set; }
 
-    public int[] Square120To64 { get; set; }
-    public int[] Square64To120 { get; set; }
     public Board()
     {
         Squares = new int[VirtualBoardSize];
@@ -38,43 +36,8 @@ public class Board
         MajorPiece = new int[3];
         MinorPiece = new int[3];
         History = new Undo[MaxGameMoves];
-        InitializeConversionArray();
 }
 
-    /// <summary>
-    /// Generetes lookup tables to convert coordintates as fast as possible;
-    /// </summary>
-    public void InitializeConversionArray()
-    {
-        Square120To64 = new int[VirtualBoardSize];
-        Square64To120 = new int[BoardSize];
 
-        for (int i = 0; i < VirtualBoardSize; i++)
-        {
-            Square120To64[i] = -1;
-        }
-
-        for (int i = 0; i < BoardSize; i++)
-        {
-            Square120To64[i] = -1;
-        }
-
-        int square64 = 0;
-
-        for (int rank = (int) Ranks.r1; rank <= (int) Ranks.r8; rank++)
-        {
-            for (int file = (int) Files.A; file <= (int)Files.H; file++)
-            {
-                int square = ConvertFRToIndex(file, rank);
-                Square64To120[square64] = square;
-                Square120To64[square] = square64;
-                square64++;
-            }
-        }
-    }
-
-    public static int ConvertFRToIndex(int file, int rank)
-    {
-        return 21 + file + 10 * rank;
-    }
+    
 }
