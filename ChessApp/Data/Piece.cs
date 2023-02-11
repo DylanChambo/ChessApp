@@ -21,7 +21,6 @@ public enum Piece
 public class PieceUtils
 {
     public static int Pawn = 1;
-    public static int King = 99999;
     public static int Knight = 3;
     public static int Bishop = 3;
     public static int Rook = 5;
@@ -98,10 +97,6 @@ public class PieceUtils
         if (piece == Piece.None)
         {
             value = 0;
-        }
-        else if (IsKing(piece))
-        {
-            value = 99999;
         }
         else if (IsPawn(piece))
         {

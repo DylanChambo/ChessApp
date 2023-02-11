@@ -19,7 +19,7 @@
     async protected override Task OnInitializedAsync()
     {
         chessState.Initialize();
-        await Mediator.Send(new ChessState.StartGameAction(White: Player.RandomBot, Black: Player.RandomBot));
+        await Mediator.Send(new ChessState.StartGameAction(White: Player.You, Black: Player.SmartBot));
     }
 
 

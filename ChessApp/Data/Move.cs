@@ -21,6 +21,11 @@ public struct Move
         MoveFlag = MoveFlag.None;
     }
 
+    public override string ToString()
+    {
+        return $"{StartSquare} -> {TargetSquare}, {MoveFlag}";
+    }
+
     public override bool Equals([NotNullWhen(true)] object? obj)
     {
         if (obj != null)

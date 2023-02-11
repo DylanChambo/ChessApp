@@ -131,7 +131,6 @@ public class Chessboard
             
             MoveGenerator.GenerateMoves(this);
             isCheck();
-            Console.WriteLine($"Move, {Check}");
 
             DisplayBoard();
             if (Moves.Count == 0)
@@ -156,9 +155,9 @@ public class Chessboard
         
         if (player == Player.RandomBot)
         {
-            Thread.Sleep(200);
             Chessboard board = new Chessboard(this);
             Moves.Clear();
+            Thread.Sleep(200);
             Random random = new Random();
             int randomNum = random.Next(board.Moves.Count);
             return board.Moves[randomNum];
@@ -167,8 +166,8 @@ public class Chessboard
         {
             Chessboard board = new Chessboard(this);
             Moves.Clear();
-
-            return AI.CalcMove(board, 7);
+            AI AI = new AI(board);
+            return AI.CalcMove();
         }
         return new Move();
     }
