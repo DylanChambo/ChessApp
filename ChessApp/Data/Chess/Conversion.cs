@@ -31,7 +31,7 @@ public static class Conversion
         {
             for (int file = (int)Files.A; file <= (int)Files.H; file++)
             {
-                int square = ConvertFRToIndex(file, rank);
+                int square = ConvertFRTo120(file, rank);
                 Square64To120[square64] = square;
                 Square120To64[square] = square64;
                 square64++;
@@ -45,8 +45,13 @@ public static class Conversion
     /// <param name="file">File of the square.</param>
     /// <param name="rank">Rank of the square.</param>
     /// <returns></returns>
-    public static int ConvertFRToIndex(int file, int rank)
+    public static int ConvertFRTo120(int file, int rank)
     {
         return 21 + file + 10 * rank;
+    }
+
+    public static int ConvertFRTo64(int file, int rank)
+    {
+        return file + 8 * rank;
     }
 }

@@ -8,7 +8,7 @@ public class Board
     public const int BoardSize = 64;
     public const int MaxGameMoves = 2048;
     public int[] Squares { get; set; }
-    public ulong[] Pawns { get; set; }
+    public BitBoard[] Pawns { get; set; }
     public int[] KingSquare { get; set; }
     public int Side { get; set; }
     public int EnPassantSquare { get; set; }
@@ -26,17 +26,27 @@ public class Board
 
     public Undo[] History { get; set; }
 
+    int[,] PieceList { get; set; }
+
     public Board()
     {
         Squares = new int[VirtualBoardSize];
-        Pawns = new ulong[3];
+        Pawns = new BitBoard[3];
         KingSquare = new int[2];
         PieceNum = new int[13];
         BigPiece = new int[3];
         MajorPiece = new int[3];
         MinorPiece = new int[3];
         History = new Undo[MaxGameMoves];
-}
+        PieceList = new int[13,10];
+
+        Pawns[0].PrintBitBoard();
+        Pawns[0].SetBit(8);
+        Pawns[0].SetBit(9);
+        Pawns[0].SetBit(10);
+        Pawns[0].PrintBitBoard();
+        Debug.WriteLine(Pawns.Count());
+    }
 
 
     
