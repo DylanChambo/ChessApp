@@ -1,0 +1,19 @@
+﻿.player-bar {
+  position: absolute;
+  width: 98%;
+  height: 12%;
+  background-color: #211f1d;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1%;
+}
+
+.top {
+  top: -12%;
+}
+
+.bottom {
+  bottom: -12%;
+}

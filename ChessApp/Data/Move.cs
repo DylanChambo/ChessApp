@@ -21,6 +21,11 @@ public struct Move
         MoveFlag = MoveFlag.None;
     }
 
+    public override string ToString()
+    {
+        return $"{StartSquare} -> {TargetSquare}, {MoveFlag}";
+    }
+
     public override bool Equals([NotNullWhen(true)] object? obj)
     {
         if (obj != null)
@@ -45,4 +50,10 @@ public enum MoveFlag
     PromoteToKnight,
     PromoteToRook,
     PromoteToBishop
+}
+
+public class Castling
+{
+    public bool KingSide { get; set; }
+    public bool QueenSide { get; set; }
 }

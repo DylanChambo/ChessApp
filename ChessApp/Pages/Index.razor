@@ -1,7 +1,24 @@
 ﻿@page "/"
+
+@using ChessApp.Data;
+@using ChessApp.Features.Chess;
+@using BlazorState;
 @using ChessApp.Shared.ChessBoard
+
+@inherits BlazorStateComponent
+
 <PageTitle>Play Chess</PageTitle>
 
 <div class="chess-container">
     <ChessBoard></ChessBoard>
 </div>
+
+@code {
+    ChessState chessState => GetState<ChessState>();
+
+    protected override void OnInitialized()
+    {
+        chessState.Initialize();
+        chessState.Board.StartGame();
+    }
+}

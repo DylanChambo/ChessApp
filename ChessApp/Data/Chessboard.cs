@@ -1,4 +1,6 @@
 ﻿using AnyClone;
+using ChessApp.Features.Chess;
+using System;
 
 namespace ChessApp.Data;
 
@@ -13,16 +15,20 @@ public class Chessboard
     public int HalfmoveClock { get; set; }
     public int FullmoveCount { get; set; }
     public List<Move> Moves { get; set; }
-
     public bool Check { get; set; }
+    public Material Material = new Material();
+
+    public Player WhitePlayer { get; set; }
+    public Player BlackPlayer { get; set; }
 
     public Chessboard() 
     {
         Board = new Piece[64];
         WhiteCastling = new Castling();
         BlackCastling = new Castling();
-        GameState = GameState.Playing;
+        GameState = GameState.None;
         FenUtils.PopulateDefaultBoard(this);
+        PieceUtils.CalcMaterial(this);
         MoveGenerator.GenerateMoves(this);
     }
 
@@ -65,7 +71,7 @@ public class Chessboard
     public void Move(Move move, bool tempMove = false)
     {
         MovePiece(move);
-
+        
         epFile = '-';
         switch (move.MoveFlag)
         {
@@ -75,7 +81,6 @@ public class Chessboard
             case MoveFlag.EnPassant:
                 if (SideToMove == Side.White)
                 {
-                    Console.WriteLine(GetPiece(move.TargetSquare.File, move.TargetSquare.Rank - 1));
                     SetPiece(move.TargetSquare.File, move.TargetSquare.Rank - 1);
                 } else
                 {
@@ -97,23 +102,28 @@ public class Chessboard
             case MoveFlag.PromoteToQueen:
                 Piece queen = SideToMove == Side.White ? Piece.WhiteQueen : Piece.BlackQueen;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, queen);
+                
                 break;
             case MoveFlag.PromoteToKnight:
                 Piece knight = SideToMove == Side.White ? Piece.WhiteKnight : Piece.BlackKnight;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, knight);
+                
                 break;
             case MoveFlag.PromoteToRook:
                 rook = SideToMove == Side.White ? Piece.WhiteRook : Piece.BlackRook;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, rook);
+               
                 break;
             case MoveFlag.PromoteToBishop:
                 Piece bishop = SideToMove == Side.White ? Piece.WhiteBishop : Piece.BlackBishop;
                 SetPiece(move.TargetSquare.File, move.TargetSquare.Rank, bishop);
+                
                 break;
             default:
                 break;
         }
 
+        PieceUtils.CalcMaterial(this);
         SideToMove = SideToMove == Side.White ? Side.Black : Side.White;
 
         if (!tempMove)
@@ -135,8 +145,31 @@ public class Chessboard
                     Console.WriteLine("Stalemate");
                     GameState = GameState.Draw;
                 }
-            }
+            } 
+        } 
+    }
+
+   public Move OpponentMove(Player player)
+    {
+        Console.WriteLine(player);
+        
+        if (player == Player.RandomBot)
+        {
+            Chessboard board = new Chessboard(this);
+            Moves.Clear();
+            Thread.Sleep(200);
+            Random random = new Random();
+            int randomNum = random.Next(board.Moves.Count);
+            return board.Moves[randomNum];
         }
+        else if (player == Player.SmartBot)
+        {
+            Chessboard board = new Chessboard(this);
+            Moves.Clear();
+            AI AI = new AI(board);
+            return AI.CalcMove();
+        }
+        return new Move();
     }
 
     public void isCheck()
@@ -146,6 +179,12 @@ public class Chessboard
         Check = !MoveGenerator.NotCheck(temp);
     }
 
+    public void StartGame(Player White = Player.You, Player Black = Player.You)
+    {
+        WhitePlayer = White;
+        BlackPlayer = Black;
+        GameState = GameState.Playing;
+    }
 
     public void DisplayBoard()
     {
@@ -190,8 +229,13 @@ public class Chessboard
     }
 }
 
-public class Castling
+
+
+public enum Player
 {
-    public bool KingSide { get; set; }
-    public bool QueenSide { get; set; }
+    You,
+    RandomBot,
+    SmartBot,
+    OnlinePlayer
 }
+

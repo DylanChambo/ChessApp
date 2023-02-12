@@ -11,6 +11,8 @@ public partial class ChessState : State<ChessState>
 
     public Chessboard Board { get; private set; }
 
+    
+
     public override void Initialize()
     {
         Board = new Chessboard();
@@ -18,4 +20,7 @@ public partial class ChessState : State<ChessState>
         Mobile = false;
         MovingPositon = new Position('0', 0);
     }
+
+    
 }
+
