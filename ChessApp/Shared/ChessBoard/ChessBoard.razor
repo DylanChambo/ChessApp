@@ -1,23 +1,24 @@
-﻿@using ChessApp.Data;
+﻿@using ChessApp.Data.Chess;
+@using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
 @using ChessApp.Features.Mouse;
+@using Microsoft.JSInterop;
+
 @inject IJSRuntime jsRuntime
 
 @inherits BlazorStateComponent
 
 <div @onmousemove="MouseMove" class="outer-box">
     <div oncontextmenu="return false;" class="inner-box @(isFlipped)">
-        <PlayerBar side="Side.White"></PlayerBar>
-        <PlayerBar side="Side.Black"></PlayerBar>
+        <PlayerBar side="Sides.White"></PlayerBar>
+        <PlayerBar side="Sides.Black"></PlayerBar>
 
-        @for (char file = 'a'; file <= 'h'; file++)
+        @for (int file = 0; file < 8; file++)
         {
-            @for (int rank = 1; rank <= 8; rank++)
+            @for (int rank = 0; rank < 8; rank++)
             {
-                <ChessSquare pos="new Position(file, rank)" >
-                    
-                </ChessSquare>
+                <ChessSquare file="file" rank="rank" ></ChessSquare>
             }
         }
 
@@ -29,7 +30,7 @@
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
     private Boolean mobile => chessState.Mobile;
-    private Position movingPos => chessState.MovingPositon;
+    //private Position movingPos => chessState.MovingPositon;
 
     private bool shouldRender = false;
 
@@ -52,7 +53,7 @@
     {
         if (mobile) return;
 
-        if ((e.Buttons & 1) == 1) // If left mouse is down
+        if ((e.Buttons & 1) == 1)  //If left mouse is down
         {
             mouseCoord.X = (int) e.PageX;
             mouseCoord.Y = (int ) e.PageY;
@@ -60,10 +61,10 @@
             await Mediator.Send(new MouseState.MoveMouseAction { MousePos = mouseCoord }); 
         } else
         {
-            if (!movingPos.Equals(new Position('0', 0)))
-            {
-                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
-            }
+            //if (!movingPos.Equals(new Position('0', 0)))
+            //{
+            //    await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+            //}
         }
     }
 }

@@ -1,30 +1,30 @@
-﻿@using ChessApp.Data;
+﻿@using ChessApp.Data.Chess;
 @using ChessApp.Features.Chess;
 @using BlazorState;
 
 @inherits BlazorStateComponent
 
 <div class="player-bar @getPosition">
-    <span>@getPawnEmoji@side: @getPlayer</span>
-    @if (displayMaterial)
+    <span>@getPawnEmoji@side</span>
+    @*@if (displayMaterial)
     {
         <span>+@getMaterial</span>
-    }
+    }*@
 </div>
 
 @code {
     [Parameter]
-    public Side side { get; set; } 
+    public Sides side { get; set; } 
 
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
-    public int getMaterial => side == Side.White ? chessState.Board.Material.White - chessState.Board.Material.Black : chessState.Board.Material.Black - chessState.Board.Material.White;
-    public bool displayMaterial => side == Side.White 
-        ? chessState.Board.Material.White > chessState.Board.Material.Black ? true : false 
-        : chessState.Board.Material.White < chessState.Board.Material.Black ? true : false;
+    //public int getMaterial => side == Side.White ? chessState.Board.Material.White - chessState.Board.Material.Black : chessState.Board.Material.Black - chessState.Board.Material.White;
+    //public bool displayMaterial => side == Side.White 
+    //    ? chessState.Board.Material.White > chessState.Board.Material.Black ? true : false 
+    //    : chessState.Board.Material.White < chessState.Board.Material.Black ? true : false;
 
-    public Player getPlayer => side == Side.White ? chessState.Board.WhitePlayer : chessState.Board.BlackPlayer;
+    //public Player getPlayer => side == Side.White ? chessState.Board.WhitePlayer : chessState.Board.BlackPlayer;
 
-    public string getPosition => side == Side.White ? isFlipped ? "top" : "bottom" : !isFlipped? "top" : "bottom";
-    public string getPawnEmoji => side == Side.White ? "♟︎" : "♙";
+    public string getPosition => side == Sides.White ? isFlipped ? "top" : "bottom" : !isFlipped? "top" : "bottom";
+    public string getPawnEmoji => side == Sides.White ? "♟︎" : "♙";
 }

@@ -8,7 +8,7 @@ public partial class ChessState : State<ChessState>
 {
     public bool IsFlipped { get; private set; }
     public bool Mobile { get; set; }
-    Board Board { get; set; }
+    public Board Board { get; set; }
     
 
     public override void Initialize()

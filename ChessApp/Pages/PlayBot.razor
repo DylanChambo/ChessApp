@@ -3,13 +3,14 @@
 @using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@using ChessApp.Shared.ChessBoard
 
 
 @inherits BlazorStateComponent
 <PageTitle>Play Bot</PageTitle>
 
 <div class="chess-container">
-    
+    <ChessBoard></ChessBoard>
 </div>
 
 @code {
