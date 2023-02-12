@@ -63,3 +63,11 @@ public enum Position
     A7 = 81, B7, C7, D7, E7, F7, G7, H7,
     A8 = 91, B8, C8, D8, E8, F8, G8, H8, 
 }
+
+public static class Castling
+{
+    public const int WhiteKingSide = 1;
+    public const int WhiteQueenSide = 2;
+    public const int BlackKingSide = 1;
+    public const int BlackQueenSide = 2;
+}

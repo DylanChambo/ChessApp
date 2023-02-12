@@ -47,28 +47,32 @@ public class Fen
             }
         }
 
-        //board.SideToMove = fenSplit[1] == "w" ? Side.White : Side.Black;
+        board.Side = fenSplit[1] == "w" ? Sides.White : Sides.Black;
 
-        //string castlingRights = (fenSplit.Length > 2) ? fenSplit[2] : "KQkq";
-        //board.WhiteCastling.KingSide = castlingRights.Contains('K');
-        //board.WhiteCastling.QueenSide = castlingRights.Contains('Q');
-        //board.BlackCastling.KingSide = castlingRights.Contains('k');
-        //board.BlackCastling.QueenSide = castlingRights.Contains('q');
+        string castlingRights = (fenSplit.Length > 2) ? fenSplit[2] : "KQkq";
+        board.CastlePerm |= castlingRights.Contains('K') ? Castling.WhiteKingSide : 0;
+        board.CastlePerm |= castlingRights.Contains('Q') ? Castling.WhiteQueenSide : 0;
+        board.CastlePerm |= castlingRights.Contains('k') ? Castling.BlackKingSide : 0;
+        board.CastlePerm |= castlingRights.Contains('q') ? Castling.BlackQueenSide : 0;
 
-        //board.epFile = '-';
-        //if (fenSplit.Length > 3 && fenSplit[3] != "-")
-        //{
-        //    board.epFile = fenSplit[3][0];
-        //}
+        board.EnPassantSquare = Position.No_Square;
+
+        if (fenSplit.Length > 3 && fenSplit[3] != "-")
+        {
+            int file = fenSplit[3][0] - 'a';
+            int rank = fenSplit[3][1] - '1';
+            board.EnPassantSquare = (Position) Conversion.ConvertFRTo120(file, rank);
+        }
 
         //if (fenSplit.Length > 4)
         //{
-        //    board.HalfmoveClock = int.Parse(fenSplit[4]);
+        //    board.FiftyMoveCount = int.Parse(fenSplit[4]);
         //}
-        //if (fenSplit.Length > 4)
+        //if (fenSplit.Length > 5)
         //{
         //    board.FullmoveCount = int.Parse(fenSplit[5]);
         //}
-        
+
+        board.HashKey = HashKey.GenerateHashKey(board);
     }
 }

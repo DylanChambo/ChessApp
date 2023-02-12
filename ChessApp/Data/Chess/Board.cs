@@ -16,7 +16,7 @@ public class Board
     public int Ply { get; set; }
     public int HisPly { get; set; }
     public int CastlePerm { get; set; }
-    public ulong PosKey { get; set; }
+    public ulong HashKey { get; set; }
 
     public int[] PieceNum { get; set; }
     public int[] BigPiece { get; set; }
@@ -75,7 +75,7 @@ public class Board
         Ply = 0;
         HisPly= 0;
         CastlePerm = 0;
-        PosKey= 0;
+        HashKey= 0UL;
     }
     
 }
