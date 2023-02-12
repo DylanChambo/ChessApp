@@ -30,10 +30,10 @@ public struct BitBoard
         Debug.Write("\n");
     }
 
-    //public static int PopBit(UInt64 *bitboard)
-    //{
-
-    //}
+    public void Reset()
+    {
+        bitBoard = 0UL;
+    }
 
     public int Count()
     {

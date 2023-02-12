@@ -15,6 +15,7 @@ public enum Pieces
     BlackRook,
     BlackQueen,
     BlackKing,
+    Offboard
 }
 
 public enum Files
