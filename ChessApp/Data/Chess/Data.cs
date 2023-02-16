@@ -9,4 +9,34 @@ public static class Data
     public static Sides[] PieceColour = { Sides.Both,
         Sides.White, Sides.White, Sides.White, Sides.White, Sides.White,
         Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black };
+
+
+    public static Files[] Files { get; private set; }
+    public static Ranks[] Ranks { get; private set; }
+
+    static Data()
+    {
+
+    }
+
+    private static void InitFileRankBoard()
+    {
+        Files = new Files[Board.VirtualBoardSize];
+        Ranks = new Ranks[Board.VirtualBoardSize];
+        for (int i = 0; i < Board.VirtualBoardSize; i++)
+        {
+            Files[i] = Chess.Files.None;
+            Ranks[i] = Chess.Ranks.None;
+        }
+
+        for (Ranks rank = Chess.Ranks.r1; rank <= Chess.Ranks.r8; rank++)
+        {
+            for (Files file = Chess.Files.A; file <= Chess.Files.H; file++)
+            {
+                int square = Conversion.ConvertFRTo120((int) file, (int) rank);
+                Files[square] = file;
+                Ranks[square] = rank;
+        }
+        }
+    }
 }

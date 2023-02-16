@@ -41,7 +41,7 @@ public enum Ranks
      r6,
      r7,
      r8,
-     rNone
+     None
 }
 
 public enum Sides
