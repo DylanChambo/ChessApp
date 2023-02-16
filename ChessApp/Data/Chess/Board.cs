@@ -21,24 +21,25 @@ public class Board
     public int[] PieceNum { get; set; }
     public int[] BigPiece { get; set; }
     public int[] MajorPiece { get; set; }
-
     public int[] MinorPiece { get; set; }
+    public int[] Material { get; set; }
 
     public Undo[] History { get; set; }
 
-    public int[,] PieceList { get; set; }
+    public Position[,] PieceList { get; set; }
 
     public Board()
     {
         Squares = new Pieces[VirtualBoardSize];
-        Pawns = new BitBoard[3];
+        Pawns = new BitBoard[2];
         KingSquare = new Position[2];
         PieceNum = new int[13];
-        BigPiece = new int[3];
-        MajorPiece = new int[3];
-        MinorPiece = new int[3];
+        BigPiece = new int[2];
+        MajorPiece = new int[2];
+        MinorPiece = new int[2];
+        Material = new int[2];
         History = new Undo[MaxGameMoves];
-        PieceList = new int[13,10];
+        PieceList = new Position[13,10];
         Fen.PopulateBoardFromFen(this);
     }
 
@@ -55,7 +56,7 @@ public class Board
             Squares[Conversion.To120(i)] = Pieces.None;
         }
 
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 2; i++)
         {
             BigPiece[i] = 0;
             MajorPiece[i] = 0;
@@ -78,4 +79,42 @@ public class Board
         HashKey= 0UL;
     }
     
+    public void UpdateMaterialLists()
+    {
+        for (int i = 0; i < VirtualBoardSize; i++)
+        {
+            Pieces piece = Squares[i];
+            if (piece != Pieces.Offboard || piece != Pieces.None )
+            {
+                Sides side = Data.PieceColour[(int)piece];
+                if (Data.PieceBig[(int) piece])
+                {
+                    BigPiece[(int)side]++;
+                }
+                if (Data.PieceMajor[(int)piece])
+                {
+                    MajorPiece[(int)side]++;
+                }
+                if (Data.PieceMinor[(int)piece])
+                {
+                    MinorPiece[(int)side]++;
+                }
+
+                Material[(int)side] += Data.PieceValue[(int)piece];
+
+                // Set Piece List and increment
+                PieceList[(int)piece, PieceNum[(int)piece]] = (Position) i;
+                PieceNum[(int)piece]++;
+
+                if (piece == Pieces.WhiteKing)
+                {
+                    KingSquare[(int)Sides.White] = (Position) i;
+                }
+                else if (piece == Pieces.BlackKing)
+                {
+                    KingSquare[(int)Sides.Black] = (Position) i;
+                }
+            }
+        }
+    }
 }
