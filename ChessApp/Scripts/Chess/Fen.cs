@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace ChessApp.Data.Chess;
+namespace ChessApp.Scripts.Chess;
 
 public class Fen
 {
@@ -22,18 +22,18 @@ public class Fen
     };
     public static void PopulateBoardFromFen(Board board, string fen = DefaultFen)
     {
-        
+
         string[] fenSplit = fen.Split(' ');
 
         board.ResetBoard();
 
         string fenBoard = fenSplit[0];
 
-        int pos = (int) Position.A8;
+        int pos = (int)Position.A8;
         foreach (char symbol in fenBoard)
         {
             if (symbol == '/')
-            { 
+            {
                 pos -= 18;
             }
             else if (char.IsDigit(symbol))
@@ -49,7 +49,7 @@ public class Fen
 
         board.Side = fenSplit[1] == "w" ? Sides.White : Sides.Black;
 
-        string castlingRights = (fenSplit.Length > 2) ? fenSplit[2] : "KQkq";
+        string castlingRights = fenSplit.Length > 2 ? fenSplit[2] : "KQkq";
         board.CastlePerm |= castlingRights.Contains('K') ? Castling.WhiteKingSide : 0;
         board.CastlePerm |= castlingRights.Contains('Q') ? Castling.WhiteQueenSide : 0;
         board.CastlePerm |= castlingRights.Contains('k') ? Castling.BlackKingSide : 0;
@@ -61,7 +61,7 @@ public class Fen
         {
             int file = fenSplit[3][0] - 'a';
             int rank = fenSplit[3][1] - '1';
-            board.EnPassantSquare = (Position) Conversion.ConvertFRTo120(file, rank);
+            board.EnPassantSquare = (Position)Conversion.ConvertFRTo120(file, rank);
         }
 
         //if (fenSplit.Length > 4)

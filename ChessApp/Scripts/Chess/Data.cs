@@ -1,4 +1,4 @@
-﻿namespace ChessApp.Data.Chess;
+﻿namespace ChessApp.Scripts.Chess;
 
 public static class Data
 {
@@ -6,9 +6,7 @@ public static class Data
     public static bool[] PieceMajor = { false, false, false, false, true, true, true, false, false, false, true, true, true };
     public static bool[] PieceMinor = { false, false, true, true, false, false, false, false, true, true, false, false, false };
     public static int[] PieceValue = { 0, 100, 300, 325, 500, 900, 99999, 100, 300, 325, 500, 900, 99999 };
-    public static Sides[] PieceColour = { Sides.Both,
-        Sides.White, Sides.White, Sides.White, Sides.White, Sides.White,
-        Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black };
+    public static Sides[] PieceColour = { Sides.Both, Sides.White, Sides.White, Sides.White, Sides.White, Sides.White, Sides.White, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black };
 
 
     public static Files[] Files { get; private set; }
@@ -16,7 +14,7 @@ public static class Data
 
     static Data()
     {
-
+        InitFileRankBoard();
     }
 
     private static void InitFileRankBoard()
@@ -33,10 +31,10 @@ public static class Data
         {
             for (Files file = Chess.Files.A; file <= Chess.Files.H; file++)
             {
-                int square = Conversion.ConvertFRTo120((int) file, (int) rank);
+                int square = Conversion.ConvertFRTo120((int)file, (int)rank);
                 Files[square] = file;
                 Ranks[square] = rank;
-        }
+            }
         }
     }
 }

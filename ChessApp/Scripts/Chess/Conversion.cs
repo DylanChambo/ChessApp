@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace ChessApp.Data.Chess;
+namespace ChessApp.Scripts.Chess;
 
 public static class Conversion
 {

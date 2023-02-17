@@ -1,17 +1,17 @@
-﻿namespace ChessApp.Data.Chess;
+﻿namespace ChessApp.Scripts.Chess;
 
 public static class HashKey
 {
     public static Random rand;
-    public static UInt64[,] PieceKeys {get; set;}
-    public static UInt64 SideKey { get; set; }
-    public static UInt64[] CastleKey { get; set; }
+    public static ulong[,] PieceKeys { get; set; }
+    public static ulong SideKey { get; set; }
+    public static ulong[] CastleKey { get; set; }
 
     static HashKey()
     {
         rand = new Random();
-        PieceKeys = new UInt64[13, 120];
-        CastleKey = new UInt64[16];
+        PieceKeys = new ulong[13, 120];
+        CastleKey = new ulong[16];
         InitHashKeys();
     }
 
@@ -23,13 +23,13 @@ public static class HashKey
         {
             for (j = 0; j < 120; j++)
             {
-                PieceKeys[i, j] = (ulong) rand.NextInt64();
+                PieceKeys[i, j] = (ulong)rand.NextInt64();
             }
         }
 
         SideKey = (ulong)rand.NextInt64();
 
-        for (i = 0; i <16; i++)
+        for (i = 0; i < 16; i++)
         {
             CastleKey[i] = (ulong)rand.NextInt64();
         }

@@ -1,6 +1,6 @@
 ﻿using BlazorState;
 using ChessApp.Data;
-using ChessApp.Data.Chess;
+using ChessApp.Scripts.Chess;
 
 namespace ChessApp.Features.Chess;
 
@@ -19,7 +19,10 @@ public partial class ChessState : State<ChessState>
 
     public void Init()
     {
-        Board = new Board();
+        Board = new Board("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+        Board.Pawns[0].PrintBitBoard();
+        Board.Pawns[1].PrintBitBoard();
+        Board.Pawns[2].PrintBitBoard();
     }
 
 

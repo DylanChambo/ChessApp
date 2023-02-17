@@ -1,4 +1,4 @@
-﻿namespace ChessApp.Data.Chess;
+﻿namespace ChessApp.Scripts.Chess;
 
 public class Undo
 {
@@ -6,5 +6,5 @@ public class Undo
     int CastlePerm;
     int EnPassant;
     int FiftyMove;
-    UInt64 PositionKey;
+    ulong PositionKey;
 }

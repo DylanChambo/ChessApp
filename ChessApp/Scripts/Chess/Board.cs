@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace ChessApp.Data.Chess;
+namespace ChessApp.Scripts.Chess;
 
 public class Board
 {
@@ -31,7 +31,7 @@ public class Board
     public Board()
     {
         Squares = new Pieces[VirtualBoardSize];
-        Pawns = new BitBoard[2];
+        Pawns = new BitBoard[3];
         KingSquare = new Position[2];
         PieceNum = new int[13];
         BigPiece = new int[2];
@@ -39,14 +39,21 @@ public class Board
         MinorPiece = new int[2];
         Material = new int[2];
         History = new Undo[MaxGameMoves];
-        PieceList = new Position[13,10];
+        PieceList = new Position[13, 10];
         Fen.PopulateBoardFromFen(this);
+        UpdateMaterialLists();
+    }
+
+    public Board(string FenString) : this()
+    {
+        Fen.PopulateBoardFromFen(this, FenString);
+        UpdateMaterialLists();
     }
 
     public void ResetBoard()
     {
         int i;
-        for(i = 0; i < VirtualBoardSize; i++)
+        for (i = 0; i < VirtualBoardSize; i++)
         {
             Squares[i] = Pieces.Offboard;
         }
@@ -61,9 +68,11 @@ public class Board
             BigPiece[i] = 0;
             MajorPiece[i] = 0;
             MinorPiece[i] = 0;
+        }
+        for (i = 0; i < 3; i++)
+        {
             Pawns[i].Reset();
         }
-
         for (i = 0; i < 13; i++)
         {
             PieceNum[i] = 0;
@@ -72,22 +81,22 @@ public class Board
         KingSquare[(int)Sides.White] = KingSquare[(int)Sides.Black] = Position.No_Square;
         Side = Sides.Both;
         EnPassantSquare = Position.No_Square;
-        FiftyMoveCount= 0;
+        FiftyMoveCount = 0;
         Ply = 0;
-        HisPly= 0;
+        HisPly = 0;
         CastlePerm = 0;
-        HashKey= 0UL;
+        HashKey = 0UL;
     }
-    
+
     public void UpdateMaterialLists()
     {
         for (int i = 0; i < VirtualBoardSize; i++)
         {
             Pieces piece = Squares[i];
-            if (piece != Pieces.Offboard || piece != Pieces.None )
+            if (piece != Pieces.Offboard && piece != Pieces.None)
             {
                 Sides side = Data.PieceColour[(int)piece];
-                if (Data.PieceBig[(int) piece])
+                if (Data.PieceBig[(int)piece])
                 {
                     BigPiece[(int)side]++;
                 }
@@ -103,18 +112,46 @@ public class Board
                 Material[(int)side] += Data.PieceValue[(int)piece];
 
                 // Set Piece List and increment
-                PieceList[(int)piece, PieceNum[(int)piece]] = (Position) i;
+                PieceList[(int)piece, PieceNum[(int)piece]] = (Position)i;
                 PieceNum[(int)piece]++;
 
                 if (piece == Pieces.WhiteKing)
                 {
-                    KingSquare[(int)Sides.White] = (Position) i;
+                    KingSquare[(int)Sides.White] = (Position)i;
                 }
                 else if (piece == Pieces.BlackKing)
                 {
-                    KingSquare[(int)Sides.Black] = (Position) i;
+                    KingSquare[(int)Sides.Black] = (Position)i;
+                }
+
+                // Set Pawns Bitboard
+                if (piece == Pieces.WhitePawn)
+                {
+                    Pawns[(int)Sides.White].SetBit(Conversion.To64(i));
+                    Pawns[(int)Sides.Both].SetBit(Conversion.To64(i));
+                }
+                else if (piece == Pieces.BlackPawn)
+                {
+                    Pawns[(int)Sides.Black].SetBit(Conversion.To64(i));
+                    Pawns[(int)Sides.Both].SetBit(Conversion.To64(i));
                 }
             }
         }
     }
+
+    public void CheckBoard()
+    {
+        int[] pieceNum = new int[13];
+        int[] bigPiece = new int[2];
+        int[] majorPiece = new int[2];
+        int[] minorPiece = new int[2];
+        int[] material = new int[2];
+
+        BitBoard[] pawns = new BitBoard[3];
+
+        pawns[(int)Sides.White] = Pawns[(int)Sides.White];
+        pawns[(int)Sides.Black] = Pawns[(int)Sides.Black];
+        pawns[(int)Sides.Both] = Pawns[(int)Sides.Both];
+    }
+
 }
