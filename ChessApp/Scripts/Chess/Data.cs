@@ -9,6 +9,15 @@ public static class Data
     public static Sides[] PieceColour = { Sides.Both, Sides.White, Sides.White, Sides.White, Sides.White, Sides.White, Sides.White, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black };
 
 
+    public static bool[] IsPieceKnight = { false, false, true, false, false, false, false, false, true, false, false, false, false };
+    public static bool[] IsPieceKing = { false, false, false, false, false, false, true, false, false, false, false, false, true };
+    public static bool[] IsPieceRookQueen = { false, false, false, false, true, true, false, false, false, false, true, true, false };
+    public static bool[] IsPieceBishopQueen = { false, false, false, true, false, true, false, false, false, true, false, true, false };
+    public static int[] KnightDirection = { -8, -19, -21, -12, 8, 19, 21, 12 };
+    public static int[] RookDirection = { -1, -10, 1, 10 };
+    public static int[] BishopDirection = { -9, -11, 9, 11 };
+    public static int[] KingDirection = { -1, -10, 1, 10, -9, -11, 9, 11 };
+
     public static Files[] Files { get; private set; }
     public static Ranks[] Ranks { get; private set; }
 

@@ -17,15 +17,12 @@ public class Board
     public int HisPly { get; set; }
     public int CastlePerm { get; set; }
     public ulong HashKey { get; set; }
-
     public int[] PieceNum { get; set; }
     public int[] BigPiece { get; set; }
     public int[] MajorPiece { get; set; }
     public int[] MinorPiece { get; set; }
     public int[] Material { get; set; }
-
     public Undo[] History { get; set; }
-
     public Position[,] PieceList { get; set; }
 
     public Board()
@@ -60,7 +57,7 @@ public class Board
 
         for (i = 0; i < BoardSize; i++)
         {
-            Squares[Conversion.To120(i)] = Pieces.None;
+            Squares[Conversion.Square64To120[i]] = Pieces.None;
         }
 
         for (i = 0; i < 2; i++)
@@ -127,13 +124,13 @@ public class Board
                 // Set Pawns Bitboard
                 if (piece == Pieces.WhitePawn)
                 {
-                    Pawns[(int)Sides.White].SetBit(Conversion.To64(i));
-                    Pawns[(int)Sides.Both].SetBit(Conversion.To64(i));
+                    Pawns[(int)Sides.White].SetBit(Conversion.Square120To64[i]);
+                    Pawns[(int)Sides.Both].SetBit(Conversion.Square120To64[i]);
                 }
                 else if (piece == Pieces.BlackPawn)
                 {
-                    Pawns[(int)Sides.Black].SetBit(Conversion.To64(i));
-                    Pawns[(int)Sides.Both].SetBit(Conversion.To64(i));
+                    Pawns[(int)Sides.Black].SetBit(Conversion.Square120To64[i]);
+                    Pawns[(int)Sides.Both].SetBit(Conversion.Square120To64[i]);
                 }
             }
         }
@@ -154,4 +151,85 @@ public class Board
         pawns[(int)Sides.Both] = Pawns[(int)Sides.Both];
     }
 
+    public bool IsSquareAttacked(Position pos, Sides side)
+    {
+        // Check Pawns
+        if (side == Sides.White)
+        {
+            if (Squares[(int)pos - 11] == Pieces.WhitePawn || Squares[(int)pos - 9] == Pieces.WhitePawn)
+            {
+                return true;
+            }
+        } else
+        {
+            if (Squares[(int)pos + 11] == Pieces.BlackPawn || Squares[(int)pos + 9] == Pieces.BlackPawn)
+            {
+                return true;
+            }
+        }
+
+        // Check Knights
+        for(int i = 0; i <= Data.KnightDirection.Length; i++)
+        {
+            Pieces piece = Squares[(int)pos + Data.KnightDirection[i]];
+            if (Data.IsPieceKnight[(int)piece] && Data.PieceColour[(int)piece] == side)
+            {
+                return true;
+            }
+        }
+
+        // Check Rooks and Queens
+        for (int i = 0; i <= Data.RookDirection.Length; i++)
+        {
+            int direction = Data.RookDirection[i];
+            int square = (int)pos + direction;
+            Pieces piece = Squares[square];
+            while (piece != Pieces.Offboard)
+            {
+                if (piece != Pieces.None)
+                {
+                    if (Data.IsPieceRookQueen[(int)piece] && Data.PieceColour[(int)piece] == side)
+                    {
+                        return true;
+                    }
+                    break;
+                }
+                square += direction;
+                piece = Squares[square];
+            } 
+        }
+
+        // Check Bishop and Queens
+        for (int i = 0; i <= Data.BishopDirection.Length; i++)
+        {
+            int direction = Data.BishopDirection[i];
+            int square = (int)pos + direction;
+            Pieces piece = Squares[square];
+            while (piece != Pieces.Offboard)
+            {
+                if (piece != Pieces.None)
+                {
+                    if (Data.IsPieceBishopQueen[(int)piece] && Data.PieceColour[(int)piece] == side)
+                    {
+                        return true;
+                    }
+                    break;
+                }
+                square += direction;
+                piece = Squares[square];
+            }
+        }
+
+        // Check Kings
+        for (int i = 0; i <= Data.KingDirection.Length; i++)
+        {
+            Pieces piece = Squares[(int)pos + Data.KingDirection[i]];
+            if (Data.IsPieceKing[(int)piece] && Data.PieceColour[(int)piece] == side)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

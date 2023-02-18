@@ -39,16 +39,6 @@ public static class Conversion
         }
     }
 
-    public static int To120(int n)
-    {
-        return Square64To120[n];
-    }
-
-    public static int To64(int n)
-    {
-        return Square120To64[n];
-    }
-
     /// <summary>
     /// Converts a File and rank to its equivalent index in a 120 array board representation.
     /// </summary>

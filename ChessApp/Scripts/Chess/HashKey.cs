@@ -41,7 +41,7 @@ public static class HashKey
 
         Pieces piece;
 
-        for (int i = Conversion.To120(0); i <= Conversion.To120(63); i++)
+        for (int i = Conversion.Square64To120[0]; i <= Conversion.Square64To120[63]; i++)
         {
             piece = board.Squares[i];
             if (piece != Pieces.Offboard && piece != Pieces.None)
