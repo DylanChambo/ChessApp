@@ -60,6 +60,28 @@ public static class MoveGenerator
                     AddCaptureMove(board, new Move((int)position, (int)position + 11, flag: (int)MoveFlags.EnPassant), list);
                 }
             }
+            // White Castling Moves
+            if ((board.CastlePerm & Castling.WhiteKingSide) != 0)
+            {
+                if (board.Squares[(int)Position.f1] == Pieces.None && board.Squares[(int)Position.g1] == Pieces.None)
+                {
+                    if (!board.IsSquareAttacked(Position.e1, Sides.Black) && !board.IsSquareAttacked(Position.f1, Sides.Black))
+                    {
+                        AddQuietMove(board, new Move((int)Position.e1, (int)Position.g1, flag: (int)MoveFlags.Castle), list);
+                    }
+                }
+
+            }
+            if ((board.CastlePerm & Castling.WhiteQueenSide) != 0)
+            {
+                if (board.Squares[(int)Position.d1] == Pieces.None && board.Squares[(int)Position.c1] == Pieces.None && board.Squares[(int)Position.b1] == Pieces.None)
+                {
+                    if (!board.IsSquareAttacked(Position.e1, Sides.Black) && !board.IsSquareAttacked(Position.d1, Sides.Black))
+                    {
+                        AddQuietMove(board, new Move((int)Position.e1, (int)Position.c1, flag: (int)MoveFlags.Castle), list);
+                    }
+                }
+            }
         }
         else
         // Black Pawn Move Generation
@@ -90,6 +112,30 @@ public static class MoveGenerator
                 if (position - 11 == board.EnPassantSquare)
                 {
                     AddCaptureMove(board, new Move((int)position, (int)position - 11, flag: (int)MoveFlags.EnPassant), list);
+                }
+                
+                
+            }
+            // Black Castling Moves
+            if ((board.CastlePerm & Castling.BlackKingSide) != 0)
+            {
+                if (board.Squares[(int)Position.f8] == Pieces.None && board.Squares[(int)Position.g8] == Pieces.None)
+                {
+                    if (!board.IsSquareAttacked(Position.e8, Sides.White) && !board.IsSquareAttacked(Position.f8, Sides.White))
+                    {
+                        AddQuietMove(board, new Move((int)Position.e8, (int)Position.g8, flag: (int)MoveFlags.Castle), list);
+                    }
+                }
+
+            }
+            if ((board.CastlePerm & Castling.BlackQueenSide) != 0)
+            {
+                if (board.Squares[(int)Position.d8] == Pieces.None && board.Squares[(int)Position.c8] == Pieces.None && board.Squares[(int)Position.b8] == Pieces.None)
+                {
+                    if (!board.IsSquareAttacked(Position.e8, Sides.White) && !board.IsSquareAttacked(Position.d8, Sides.White))
+                    {
+                        AddQuietMove(board, new Move((int)Position.e8, (int)Position.c8, flag: (int)MoveFlags.Castle), list);
+                    }
                 }
             }
         }

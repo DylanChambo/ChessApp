@@ -11,6 +11,8 @@ public partial class ChessState : State<ChessState>
     const string Rooks = "6k1/8/5r2/8/1nR5/5N2/8/6K1 w - - 0 1";
     const string Queens = "6k1/8/4nq2/8/1QR5/5N2/1N6/6K1 w - - 0 1";
     const string Bishops = "6k1/1b6/4N3/8/1n4B1/1B3N2/1N6/2b3K1 b - - 0 1";
+    const string Castling1 = "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1";
+    const string Castling2 = "3rk2r/8/8/8/8/8/8/R3K2R w KQk - 0 1";
     public bool IsFlipped { get; private set; }
     public bool Mobile { get; set; }
     public Board Board { get; set; }
@@ -24,7 +26,7 @@ public partial class ChessState : State<ChessState>
 
     public void Init()
     {
-        Board = new Board();
+        Board = new Board(Castling2);
         MoveList moveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, moveList);
         moveList.Display();

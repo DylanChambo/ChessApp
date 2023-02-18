@@ -155,7 +155,7 @@ public class Board
         }
 
         // Check Knights
-        for(int i = 0; i <= Data.KnightDirection.Length; i++)
+        for(int i = 0; i < Data.KnightDirection.Length; i++)
         {
             Pieces piece = Squares[(int)pos + Data.KnightDirection[i]];
             if (Data.IsPieceKnight[(int)piece] && Data.PieceColour[(int)piece] == side)
@@ -165,7 +165,7 @@ public class Board
         }
 
         // Check Rooks and Queens
-        for (int i = 0; i <= Data.RookDirection.Length; i++)
+        for (int i = 0; i < Data.RookDirection.Length; i++)
         {
             int direction = Data.RookDirection[i];
             int square = (int)pos + direction;
@@ -186,7 +186,7 @@ public class Board
         }
 
         // Check Bishop and Queens
-        for (int i = 0; i <= Data.BishopDirection.Length; i++)
+        for (int i = 0; i < Data.BishopDirection.Length; i++)
         {
             int direction = Data.BishopDirection[i];
             int square = (int)pos + direction;
@@ -207,7 +207,7 @@ public class Board
         }
 
         // Check Kings
-        for (int i = 0; i <= Data.KingDirection.Length; i++)
+        for (int i = 0; i < Data.KingDirection.Length; i++)
         {
             Pieces piece = Squares[(int)pos + Data.KingDirection[i]];
             if (Data.IsPieceKing[(int)piece] && Data.PieceColour[(int)piece] == side)

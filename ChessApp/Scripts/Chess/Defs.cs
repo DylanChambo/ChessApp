@@ -68,6 +68,6 @@ public static class Castling
 {
     public const int WhiteKingSide = 1;
     public const int WhiteQueenSide = 2;
-    public const int BlackKingSide = 1;
-    public const int BlackQueenSide = 2;
+    public const int BlackKingSide = 4;
+    public const int BlackQueenSide = 8;
 }
