@@ -136,21 +136,6 @@ public class Board
         }
     }
 
-    public void CheckBoard()
-    {
-        int[] pieceNum = new int[13];
-        int[] bigPiece = new int[2];
-        int[] majorPiece = new int[2];
-        int[] minorPiece = new int[2];
-        int[] material = new int[2];
-
-        BitBoard[] pawns = new BitBoard[3];
-
-        pawns[(int)Sides.White] = Pawns[(int)Sides.White];
-        pawns[(int)Sides.Black] = Pawns[(int)Sides.Black];
-        pawns[(int)Sides.Both] = Pawns[(int)Sides.Both];
-    }
-
     public bool IsSquareAttacked(Position pos, Sides side)
     {
         // Check Pawns
