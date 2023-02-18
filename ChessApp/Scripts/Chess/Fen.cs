@@ -29,7 +29,7 @@ public class Fen
 
         string fenBoard = fenSplit[0];
 
-        int pos = (int)Position.A8;
+        int pos = (int)Position.a8;
         foreach (char symbol in fenBoard)
         {
             if (symbol == '/')

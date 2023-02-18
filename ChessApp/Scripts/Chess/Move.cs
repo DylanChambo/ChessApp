@@ -1,4 +1,6 @@
-﻿namespace ChessApp.Scripts.Chess;
+﻿using System.Diagnostics;
+
+namespace ChessApp.Scripts.Chess;
 
 public struct Move
 {
@@ -11,6 +13,10 @@ public struct Move
     const int CastleBit = 26;
     public int move { get; set; }
     public int score { get; set; }
+    public Move(int from, int to, int capture = (int)Pieces.None, int promotion = (int)Pieces.None, int flag = (int)MoveFlags.None)
+    {
+        move = (from) | (to << ToLSB) | (promotion << PromotionLSB) | (capture << CaptureLSB) | (flag << EnPassantBit);
+    }
 
     public int From()
     {
@@ -30,6 +36,11 @@ public struct Move
     public int Captured()
     {
         return (move >> CaptureLSB)& 0xF;
+    }
+
+    public int MoveFlag()
+    {
+        return (move >> EnPassantBit) & 0xF;
     }
 
     public bool IsCapture()
@@ -57,4 +68,12 @@ public struct Move
         return ((move >> CastleBit) & 0x1F) > 0;
     }
 
+}
+
+public enum MoveFlags
+{
+    None,
+    EnPassant,
+    PawnStart,
+    Castle = 4,
 }

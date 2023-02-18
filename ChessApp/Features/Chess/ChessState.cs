@@ -19,10 +19,10 @@ public partial class ChessState : State<ChessState>
 
     public void Init()
     {
-        Board = new Board("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
-        Board.Pawns[0].PrintBitBoard();
-        Board.Pawns[1].PrintBitBoard();
-        Board.Pawns[2].PrintBitBoard();
+        Board = new Board("rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKB1R w KQkq e6 0 1");
+        MoveList moveList = new MoveList();
+        MoveGenerator.GenerateAllMoves(Board, moveList);
+        moveList.Display();
     }
 
 
