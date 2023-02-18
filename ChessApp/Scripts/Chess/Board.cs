@@ -65,6 +65,7 @@ public class Board
             BigPiece[i] = 0;
             MajorPiece[i] = 0;
             MinorPiece[i] = 0;
+            Material[i] = 0;
         }
         for (i = 0; i < 3; i++)
         {

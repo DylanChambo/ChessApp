@@ -13,6 +13,7 @@ public static class Data
     public static bool[] IsPieceKing = { false, false, false, false, false, false, true, false, false, false, false, false, true };
     public static bool[] IsPieceRookQueen = { false, false, false, false, true, true, false, false, false, false, true, true, false };
     public static bool[] IsPieceBishopQueen = { false, false, false, true, false, true, false, false, false, true, false, true, false };
+    public static bool[] IsPieceSliding = { false, false, false, true, true, true, false, false, false, true, true, true, false };
     public static int[] KnightDirection = { -8, -19, -21, -12, 8, 19, 21, 12 };
     public static int[] RookDirection = { -1, -10, 1, 10 };
     public static int[] BishopDirection = { -9, -11, 9, 11 };
