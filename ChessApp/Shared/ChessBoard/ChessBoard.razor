@@ -1,6 +1,7 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@using ChessApp.Features.Device;
 @using ChessApp.Features.Mouse;
 @using Microsoft.JSInterop;
 @using ChessApp.Scripts.Chess;
@@ -29,7 +30,8 @@
 @code {
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
-    private Boolean mobile => chessState.Mobile;
+    DeviceState deviceState => GetState<DeviceState>();
+    public bool mobile => deviceState.Mobile;
     //private Position movingPos => chessState.MovingPositon;
 
     private bool shouldRender = false;
@@ -40,7 +42,7 @@
     {
         if (firstRender)
         {
-            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });        
+            await Mediator.Send(new DeviceState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });
         }
     }
 

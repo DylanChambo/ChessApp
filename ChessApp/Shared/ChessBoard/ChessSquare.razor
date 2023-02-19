@@ -1,6 +1,7 @@
 ﻿@using ChessApp.Data;
 @using BlazorState
 @using ChessApp.Features.Chess;
+@using ChessApp.Features.Device;
 @using ChessApp.Features.Mouse;
 @using ChessApp.Scripts.Chess;
 
@@ -69,11 +70,13 @@
     }
     private bool isFlipped => chessState.IsFlipped;
     //public Position movingPiece => chessState.MovingPositon;
-    public bool mobile => chessState.Mobile;
     //public bool canMoveTo => chessState.Board.Moves.Contains(new Move(movingPiece, pos));
     private Pieces piece => chessState.Board.Squares[Conversion.ConvertFRTo120(file, rank)];
     //public IEnumerable<Move> moves => chessState.Board.Moves.Where(m => m.Equals(new Move(movingPiece, pos)));
     //public GameState gameState => chessState.Board.GameState;
+
+    DeviceState deviceState => GetState<DeviceState>();
+    public bool mobile => deviceState.Mobile;
 
     MouseState mouseState => GetState<MouseState>();
     public Coord mousePos => mouseState.MousePos;

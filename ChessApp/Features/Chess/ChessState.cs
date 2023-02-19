@@ -15,14 +15,12 @@ public partial class ChessState : State<ChessState>
     const string Castling1 = "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1";
     const string Castling2 = "3rk2r/8/8/8/8/8/8/R3K2R w KQk - 0 1";
     public bool IsFlipped { get; private set; }
-    public bool Mobile { get; set; }
     public Board Board { get; set; }
     
 
     public override void Initialize()
     { 
         IsFlipped = false;
-        Mobile = false;
     }
 
     public void Init()
