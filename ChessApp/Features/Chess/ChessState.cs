@@ -15,8 +15,10 @@ public partial class ChessState : State<ChessState>
     const string Castling1 = "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1";
     const string Castling2 = "3rk2r/8/8/8/8/8/8/R3K2R w KQk - 0 1";
     public bool IsFlipped { get; private set; }
-    public Board Board { get; set; }
-    
+    public Board Board { get; private set; }
+    public MoveList MoveList { get; private set; }
+
+
 
     public override void Initialize()
     { 
@@ -26,11 +28,11 @@ public partial class ChessState : State<ChessState>
     public void Init()
     {
         Board = new Board();
-        MoveList moveList = new MoveList();
-        MoveGenerator.GenerateAllMoves(Board, moveList);
-        for (int i = 0; i < moveList.count; i++)
+        MoveList = new MoveList();
+        MoveGenerator.GenerateAllMoves(Board, MoveList);
+        for (int i = 0; i < MoveList.count; i++)
         {
-            int move = moveList.moves[i].move;
+            int move = MoveList.moves[i].move;
             if (!Board.MakeMove(move))
             {
                 continue;
