@@ -73,6 +73,6 @@ public class Fen
         //    board.FullmoveCount = int.Parse(fenSplit[5]);
         //}
 
-        board.HashKey = HashKey.GenerateHashKey(board);
+        board.PositionKey = HashKey.GenerateHashKey(board);
     }
 }

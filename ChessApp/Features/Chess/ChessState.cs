@@ -26,7 +26,7 @@ public partial class ChessState : State<ChessState>
 
     public void Init()
     {
-        Board = new Board(Castling2);
+        Board = new Board();
         MoveList moveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, moveList);
         moveList.Display();

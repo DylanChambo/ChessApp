@@ -19,7 +19,7 @@ public class MoveList
         Debug.WriteLine($"Total Moves: {count}");
         for (int i = 0; i < count; i++)
         {
-            Debug.WriteLine($"From: {(Position)moves[i].From()} To: {(Position)moves[i].To()}, {(Pieces) moves[i].Captured()}, {(Pieces) moves[i].Promoted()}, {(MoveFlags)moves[i].MoveFlag()}");
+            Debug.WriteLine($"From: {(Position)Move.From(moves[i].move)} To: {(Position)Move.To(moves[i].move)}, {(Pieces) Move.Captured(moves[i].move)}, {(Pieces) Move.Promoted(moves[i].move)}, {(MoveFlags)Move.MoveFlag(moves[i].move)}");
         }
     }
 }

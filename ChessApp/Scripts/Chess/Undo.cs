@@ -1,10 +1,10 @@
 ﻿namespace ChessApp.Scripts.Chess;
 
-public class Undo
+public struct Undo
 {
-    int Move;
-    int CastlePerm;
-    int EnPassant;
-    int FiftyMove;
-    ulong PositionKey;
+    public int Move;
+    public int CastlePerm;
+    public Position EnPassant;
+    public int FiftyMove;
+    public ulong PositionKey;
 }

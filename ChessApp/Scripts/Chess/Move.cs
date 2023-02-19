@@ -17,53 +17,50 @@ public struct Move
     {
         move = (from) | (to << ToLSB) | (promotion << PromotionLSB) | (capture << CaptureLSB) | (flag << EnPassantBit);
     }
-
-    public int From()
+    public static int From(int move)
     {
-        return (move >> FromLSB)& 0xFF;
+        return (move >> FromLSB) & 0xFF;
     }
 
-    public int To() 
-    { 
+    public static int To(int move)
+    {
         return (move >> ToLSB) & 0xFF;
     }
 
-    public int Promoted() 
+    public static int Promoted(int move)
     {
         return (move >> PromotionLSB) & 0xF;
     }
 
-    public int Captured()
+    public static int Captured(int move)
     {
-        return (move >> CaptureLSB)& 0xF;
+        return (move >> CaptureLSB) & 0xF;
     }
 
-    public int MoveFlag()
+    public static int MoveFlag(int move)
     {
         return (move >> EnPassantBit) & 0xF;
     }
 
-    public bool IsCapture()
+    public static bool IsCapture(int move)
     {
         return ((move >> CaptureLSB) & 0x1F) > 0;
     }
 
-    public bool IsPromotion()
+    public static bool IsPromotion(int move)
     {
-        return Promoted() > 0;
+        return Promoted(move) > 0;
     }
-
-    public bool IsEnPassant()
+    public static bool IsEnPassant(int move)
     {
         return ((move >> EnPassantBit) & 1) > 0;
     }
-
-    public bool IsPawnStart()
+    public static bool IsPawnStart(int move)
     {
         return ((move >> PawnStartBit) & 0x1F) > 0;
     }
 
-    public bool IsCastle()
+    public static bool IsCastle(int move)
     {
         return ((move >> CastleBit) & 0x1F) > 0;
     }
