@@ -1,6 +1,7 @@
 ﻿using BlazorState;
 using ChessApp.Data;
 using ChessApp.Scripts.Chess;
+using System.Diagnostics;
 
 namespace ChessApp.Features.Chess;
 
@@ -29,7 +30,16 @@ public partial class ChessState : State<ChessState>
         Board = new Board();
         MoveList moveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, moveList);
-        moveList.Display();
+        for (int i = 0; i < moveList.count; i++)
+        {
+            int move = moveList.moves[i].move;
+            if (!Board.MakeMove(move))
+            {
+                continue;
+            }
+            Debug.WriteLine($"Made: {(Position)Move.From(move)}{(Position)Move.To(move)}");
+            Board.TakeMove();
+        }
     }
 
 

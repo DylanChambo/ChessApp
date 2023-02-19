@@ -393,7 +393,7 @@ public class Board
             }
         }
 
-        MovePiece(to, from);
+        MovePiece(from, to);
         Pieces promotedPiece = (Pieces)Move.Promoted(move);
         if (promotedPiece != Pieces.None)
         {
