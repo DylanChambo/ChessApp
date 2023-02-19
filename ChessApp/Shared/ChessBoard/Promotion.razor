@@ -1,25 +1,27 @@
-﻿@*@using ChessApp.Data;
+﻿@using ChessApp.Data;
+@using ChessApp.Scripts.Chess;
 
 <div class="promotion-box">
-    @foreach (Move move in moves)
+    @foreach (int move in moves)
     {
-        <img @onclick="e => Click(move, e)" draggable="false" class="piece" src="images/@(side + $"{move.MoveFlag}".Remove(0, 9)).svg" />
+        <img @onclick="e => Click(move, e)" draggable="false" class="piece" src="images/@((Pieces)Move.Promoted(move)).svg" />
     }
+    <div @onclick="e => Click(-1, e)">🗙</div>
 </div>
 
 @code {
     [Parameter]
-    public Side side { get; set; }
+    public Sides side { get; set; }
 
     [Parameter]
-    public List<Move> moves { get; set; }
+    public List<int> moves { get; set; }
 
     [Parameter]
-    public EventCallback<Move> OnMoveSelect { get; set; }
+    public EventCallback<int> OnMoveSelect { get; set; }
 
 
-    async Task Click(Move move, MouseEventArgs e)
+    async Task Click(int move, MouseEventArgs e)
     {
         await OnMoveSelect.InvokeAsync(move);
     }
-}*@
+}

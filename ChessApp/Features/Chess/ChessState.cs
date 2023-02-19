@@ -23,24 +23,25 @@ public partial class ChessState : State<ChessState>
     public override void Initialize()
     { 
         IsFlipped = false;
-    }
-
-    public void Init()
-    {
         Board = new Board();
         MoveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, MoveList);
-        for (int i = 0; i < MoveList.count; i++)
-        {
-            int move = MoveList.moves[i].move;
-            if (!Board.MakeMove(move))
-            {
-                continue;
-            }
-            Debug.WriteLine($"Made: {(Position)Move.From(move)}{(Position)Move.To(move)}");
-            Board.TakeMove();
-        }
     }
+
+    //public void Init()
+    //{
+
+    //    for (int i = 0; i < MoveList.count; i++)
+    //    {
+    //        int move = MoveList.moves[i].move;
+    //        if (!Board.MakeMove(move))
+    //        {
+    //            continue;
+    //        }
+    //        Debug.WriteLine($"Made: {(Position)Move.From(move)}{(Position)Move.To(move)}");
+    //        Board.TakeMove();
+    //    }
+    //}
 
 
 }

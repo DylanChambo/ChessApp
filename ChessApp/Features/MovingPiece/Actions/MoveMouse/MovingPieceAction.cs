@@ -7,8 +7,12 @@ public partial class MovingPieceState
 {
     public class MovingPieceAction : IAction
     {
-        public Files File { get; set; }
-        public Ranks Rank { get; set; }
+        public Position Position { get; set; }
+
+        public MovingPieceAction(Position position)
+        {
+            Position = position;
+        }
     }
 }
 

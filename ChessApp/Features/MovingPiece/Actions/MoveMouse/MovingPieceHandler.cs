@@ -13,8 +13,7 @@ public partial class MovingPieceState
 
         public override Task<Unit> Handle(MovingPieceAction movingPieceAction, CancellationToken cancellationToken)
         {
-            movingPieceState.File = movingPieceAction.File;
-            movingPieceState.Rank = movingPieceAction.Rank;
+            movingPieceState.Position = movingPieceAction.Position;
             return Unit.Task;
         }
     }
