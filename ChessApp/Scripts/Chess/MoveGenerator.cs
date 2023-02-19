@@ -91,7 +91,7 @@ public static class MoveGenerator
                 Position position = board.PieceList[(int)Pieces.BlackPawn, i];
                 if (board.Squares[(int)position - 10] == Pieces.None)
                 {
-                    AddWhitePawnMove(board, (int)position, (int)position - 10, list);
+                    AddBlackPawnMove(board, (int)position, (int)position - 10, list);
                     if (Data.Ranks[(int)position] == Ranks.r7 && board.Squares[(int)position - 20] == Pieces.None)
                     {
                         AddQuietMove(board, new Move((int)position, (int)position - 20, flag: (int)MoveFlags.PawnStart), list);
