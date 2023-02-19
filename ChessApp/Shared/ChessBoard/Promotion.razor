@@ -6,7 +6,8 @@
     {
         <img @onclick="e => Click(move, e)" draggable="false" class="piece" src="images/@((Pieces)Move.Promoted(move)).svg" />
     }
-    <div @onclick="e => Click(-1, e)">🗙</div>
+
+    <div class="close" @onclick="e => Click(-1, e)">🗙</div>
 </div>
 
 @code {
