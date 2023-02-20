@@ -26,6 +26,10 @@ public partial class ChessState : State<ChessState>
         Board = new Board();
         MoveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, MoveList);
+        for (int i = 1; i <= 6; i++)
+        {
+            Debug.WriteLine($"Depth: {i}) Leaf Moves: {Board.Perft(i)}");
+        }
     }
 
     //public void Init()

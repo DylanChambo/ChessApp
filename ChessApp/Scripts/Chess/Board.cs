@@ -485,4 +485,28 @@ public class Board
             AddPiece(from, Side == Sides.White ? Pieces.WhitePawn: Pieces.BlackPawn);
         }
     }
+
+    public int Perft(int depth)
+    {
+        if (depth == 0)
+        {
+            return 1;
+        }
+
+        int leafNodes = 0;
+        MoveList list = new MoveList();
+        MoveGenerator.GenerateAllMoves(this, list);
+
+        for (int i = 0; i < list.count; i++)
+        {
+            if (!MakeMove(list.moves[i].move))
+            {
+                continue;
+            }
+            leafNodes += Perft(depth - 1);
+            TakeMove();
+        }
+
+        return leafNodes;
+    }
 }
