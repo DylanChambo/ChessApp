@@ -1,6 +1,7 @@
 ﻿using BlazorState;
 using ChessApp.Data;
 using ChessApp.Scripts.Chess;
+using ChessApp.Scripts.Chess.AI;
 using System.Diagnostics;
 
 namespace ChessApp.Features.Chess;
@@ -26,10 +27,7 @@ public partial class ChessState : State<ChessState>
         Board = new Board();
         MoveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, MoveList);
-        for (int i = 1; i <= 6; i++)
-        {
-            Debug.WriteLine($"Depth: {i}) Leaf Moves: {Board.Perft(i)}");
-        }
+        Search.SearchPosition(Board);
     }
 
     //public void Init()
