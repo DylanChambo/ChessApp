@@ -24,6 +24,7 @@ public class Board
     public int[] Material { get; set; }
     public Undo[] History { get; set; }
     public Position[,] PieceList { get; set; }
+    public PositonTable positionTable { get; set; }
 
     public Board()
     {
@@ -37,6 +38,7 @@ public class Board
         Material = new int[2];
         History = new Undo[MaxGameMoves];
         PieceList = new Position[13, 10];
+        positionTable = new PositonTable();
         Fen.PopulateBoardFromFen(this);
         UpdateMaterialLists();
     }
@@ -84,6 +86,8 @@ public class Board
         HisPly = 0;
         CastlePerm = 0;
         PositionKey = 0UL;
+
+        positionTable.Init();
     }
 
     public void UpdateMaterialLists()
