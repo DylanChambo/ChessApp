@@ -53,11 +53,11 @@ public static class MoveGenerator
                 }
                 if (position + 9 == board.EnPassantSquare)
                 {
-                    AddCaptureMove(board, new Move((int)position, (int)position + 9, flag: (int)MoveFlags.EnPassant), list);
+                    AddEnPassantMove(board, new Move((int)position, (int)position + 9, flag: (int)MoveFlags.EnPassant), list);
                 }
                 if (position + 11 == board.EnPassantSquare)
                 {
-                    AddCaptureMove(board, new Move((int)position, (int)position + 11, flag: (int)MoveFlags.EnPassant), list);
+                    AddEnPassantMove(board, new Move((int)position, (int)position + 11, flag: (int)MoveFlags.EnPassant), list);
                 }
             }
             // White Castling Moves
@@ -99,19 +99,19 @@ public static class MoveGenerator
                 }
                 if (Data.Files[(int)position - 9] != Files.None && Data.PieceColour[(int)board.Squares[(int)position - 9]] == Sides.White)
                 {
-                    AddWhitePawnCaptureMove(board, (int)position, (int)position - 9, (int)board.Squares[(int)position - 9], list);
+                    AddBlackPawnCaptureMove(board, (int)position, (int)position - 9, (int)board.Squares[(int)position - 9], list);
                 }
                 if (Data.Files[(int)position - 11] != Files.None && Data.PieceColour[(int)board.Squares[(int)position - 11]] == Sides.White)
                 {
-                    AddWhitePawnCaptureMove(board, (int)position, (int)position - 11, (int)board.Squares[(int)position - 11], list);
+                    AddBlackPawnCaptureMove(board, (int)position, (int)position - 11, (int)board.Squares[(int)position - 11], list);
                 }
                 if (position - 9 == board.EnPassantSquare)
                 {
-                    AddCaptureMove(board, new Move((int)position, (int)position - 9, flag: (int)MoveFlags.EnPassant), list);
+                    AddEnPassantMove(board, new Move((int)position, (int)position - 9, flag: (int)MoveFlags.EnPassant), list);
                 }
                 if (position - 11 == board.EnPassantSquare)
                 {
-                    AddCaptureMove(board, new Move((int)position, (int)position - 11, flag: (int)MoveFlags.EnPassant), list);
+                    AddEnPassantMove(board, new Move((int)position, (int)position - 11, flag: (int)MoveFlags.EnPassant), list);
                 }
                 
                 
