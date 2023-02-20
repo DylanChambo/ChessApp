@@ -1,17 +1,45 @@
-﻿namespace ChessApp.Scripts.Chess.AI;
+﻿using ChessApp.Shared.ChessBoard;
 
-public static class Search
+namespace ChessApp.Scripts.Chess.AI;
+
+public class Search
 {
-    public static void SearchPosition(Board board)
+    const int Infinity = 9999999;
+    const int MaxDepth = 5;
+    const int Mate = 5000;
+
+    Board board { get; set; }
+    bool abortSearch = false;
+
+    public Search(Board board)
     {
+        this.board = board;
+    }
+    
+    public int SearchPosition()
+    {
+        board.Ply = 0;
         DateTime time = DateTime.Now;
-        MoveList moveList = new MoveList();
-        MoveGenerator.GenerateAllMoves(board, moveList);
-        //Console.WriteLine($"Depth: {6}) Leaf Moves: {board.Perft(6)}, Time: {DateTime.Now - time}");
-       
+
+        int bestScore = -Infinity;
+        int bestMove = 0;
+        int depth;
+
+        for (depth = 1; depth <= MaxDepth; depth++)
+        {
+            bestScore = SearchMoves(depth, -Infinity, Infinity);
+            bestMove = board.positionTable.GetMove(board.PositionKey);
+            if (abortSearch)
+            {
+                break;
+            }
+        }
+
+        Console.WriteLine($"Depth: {depth}) Best Move: {(Position)Move.From(bestMove)}{(Position)Move.To(bestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
+        return bestMove;
     }
 
-    private static bool IsRepetition(Board board)
+    private bool IsRepetition()
     {
         for (int i = board.HisPly - board.FiftyMoveCount; i < board.HisPly - 1; i++)
         {
@@ -23,12 +51,68 @@ public static class Search
         return false;
     }
 
-    private static int SearchMoves(int depth, int alpha, int beta, int board)
+    private int SearchMoves(int depth, int alpha, int beta)
     {
-        return 0;
+        if (depth == 0)
+        {
+            return Evaluate.EvaluatePosition(board);
+        }
+
+        if (IsRepetition() || board.FiftyMoveCount >= 100) { return 0; }
+
+        if (board.Ply >= MaxDepth - 1)
+        {
+            return Evaluate.EvaluatePosition(board);
+        }
+
+        MoveList list = new MoveList();
+        MoveGenerator.GenerateAllMoves(board, list);
+        int Score;
+        int bestMove = 0;
+        int legal = 0;
+        int oldAlpha = alpha;
+
+        for (int i = 0; i < list.count; i++)
+        {
+            if (!board.MakeMove(list.moves[i].move))
+            {
+                continue;
+            }
+            legal++;
+            Score = -SearchMoves(depth - 1, -beta, -alpha);
+            board.TakeMove();
+
+            if (Score > alpha)
+            {
+                if (Score >= beta)
+                {
+                    return beta;
+                }
+                alpha = Score;
+                bestMove = list.moves[i].move;
+            }
+        }
+
+        if (legal == 0)
+        {
+            if (board.IsSquareAttacked(board.KingSquare[(int)board.Side], board.Side ^ Sides.Black))
+            {
+                return -Mate + board.Ply;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        if (alpha != oldAlpha)
+        {
+            board.positionTable.StoreMove(board.PositionKey, bestMove);
+        }
+        return alpha;
     }
 
-    private static int Quiescence(int alpha, int beta, int board)
+    private int Quiescence(int alpha, int beta)
     {
         return 0;
     }

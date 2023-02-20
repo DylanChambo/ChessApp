@@ -19,7 +19,7 @@ public partial class ChessState : State<ChessState>
     public Board Board { get; private set; }
     public MoveList MoveList { get; private set; }
 
-
+    private Search Search { get; set; }
 
     public override void Initialize()
     { 
@@ -27,7 +27,8 @@ public partial class ChessState : State<ChessState>
         Board = new Board();
         MoveList = new MoveList();
         MoveGenerator.GenerateAllMoves(Board, MoveList);
-        Search.SearchPosition(Board);
+        Search = new Search(Board);
+        Search.SearchPosition();
     }
 
     //public void Init()
