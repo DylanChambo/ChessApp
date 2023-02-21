@@ -14,5 +14,8 @@
 </div>
 
 @code {
-
+    async protected override Task OnInitializedAsync()
+    {
+        await Mediator.Send(new ChessState.StartGameAction());
+    }
 }

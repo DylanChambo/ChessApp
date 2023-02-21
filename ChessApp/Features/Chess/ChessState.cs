@@ -3,6 +3,7 @@ using ChessApp.Data;
 using ChessApp.Scripts.Chess;
 using ChessApp.Scripts.Chess.AI;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ChessApp.Features.Chess;
 
@@ -19,16 +20,34 @@ public partial class ChessState : State<ChessState>
     public Board Board { get; private set; }
     public MoveList MoveList { get; private set; }
 
-    private Search Search { get; set; }
-
+    public Player BlackPlayer;
+    public Player WhitePlayer;
     public override void Initialize()
     { 
         IsFlipped = false;
+    }
+
+    public void Start(Player white = Player.You, Player black = Player.You)
+    {
         Board = new Board();
         MoveList = new MoveList();
-        MoveGenerator.GenerateAllMoves(Board, MoveList);
-        Search = new Search(Board);
-        Search.SearchPosition();
+        WhitePlayer = white;
+        BlackPlayer = black;
+
+        UpdateMoveList();
+    }
+
+    public void UpdateMoveList()
+    {
+        MoveList.count = 0;
+        if (Board.Side == Sides.White && WhitePlayer == Player.You)
+        {
+            MoveGenerator.GenerateAllMoves(Board, MoveList);
+        }
+        else if (Board.Side == Sides.Black && BlackPlayer == Player.You)
+        {
+            MoveGenerator.GenerateAllMoves(Board, MoveList);
+        }
     }
 
     //public void Init()

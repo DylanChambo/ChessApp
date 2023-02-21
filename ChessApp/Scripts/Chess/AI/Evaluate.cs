@@ -7,7 +7,7 @@ public class Evaluate
     0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,   0   ,
     10  ,   10  ,   0   ,   -10 ,   -10 ,   0   ,   10  ,   10  ,
     5   ,   0   ,   0   ,   5   ,   5   ,   0   ,   0   ,   5   ,
-    0   ,   0   ,   10  ,   20  ,   20  ,   10  ,   0   ,   0   ,
+    0   ,   0   ,   10  ,   20  ,   25  ,   10  ,   0   ,   0   ,
     5   ,   5   ,   5   ,   10  ,   10  ,   5   ,   5   ,   5   ,
     10  ,   10  ,   10  ,   20  ,   20  ,   10  ,   10  ,   10  ,
     20  ,   20  ,   20  ,   30  ,   30  ,   20  ,   20  ,   20  ,
@@ -74,14 +74,14 @@ public class Evaluate
         int score = board.Material[(int)Sides.White] - board.Material[(int)Sides.Black];
 
         Pieces piece = Pieces.WhitePawn;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score += PawnTable[Conversion.Square120To64[(int)pos]];
         }
 
         piece = Pieces.BlackPawn;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score -= PawnTable[Data.Mirror64[Conversion.Square120To64[(int)pos]]];
@@ -89,14 +89,14 @@ public class Evaluate
 
 
         piece = Pieces.WhiteKnight;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score += KnightTable[Conversion.Square120To64[(int)pos]];
         }
 
         piece = Pieces.BlackKnight;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score -= KnightTable[Data.Mirror64[Conversion.Square120To64[(int)pos]]];
@@ -104,14 +104,14 @@ public class Evaluate
 
 
         piece = Pieces.WhiteBishop;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score += BishopTable[Conversion.Square120To64[(int)pos]];
         }
 
         piece = Pieces.BlackBishop;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score -= BishopTable[Data.Mirror64[Conversion.Square120To64[(int)pos]]];
@@ -119,14 +119,14 @@ public class Evaluate
 
 
         piece = Pieces.WhiteRook;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score += RookTable[Conversion.Square120To64[(int)pos]];
         }
 
         piece = Pieces.BlackRook;
-        for (int i = 0; i <= board.PieceNum[(int)piece]; i++)
+        for (int i = 0; i < board.PieceNum[(int)piece]; i++)
         {
             Position pos = board.PieceList[(int)piece, i];
             score -= RookTable[Data.Mirror64[Conversion.Square120To64[(int)pos]]];

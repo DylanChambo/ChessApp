@@ -314,6 +314,7 @@ public class Board
 
     public bool MakeMove(int move)
     {
+        if (move == 0) return false;
         Position from = (Position) Move.From(move);
         Position to = (Position) Move.To(move);
 

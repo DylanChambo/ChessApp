@@ -4,6 +4,7 @@
 @using ChessApp.Features.Device;
 @using ChessApp.Features.Mouse;
 @using ChessApp.Features.MovingPiece;
+@using ChessApp.Scripts.Chess.AI;
 @using Microsoft.JSInterop;
 @using ChessApp.Scripts.Chess;
 
@@ -29,15 +30,12 @@
 
 
 @code {
-    ChessState chessState => GetState<ChessState>();
+    public ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
     DeviceState deviceState => GetState<DeviceState>();
     public bool mobile => deviceState.Mobile;
     MovingPieceState movingPieceState => GetState<MovingPieceState>();
     private Position movingPosition => movingPieceState.Position;
-
-    private bool shouldRender = false;
-
     private Coord mouseCoord = new Coord(0, 0);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -46,11 +44,8 @@
         {
             await Mediator.Send(new DeviceState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });
         }
-    }
 
-    protected override bool ShouldRender()
-    {
-        return shouldRender;
+        await MakeOpponentMove();
     }
 
     async Task MouseMove(MouseEventArgs e)
@@ -68,6 +63,27 @@
             if (movingPosition != 0)
             {
                 await Mediator.Send(new MovingPieceState.MovingPieceAction(0));
+            }
+        }
+    }
+
+    async Task MakeOpponentMove()
+    {
+        if (chessState.Board.Side == Sides.White)
+        {
+            if (chessState.WhitePlayer == Player.SmartBot)
+            {
+                Search AI = new Search(chessState.Board);
+                int move = AI.SearchPosition();
+                await Mediator.Send(new ChessState.MovePieceAction(move));
+            }
+        } else
+        {
+            if (chessState.BlackPlayer == Player.SmartBot)
+            {
+                Search AI = new Search(chessState.Board);
+                int move = AI.SearchPosition();
+                await Mediator.Send(new ChessState.MovePieceAction(move));
             }
         }
     }

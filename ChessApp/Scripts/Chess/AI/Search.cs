@@ -5,7 +5,8 @@ namespace ChessApp.Scripts.Chess.AI;
 public class Search
 {
     const int Infinity = 9999999;
-    const int MaxDepth = 5;
+    const int SearchDepth = 5;
+    const int MaxDepth = 64;
     const int Mate = 5000;
 
     Board board { get; set; }
@@ -18,29 +19,30 @@ public class Search
     
     public int SearchPosition()
     {
-        board.Ply = 0;
         DateTime time = DateTime.Now;
-
+        board.Ply = 0;
         int bestScore = -Infinity;
         int bestMove = 0;
         int depth;
 
-        for (depth = 1; depth <= MaxDepth; depth++)
+        for (depth = 1; depth <= SearchDepth; depth++)
         {
             bestScore = SearchMoves(depth, -Infinity, Infinity);
             bestMove = board.positionTable.GetMove(board.PositionKey);
             if (abortSearch)
             {
+                depth++;
                 break;
             }
         }
 
-        Console.WriteLine($"Depth: {depth}) Best Move: {(Position)Move.From(bestMove)}{(Position)Move.To(bestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
+        Console.WriteLine($"Depth: {--depth}) Best Move: {(Position)Move.From(bestMove)}{(Position)Move.To(bestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
         return bestMove;
     }
 
     private bool IsRepetition()
     {
+        
         for (int i = board.HisPly - board.FiftyMoveCount; i < board.HisPly - 1; i++)
         {
             if (board.PositionKey == board.History[i].PositionKey)
@@ -79,6 +81,7 @@ public class Search
                 continue;
             }
             legal++;
+            
             Score = -SearchMoves(depth - 1, -beta, -alpha);
             board.TakeMove();
 

@@ -16,23 +16,9 @@
 @code {
     ChessState chessState => GetState<ChessState>();
 
-
-
-
-    //async protected override Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (chessState.Board.GameState == GameState.Playing)
-    //    {
-    //        if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.You)
-    //        {
-    //            await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.WhitePlayer) });
-    //        }
-    //        else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.You)
-    //        {
-    //            await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.BlackPlayer) });
-    //        }
-    //        else return;
-    //    }
-    //}
+    async protected override Task OnInitializedAsync()
+    {
+        await Mediator.Send(new ChessState.StartGameAction(white: Player.You, black: Player.SmartBot));
+    }
 
 }

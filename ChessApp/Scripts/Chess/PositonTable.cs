@@ -7,6 +7,7 @@ public class PositonTable
     public PositonTable()
     {
         Entries = new Dictionary<UInt64, int>();
+        Init();
     }
 
     public void Init()
