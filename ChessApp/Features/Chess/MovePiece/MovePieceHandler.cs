@@ -19,8 +19,7 @@ public partial class ChessState
             chessState.UpdateMoveList();
             chessState.lastMoveFrom = (Position) Move.From(movePieceAction.Move);
             chessState.lastMoveTo = (Position) Move.To(movePieceAction.Move);
-
-            Console.WriteLine(chessState.GameState);
+    
             return Unit.Task;
         }
     }

@@ -36,6 +36,15 @@ public partial class ChessState : State<ChessState>
         MoveList = new MoveList();
         WhitePlayer = white;
         BlackPlayer = black;
+
+        if (white == Player.You)
+        {
+            IsFlipped = false;
+        } else
+        {
+            IsFlipped = true;
+        }
+
         GameState = GameState.Playing;
 
         UpdateMoveList();
