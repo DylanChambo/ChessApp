@@ -1,23 +1,27 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@using ChessApp.Features.Device;
 @using ChessApp.Features.Mouse;
+@using ChessApp.Features.MovingPiece;
+@using ChessApp.Scripts.Chess.AI;
+@using Microsoft.JSInterop;
+@using ChessApp.Scripts.Chess;
+
 @inject IJSRuntime jsRuntime
 
 @inherits BlazorStateComponent
 
 <div @onmousemove="MouseMove" class="outer-box">
     <div oncontextmenu="return false;" class="inner-box @(isFlipped)">
-        <PlayerBar side="Side.White"></PlayerBar>
-        <PlayerBar side="Side.Black"></PlayerBar>
+        <PlayerBar side="Sides.White"></PlayerBar>
+        <PlayerBar side="Sides.Black"></PlayerBar>
 
-        @for (char file = 'a'; file <= 'h'; file++)
+        @for (int file = 0; file < 8; file++)
         {
-            @for (int rank = 1; rank <= 8; rank++)
+            @for (int rank = 0; rank < 8; rank++)
             {
-                <ChessSquare pos="new Position(file, rank)" >
-                    
-                </ChessSquare>
+                <ChessSquare file="file" rank="rank" ></ChessSquare>
             }
         }
 
@@ -26,33 +30,29 @@
 
 
 @code {
-    ChessState chessState => GetState<ChessState>();
+    public ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
-    private Boolean mobile => chessState.Mobile;
-    private Position movingPos => chessState.MovingPositon;
-
-    private bool shouldRender = false;
-
+    DeviceState deviceState => GetState<DeviceState>();
+    public bool mobile => deviceState.Mobile;
+    MovingPieceState movingPieceState => GetState<MovingPieceState>();
+    private Position movingPosition => movingPieceState.Position;
     private Coord mouseCoord = new Coord(0, 0);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Mediator.Send(new ChessState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });        
+            await Mediator.Send(new DeviceState.IsMobileAction { Mobile = await jsRuntime.InvokeAsync<bool>("isDevice") });
         }
-    }
 
-    protected override bool ShouldRender()
-    {
-        return shouldRender;
+        await MakeOpponentMove();
     }
 
     async Task MouseMove(MouseEventArgs e)
     {
         if (mobile) return;
 
-        if ((e.Buttons & 1) == 1) // If left mouse is down
+        if ((e.Buttons & 1) == 1)  //If left mouse is down
         {
             mouseCoord.X = (int) e.PageX;
             mouseCoord.Y = (int ) e.PageY;
@@ -60,10 +60,36 @@
             await Mediator.Send(new MouseState.MoveMouseAction { MousePos = mouseCoord }); 
         } else
         {
-            if (!movingPos.Equals(new Position('0', 0)))
+            if (movingPosition != 0)
             {
-                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+                await Mediator.Send(new MovingPieceState.MovingPieceAction(0));
             }
         }
+    }
+
+    async Task MakeOpponentMove()
+    {
+        if (chessState.GameState == GameState.Playing)
+        {
+            if (chessState.Board.Side == Sides.White)
+            {
+                if (chessState.WhitePlayer == Player.SmartBot)
+                {
+                    Search AI = new Search(chessState.Board);
+                    int move = AI.SearchPosition();
+                    await Mediator.Send(new ChessState.MovePieceAction(move));
+                }
+            }
+            else
+            {
+                if (chessState.BlackPlayer == Player.SmartBot)
+                {
+                    Search AI = new Search(chessState.Board);
+                    int move = AI.SearchPosition();
+                    await Mediator.Send(new ChessState.MovePieceAction(move));
+                }
+            }
+        }
+        
     }
 }

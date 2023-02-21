@@ -4,7 +4,7 @@ public enum GameState
 {
     None,
     Playing,
-    Draw,
     BlackWin,
     WhiteWin,
+    Draw
 }

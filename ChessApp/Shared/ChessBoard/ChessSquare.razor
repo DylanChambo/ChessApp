@@ -1,28 +1,34 @@
 ﻿@using ChessApp.Data;
 @using BlazorState
 @using ChessApp.Features.Chess;
+@using ChessApp.Features.Device;
 @using ChessApp.Features.Mouse;
+@using ChessApp.Features.MovingPiece;
+@using ChessApp.Scripts.Chess;
 
 @inherits BlazorStateComponent
-
-<div @onmousedown="MouseDown" @onmouseup="MouseUp" @ontouchend="TouchUp" class="square @Chessboard.GetSquareColour(pos)">
+<div @onmousedown="MouseDown" @onmouseup="MouseUp" @ontouchend="TouchUp" class="square @GetSquareColour(file, rank)">
     <p class="file-letter">
-        @if ((pos.Rank == 1 && !isFlipped) || (pos.Rank == 8 && isFlipped))
+        @if ((rank == 0 && !isFlipped) || (rank == 7 && isFlipped))
             {
-            @pos.File
+            @(
+                    (char)(file + 'a')
+                    )
         }    
     </p>
     <p class="rank-num">
-        @if ((pos.File == 'a' && !isFlipped) || (pos.File == 'h' && isFlipped))
+        @if ((file == 0 && !isFlipped) || (file == 7 && isFlipped))
         {
-            @pos.Rank
+            @(
+                    rank + 1
+                    )
         }
     </p>
-    @if (piece != Piece.None)
+    @if (piece != Pieces.None)
     {
         string Y = "0";
         string X = "0";
-        if (pos.Equals(movingPiece) && !mobile && gameState == GameState.Playing)
+        if (position == movingPosition && !mobile)
         {
             Y = $"calc({mousePos.Y - start.Y}px - 50%)";
             X = $"calc({mousePos.X - start.X}px - 50%)";
@@ -40,7 +46,7 @@
     <div class="inv"></div>
     @if (canMoveTo)
     {
-        string empty = piece == Piece.None ? "empty" : "";
+        string empty = piece == Pieces.None ? "empty" : "";
         <div class="move-circle @empty"></div>
     }
     @if (Selected())
@@ -50,26 +56,32 @@
 </div>
 @if (promotion)
 {
-    <Promotion side="@chessState.Board.SideToMove" moves="@promotionMoves" OnMoveSelect="PromotionSelect"></Promotion>
+    <Promotion side="@chessState.Board.Side" moves="@promotionMoves" OnMoveSelect="PromotionSelect"></Promotion>
 }
 
 @code {
     [Parameter]
-    public Position pos { get; set; }
+    public int file { get; set; }
 
-    ChessState chessState { 
-        get {
-            render = true;
-            return GetState<ChessState>();
-        }
-    }
+    [Parameter]
+    public int rank { get; set; }
+
+    public Position position => (Position)Conversion.ConvertFRTo120(file, rank);
+
+    ChessState chessState => GetState<ChessState>();
+    public Board board => chessState.Board;
+    public GameState gameState => chessState.GameState;
     private bool isFlipped => chessState.IsFlipped;
-    public Position movingPiece => chessState.MovingPositon;
-    public bool mobile => chessState.Mobile;
-    public bool canMoveTo => chessState.Board.Moves.Contains(new Move(movingPiece, pos));
-    private Piece piece => chessState.Board.GetPiece(pos.File, pos.Rank);
-    public IEnumerable<Move> moves => chessState.Board.Moves.Where(m => m.Equals(new Move(movingPiece, pos)));
-    public GameState gameState => chessState.Board.GameState;
+    private Pieces piece => chessState.Board.Squares[Conversion.ConvertFRTo120(file, rank)];
+    public List<int> moves => chessState.MoveList.GetMoves(chessState.Board, movingPosition, position);
+    public List<int> promotionMoves = new List<int>();
+    public bool canMoveTo => moves.Count() > 0;
+
+    MovingPieceState movingPieceState => GetState<MovingPieceState>();
+    public Position movingPosition => movingPieceState.Position;
+
+    DeviceState deviceState => GetState<DeviceState>();
+    public bool mobile => deviceState.Mobile;
 
     MouseState mouseState => GetState<MouseState>();
     public Coord mousePos => mouseState.MousePos;
@@ -79,33 +91,18 @@
     public string color = "";
     public bool render = false;
     public bool promotion = false;
-    public List<Move> promotionMoves = new List<Move> { };
-
-    protected override bool ShouldRender()
-    {   
-        if (render)
-        {
-            render = false;
-            return true;
-        }
-        if (movingPiece.Equals(pos))
-        {
-            return true;
-        }
-        return false;
-    }
 
     async Task MouseDown(MouseEventArgs e)
     {
         if (mobile) return;
-        if (gameState != GameState.Playing) return;
+        //if (gameState != GameState.Playing) return;
         if (e.Button == 0) // If Left Click
         {
-            if (piece == Piece.None) { return; }
+            if (piece == Pieces.None) { return; }
             // Set the Position In the state
             start.X = (int)(e.PageX - e.OffsetX);
-            start.Y = (int) (e.PageY - e.OffsetY);
-            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
+            start.Y = (int)(e.PageY - e.OffsetY);
+            await Mediator.Send(new MovingPieceState.MovingPieceAction(position));
             await Mediator.Send(new MouseState.MoveMouseAction { MousePos = new Coord((int)e.PageX, (int)e.PageY) });
         }
     }
@@ -113,39 +110,40 @@
     async Task MouseUp(MouseEventArgs e)
     {
         if (mobile) return;
-        if (gameState != GameState.Playing) return;
+        //if (gameState != GameState.Playing) return;
         if ((e.Buttons & 1) != 1) // If Left Not Left Clicking
         {
             // MovePiece with the Postion in the state and current
             if (!canMoveTo)
             {
-                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+                await Mediator.Send(new MovingPieceState.MovingPieceAction(0));
                 return;
             }
-            if (pos.Equals(movingPiece) && !movingPiece.Equals(new Position('0', 0)))
+            if (position == movingPosition)
             {
-                await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0',0) });
+                await Mediator.Send(new MovingPieceState.MovingPieceAction(0));
                 return;
             }
             await Move();
-        } 
+        }
     }
 
     async Task TouchUp(TouchEventArgs e)
     {
         if (!mobile) return;
-        if (gameState != GameState.Playing) return;
-        if (!movingPiece.Equals(new Position('0', 0)) && canMoveTo)
+        //if (gameState != GameState.Playing) return;
+        if (movingPosition != 0 && canMoveTo)
         {
             await Move();
-        } else if (movingPiece.Equals(pos))
+        }
+        else if (movingPosition == position)
         {
-            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
+            await Mediator.Send(new MovingPieceState.MovingPieceAction(0));
 
         } else
         {
-            if (piece == Piece.None) { return; }
-            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = pos });
+            if (piece == Pieces.None) { return; }
+            await Mediator.Send(new MovingPieceState.MovingPieceAction(position));
         }
     }
 
@@ -153,32 +151,37 @@
     {
         if (moves.Count() == 1)
         {
-
-            await Mediator.Send(new ChessState.MovePieceAction { Move = moves.FirstOrDefault() });
+            await Mediator.Send(new ChessState.MovePieceAction(moves.FirstOrDefault()));
         }
         else
         {
-            promotionMoves = moves.ToList();
-            await Mediator.Send(new ChessState.MovingPieceAction { MovingPos = new Position('0', 0) });
-            Move move = promotionMoves.FirstOrDefault();
-            chessState.Board.MovePiece(move);
+            promotionMoves = moves;
             promotion = true;
         }
     }
 
-    async Task PromotionSelect(Move move)
+    async Task PromotionSelect(int move)
     {
         promotion = false;
-        await Mediator.Send(new ChessState.MovePieceAction { Move = move });
+        if (move != -1)
+        {
+            await Mediator.Send(new ChessState.MovePieceAction(move));
+        }
     }
 
     public bool Selected()
     {
-        if (movingPiece.Equals(pos) && gameState == GameState.Playing)
+        if ((movingPosition == position && gameState == GameState.Playing))
         {
             color = "";
             return true;
-        } else if (gameState != GameState.Playing && PieceUtils.IsKing(piece))
+        }
+        else if (position == chessState.lastMoveFrom || position == chessState.lastMoveTo)
+        {
+            color = "";
+            return true;
+        } 
+        else if (gameState != GameState.Playing && Data.IsPieceKing[(int)piece])
         {
             if (gameState == GameState.None) { return false; }
             else if (gameState == GameState.Draw)
@@ -187,7 +190,7 @@
             }
             else if (gameState == GameState.BlackWin)
             {
-                if (piece == Piece.WhiteKing)
+                if (piece == Pieces.WhiteKing)
                 {
                     color = "lose";
                 } else
@@ -196,7 +199,7 @@
                 }
             } else
             {
-                if (piece == Piece.WhiteKing)
+                if (piece == Pieces.WhiteKing)
                 {
                     color = "win";
                 }
@@ -210,5 +213,15 @@
         return false;
     }
 
-    
+    public string GetSquareColour(int file, int rank)
+    {
+        if ((rank + file) % 2 == 0)
+        {
+            return "dark";
+        }
+        else
+        {
+            return "light";
+        }
+    }
 }

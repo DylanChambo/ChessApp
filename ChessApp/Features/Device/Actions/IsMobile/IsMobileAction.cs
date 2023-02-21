@@ -1,9 +1,9 @@
 ﻿using BlazorState;
 using ChessApp.Data;
 
-namespace ChessApp.Features.Chess;
+namespace ChessApp.Features.Device;
 
-public partial class ChessState
+public partial class DeviceState
 {
     public class IsMobileAction : IAction
     {

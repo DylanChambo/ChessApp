@@ -14,11 +14,8 @@
 </div>
 
 @code {
-    ChessState chessState => GetState<ChessState>();
-
-    protected override void OnInitialized()
+    async protected override Task OnInitializedAsync()
     {
-        chessState.Initialize();
-        chessState.Board.StartGame();
+        await Mediator.Send(new ChessState.StartGameAction());
     }
 }

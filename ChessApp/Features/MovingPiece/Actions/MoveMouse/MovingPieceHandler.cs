@@ -1,22 +1,19 @@
 ﻿using BlazorState;
-using ChessApp.Data;
 using MediatR;
-using static ChessApp.Features.Chess.ChessState;
 
-namespace ChessApp.Features.Chess;
+namespace ChessApp.Features.MovingPiece;
 
-public partial class ChessState
+public partial class MovingPieceState
 {
     public class MovingPieceHandler : ActionHandler<MovingPieceAction>
     {
         public MovingPieceHandler(IStore store): base(store) { }
 
-        ChessState chessState => Store.GetState<ChessState>();
+        MovingPieceState movingPieceState => Store.GetState<MovingPieceState>();
 
         public override Task<Unit> Handle(MovingPieceAction movingPieceAction, CancellationToken cancellationToken)
         {
-            chessState.MovingPositon = movingPieceAction.MovingPos;
-
+            movingPieceState.Position = movingPieceAction.Position;
             return Unit.Task;
         }
     }

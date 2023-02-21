@@ -6,20 +6,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
-}
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none; }
 
 .inner-box {
   height: 100%;
   aspect-ratio: 1;
   display: flex;
   position: relative;
-  margin-top: 12%;
-}
+  margin-top: 12%; }
 
 .box {
   height: 100%;
@@ -27,30 +29,24 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 5;
-}
+  z-index: 5; }
 
 .False {
   flex-direction: column-reverse;
-  flex-wrap: wrap;
-}
+  flex-wrap: wrap; }
 
 .True {
   flex-direction: column;
-  flex-wrap: wrap-reverse;
-}
+  flex-wrap: wrap-reverse; }
 
 .piece {
   object-fit: contain;
   width: 12.5%;
   height: 12.5%;
   z-index: 2;
-  position: absolute;
-}
+  position: absolute; }
 
 @media (min-width: 641px) {
   .inner-box {
     height: 80%;
-    margin-top: 0;
-  }
-}
+    margin-top: 0; } }

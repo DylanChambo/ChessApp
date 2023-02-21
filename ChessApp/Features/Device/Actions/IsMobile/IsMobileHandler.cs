@@ -1,20 +1,19 @@
 ﻿using BlazorState;
-using ChessApp.Data;
 using MediatR;
 
-namespace ChessApp.Features.Chess;
+namespace ChessApp.Features.Device;
 
-public partial class ChessState
+public partial class DeviceState
 {
     public class IsMobileHandler : ActionHandler<IsMobileAction>
     {
         public IsMobileHandler(IStore store): base(store) { }
 
-        ChessState chessState => Store.GetState<ChessState>();
+        DeviceState deviceState => Store.GetState<DeviceState>();
 
         public override Task<Unit> Handle(IsMobileAction isMobileAction, CancellationToken cancellationToken)
         {
-            chessState.Mobile = isMobileAction.Mobile;
+            deviceState.Mobile = isMobileAction.Mobile;
             return Unit.Task;
         }
     }

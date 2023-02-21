@@ -1,6 +1,7 @@
 ﻿@using ChessApp.Data;
 @using ChessApp.Features.Chess;
 @using BlazorState;
+@using ChessApp.Scripts.Chess;
 
 @inherits BlazorStateComponent
 
@@ -14,17 +15,15 @@
 
 @code {
     [Parameter]
-    public Side side { get; set; } 
+    public Sides side { get; set; } 
 
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
-    public int getMaterial => side == Side.White ? chessState.Board.Material.White - chessState.Board.Material.Black : chessState.Board.Material.Black - chessState.Board.Material.White;
-    public bool displayMaterial => side == Side.White 
-        ? chessState.Board.Material.White > chessState.Board.Material.Black ? true : false 
-        : chessState.Board.Material.White < chessState.Board.Material.Black ? true : false;
+    public int getMaterial => chessState.Board.GetMaterial(side);
+    public bool displayMaterial => getMaterial > 0 ? true : false;
 
-    public Player getPlayer => side == Side.White ? chessState.Board.WhitePlayer : chessState.Board.BlackPlayer;
+    public Player getPlayer => side == Sides.White ? chessState.WhitePlayer : chessState.BlackPlayer;
 
-    public string getPosition => side == Side.White ? isFlipped ? "top" : "bottom" : !isFlipped? "top" : "bottom";
-    public string getPawnEmoji => side == Side.White ? "♟︎" : "♙";
+    public string getPosition => side == Sides.White ? isFlipped ? "top" : "bottom" : !isFlipped? "top" : "bottom";
+    public string getPawnEmoji => side == Sides.White ? "♟︎" : "♙";
 }

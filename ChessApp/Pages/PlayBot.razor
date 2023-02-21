@@ -18,25 +18,20 @@
 
     async protected override Task OnInitializedAsync()
     {
-        chessState.Initialize();
-        await Mediator.Send(new ChessState.StartGameAction(White: Player.You, Black: Player.SmartBot));
-    }
+        Random rand = new Random();
 
+        Player White = Player.You;
+        Player Black = Player.You;
 
-    async protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (chessState.Board.GameState == GameState.Playing)
+        if (rand.Next(2) == 1)
         {
-            if (chessState.Board.SideToMove == Side.White && chessState.Board.WhitePlayer != Player.You)
-            {
-                await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.WhitePlayer) });
-            }
-            else if (chessState.Board.SideToMove == Side.Black && chessState.Board.BlackPlayer != Player.You)
-            {
-                await Mediator.Send(new ChessState.MovePieceAction { Move = chessState.Board.OpponentMove(chessState.Board.BlackPlayer) });
-            }
-            else return;
+            White = Player.SmartBot;
+        } else
+        {
+            Black = Player.SmartBot;
         }
+
+        await Mediator.Send(new ChessState.StartGameAction(white: White, black: Black));
     }
 
 }

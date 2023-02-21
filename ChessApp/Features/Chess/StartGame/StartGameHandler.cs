@@ -1,5 +1,5 @@
 ﻿using BlazorState;
-using ChessApp.Data;
+using ChessApp.Scripts.Chess;
 using MediatR;
 
 namespace ChessApp.Features.Chess;
@@ -14,7 +14,8 @@ public partial class ChessState
 
         public override Task<Unit> Handle(StartGameAction startGameAction, CancellationToken cancellationToken)
         {
-            chessState.Board.StartGame(startGameAction.White, startGameAction.Black);
+            chessState.Start(startGameAction.WhitePlayer, startGameAction.BlackPlayer);
+
             return Unit.Task;
         }
     }
