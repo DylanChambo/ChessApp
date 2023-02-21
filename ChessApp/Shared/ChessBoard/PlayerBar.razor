@@ -19,8 +19,8 @@
 
     ChessState chessState => GetState<ChessState>();
     private Boolean isFlipped => chessState.IsFlipped;
-    public int getMaterial => (chessState.Board.Material[(int)side] - chessState.Board.Material[(int)side ^ 1])/100;
-    public bool displayMaterial => chessState.Board.Material[(int)side] > chessState.Board.Material[(int)side ^ 1] ? true : false;
+    public int getMaterial => chessState.Board.GetMaterial(side);
+    public bool displayMaterial => getMaterial > 0 ? true : false;
 
     public Player getPlayer => side == Sides.White ? chessState.WhitePlayer : chessState.BlackPlayer;
 

@@ -514,4 +514,24 @@ public class Board
 
         return leafNodes;
     }
+
+    public int GetMaterial(Sides side)
+    {
+        int material = 0;
+        for (int i = 0; i < VirtualBoardSize; i++)
+        {
+            Pieces piece = Squares[i];
+            if (piece != Pieces.Offboard && piece != Pieces.None)
+            {
+                if (Data.PieceColour[(int)piece] == side)
+                { 
+                    material += Data.ActualPieceValue[(int)piece];
+                } else
+                {
+                   material -= Data.ActualPieceValue[(int)piece];
+                }
+            }
+        }
+        return material;
+    }
 }
