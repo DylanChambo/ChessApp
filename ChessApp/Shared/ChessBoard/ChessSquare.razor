@@ -49,10 +49,10 @@
         string empty = piece == Pieces.None ? "empty" : "";
         <div class="move-circle @empty"></div>
     }
-    @*@if (Selected())
+    @if (Selected())
     {
         <div class="selected @color"></div>
-    }*@
+    }
 </div>
 @if (promotion)
 {
@@ -69,6 +69,8 @@
     public Position position => (Position)Conversion.ConvertFRTo120(file, rank);
 
     ChessState chessState => GetState<ChessState>();
+    public Board board => chessState.Board;
+    public GameState gameState => chessState.GameState;
     private bool isFlipped => chessState.IsFlipped;
     private Pieces piece => chessState.Board.Squares[Conversion.ConvertFRTo120(file, rank)];
     public List<int> moves => chessState.MoveList.GetMoves(chessState.Board, movingPosition, position);
@@ -167,43 +169,49 @@
         }
     }
 
-    //public bool Selected()
-    //{
-    //    if (movingPiece.Equals(pos) && gameState == GameState.Playing)
-    //    {
-    //        color = "";
-    //        return true;
-    //    } else if (gameState != GameState.Playing && PieceUtils.IsKing(piece))
-    //    {
-    //        if (gameState == GameState.None) { return false; }
-    //        else if (gameState == GameState.Draw)
-    //        {
-    //            color = "draw";
-    //        }
-    //        else if (gameState == GameState.BlackWin)
-    //        {
-    //            if (piece == Piece.WhiteKing)
-    //            {
-    //                color = "lose";
-    //            } else
-    //            {
-    //                color = "win";
-    //            }
-    //        } else
-    //        {
-    //            if (piece == Piece.WhiteKing)
-    //            {
-    //                color = "win";
-    //            }
-    //            else
-    //            {
-    //                color = "lose";
-    //            }
-    //        }
-    //        return true;
-    //    }
-    //    return false;
-    //}
+    public bool Selected()
+    {
+        if ((movingPosition == position && gameState == GameState.Playing))
+        {
+            color = "";
+            return true;
+        }
+        else if (position == chessState.lastMoveFrom || position == chessState.lastMoveTo)
+        {
+            color = "";
+            return true;
+        } 
+        else if (gameState != GameState.Playing && Data.IsPieceKing[(int)piece])
+        {
+            if (gameState == GameState.None) { return false; }
+            else if (gameState == GameState.Draw)
+            {
+                color = "draw";
+            }
+            else if (gameState == GameState.BlackWin)
+            {
+                if (piece == Pieces.WhiteKing)
+                {
+                    color = "lose";
+                } else
+                {
+                    color = "win";
+                }
+            } else
+            {
+                if (piece == Pieces.WhiteKing)
+                {
+                    color = "win";
+                }
+                else
+                {
+                    color = "lose";
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     public string GetSquareColour(int file, int rank)
     {

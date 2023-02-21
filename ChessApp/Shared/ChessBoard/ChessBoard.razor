@@ -69,22 +69,27 @@
 
     async Task MakeOpponentMove()
     {
-        if (chessState.Board.Side == Sides.White)
+        if (chessState.GameState == GameState.Playing)
         {
-            if (chessState.WhitePlayer == Player.SmartBot)
+            if (chessState.Board.Side == Sides.White)
             {
-                Search AI = new Search(chessState.Board);
-                int move = AI.SearchPosition();
-                await Mediator.Send(new ChessState.MovePieceAction(move));
+                if (chessState.WhitePlayer == Player.SmartBot)
+                {
+                    Search AI = new Search(chessState.Board);
+                    int move = AI.SearchPosition();
+                    await Mediator.Send(new ChessState.MovePieceAction(move));
+                }
             }
-        } else
-        {
-            if (chessState.BlackPlayer == Player.SmartBot)
+            else
             {
-                Search AI = new Search(chessState.Board);
-                int move = AI.SearchPosition();
-                await Mediator.Send(new ChessState.MovePieceAction(move));
+                if (chessState.BlackPlayer == Player.SmartBot)
+                {
+                    Search AI = new Search(chessState.Board);
+                    int move = AI.SearchPosition();
+                    await Mediator.Send(new ChessState.MovePieceAction(move));
+                }
             }
         }
+        
     }
 }

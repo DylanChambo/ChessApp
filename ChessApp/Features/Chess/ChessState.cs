@@ -2,26 +2,27 @@
 using ChessApp.Data;
 using ChessApp.Scripts.Chess;
 using ChessApp.Scripts.Chess.AI;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ChessApp.Features.Chess;
 
 public partial class ChessState : State<ChessState>
 {
-    const string PawnMoveW = "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKB1R w KQkq e6 0 1";
-    const string KnightsKings = "5k2/1n6/4n3/6N1/8/3N4/8/5K2 b - - 0 1";
-    const string Rooks = "6k1/8/5r2/8/1nR5/5N2/8/6K1 w - - 0 1";
-    const string Queens = "6k1/8/4nq2/8/1QR5/5N2/1N6/6K1 w - - 0 1";
-    const string Bishops = "6k1/1b6/4N3/8/1n4B1/1B3N2/1N6/2b3K1 b - - 0 1";
-    const string Castling1 = "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1";
-    const string Castling2 = "3rk2r/8/8/8/8/8/8/R3K2R w KQk - 0 1";
     public bool IsFlipped { get; private set; }
     public Board Board { get; private set; }
     public MoveList MoveList { get; private set; }
 
+    public GameState GameState = GameState.None;
+
     public Player BlackPlayer;
     public Player WhitePlayer;
+
+    public Position lastMoveFrom = 0;
+    public Position lastMoveTo = 0;
+
     public override void Initialize()
     { 
         IsFlipped = false;
@@ -29,10 +30,13 @@ public partial class ChessState : State<ChessState>
 
     public void Start(Player white = Player.You, Player black = Player.You)
     {
+        lastMoveFrom = 0;
+        lastMoveTo = 0;
         Board = new Board();
         MoveList = new MoveList();
         WhitePlayer = white;
         BlackPlayer = black;
+        GameState = GameState.Playing;
 
         UpdateMoveList();
     }
@@ -50,20 +54,42 @@ public partial class ChessState : State<ChessState>
         }
     }
 
-    //public void Init()
-    //{
+    public void CheckGameState()
+    {
+        MoveList list = new MoveList();
+        MoveGenerator.GenerateAllMoves(Board, list);
 
-    //    for (int i = 0; i < MoveList.count; i++)
-    //    {
-    //        int move = MoveList.moves[i].move;
-    //        if (!Board.MakeMove(move))
-    //        {
-    //            continue;
-    //        }
-    //        Debug.WriteLine($"Made: {(Position)Move.From(move)}{(Position)Move.To(move)}");
-    //        Board.TakeMove();
-    //    }
-    //}
+        int legal = 0;
+        for (int i = 0; i < list.count; i++)
+        {
+            if (!Board.MakeMove(list.moves[i].move))
+            {
+                continue;
+            }
+            legal++;   
+            Board.TakeMove();
+        }
+
+        if (legal != 0)
+        {
+            return;
+        }
+
+        Sides side = Board.Side;
+        if (Board.IsSquareAttacked(Board.KingSquare[(int)side], side ^ Sides.Black))
+        {
+            if (side == Sides.White)
+            {
+                GameState = GameState.BlackWin;
+            } else
+            {
+                GameState = GameState.WhiteWin;
+            }
+        } else
+        {
+            GameState = GameState.Draw;
+        }
+    }
 
 
 }

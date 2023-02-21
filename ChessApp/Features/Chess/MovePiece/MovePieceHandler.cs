@@ -15,8 +15,12 @@ public partial class ChessState
         public override Task<Unit> Handle(MovePieceAction movePieceAction, CancellationToken cancellationToken)
         {
             chessState.Board.MakeMove(movePieceAction.Move);
-            Console.WriteLine(chessState.Board.PositionKey);
+            chessState.CheckGameState();
             chessState.UpdateMoveList();
+            chessState.lastMoveFrom = (Position) Move.From(movePieceAction.Move);
+            chessState.lastMoveTo = (Position) Move.To(movePieceAction.Move);
+
+            Console.WriteLine(chessState.GameState);
             return Unit.Task;
         }
     }
