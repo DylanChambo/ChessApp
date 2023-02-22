@@ -5,12 +5,12 @@ namespace ChessApp.Scripts.Chess.AI;
 public class Search
 {
     const int Infinity = 9999999;
-    const int SearchDepth = 5;
-    const int MaxDepth = 64;
+    public const int MaxDepth = 64;
     const int Mate = 5000;
 
     Board board { get; set; }
     bool abortSearch = false;
+    int BestMove = 0;
 
     public Search(Board board)
     {
@@ -21,14 +21,18 @@ public class Search
     {
         DateTime time = DateTime.Now;
         board.Ply = 0;
+        board.SearchKillers = new int[2, MaxDepth];
+        board.SearchHistory = new int[13, Board.VirtualBoardSize];
         int bestScore = -Infinity;
-        int bestMove = 0;
         int depth;
 
-        for (depth = 1; depth <= SearchDepth; depth++)
+        for (depth = 1; depth <= MaxDepth; depth++)
         {
+            if ((DateTime.Now - time >= new TimeSpan(10000000)))
+            {
+                break;
+            }
             bestScore = SearchMoves(depth, -Infinity, Infinity);
-            bestMove = board.positionTable.GetMove(board.PositionKey);
             if (abortSearch)
             {
                 depth++;
@@ -36,8 +40,8 @@ public class Search
             }
         }
 
-        Console.WriteLine($"Depth: {--depth}) Best Move: {(Position)Move.From(bestMove)}{(Position)Move.To(bestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
-        return bestMove;
+        Console.WriteLine($"Depth: {--depth}) Best Move: {(Position)Move.From(BestMove)}{(Position)Move.To(BestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
+        return BestMove;
     }
 
     private bool IsRepetition()
@@ -76,6 +80,7 @@ public class Search
 
         for (int i = 0; i < list.count; i++)
         {
+            GetBestMove(i, list);
             if (!board.MakeMove(list.moves[i].move))
             {
                 continue;
@@ -89,10 +94,19 @@ public class Search
             {
                 if (Score >= beta)
                 {
+                    if (!Move.IsCapture(list.moves[i].move))
+                    {
+                        board.SearchKillers[1, board.Ply] = board.SearchKillers[0, board.Ply];
+                        board.SearchKillers[0, board.Ply] = list.moves[i].move;
+                    }
                     return beta;
                 }
                 alpha = Score;
                 bestMove = list.moves[i].move;
+                if (!Move.IsCapture(list.moves[i].move))
+                {
+                    board.SearchHistory[(int)board.Squares[Move.From(bestMove)], Move.To(bestMove)] += depth;
+                }
             }
         }
 
@@ -108,11 +122,30 @@ public class Search
             }
         }
 
-        if (alpha != oldAlpha)
+        if (alpha != oldAlpha && board.Ply == 0)
         {
-            board.positionTable.StoreMove(board.PositionKey, bestMove);
+            BestMove = bestMove;
         }
         return alpha;
+    }
+
+    static void GetBestMove(int moveNum,MoveList list)
+    {
+        Move temp = list.moves[moveNum];
+        int bestScore = temp.score;
+        int bestIndex = moveNum;
+
+        for (int i = moveNum; i < list.count; i++)
+        {
+            if (list.moves[i].score > bestScore)
+            {
+                bestScore = list.moves[i].score;
+                bestIndex = i;
+            }
+        }
+
+        list.moves[moveNum] = list.moves[bestIndex];
+        list.moves[bestIndex] = temp;
     }
 
     private int Quiescence(int alpha, int beta)

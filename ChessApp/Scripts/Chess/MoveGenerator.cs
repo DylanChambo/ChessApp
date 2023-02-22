@@ -202,19 +202,32 @@ public static class MoveGenerator
             
     public static void AddQuietMove(Board board, Move move, MoveList list)
     {
+        if (board.SearchKillers[0, board.Ply] == move.move)
+        {
+            move.score = 900000;
+        } else if (board.SearchKillers[1, board.Ply] == move.move)
+        {
+            move.score = 800000;
+        } else
+        {
+            move.score = board.SearchHistory[(int)board.Squares[Move.From(move.move)], Move.To(move.move)];
+        }
         list.moves[list.count] = move;
         list.count++;
     }
 
     public static void AddCaptureMove(Board board, Move move, MoveList list)
     {
+        move.score = Data.MvvLvaScores[Move.Captured(move.move), (int)board.Squares[Move.From(move.move)]] + 1000000;
         list.moves[list.count] = move;
         list.count++;
     }
 
     public static void AddEnPassantMove(Board board, Move move, MoveList list)
     {
+        move.score = 105 + 1000000;
         list.moves[list.count] = move;
+        list.count++;
         list.count++;
     }
 

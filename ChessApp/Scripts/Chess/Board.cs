@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using ChessApp.Scripts.Chess.AI;
+using System.Diagnostics;
 
 namespace ChessApp.Scripts.Chess;
 
@@ -25,7 +26,8 @@ public class Board
     public Undo[] History { get; set; }
     public Position[,] PieceList { get; set; }
     public PositonTable positionTable { get; set; }
-
+    public int[,] SearchKillers { get; set; }
+    public int[,] SearchHistory { get; set; }
     public Board()
     {
         Squares = new Pieces[VirtualBoardSize];
@@ -38,6 +40,8 @@ public class Board
         Material = new int[2];
         History = new Undo[MaxGameMoves];
         PieceList = new Position[13, 10];
+        SearchKillers = new int[2, Search.MaxDepth];
+        SearchHistory = new int[13, VirtualBoardSize];
         positionTable = new PositonTable();
         Fen.PopulateBoardFromFen(this);
         UpdateMaterialLists();
