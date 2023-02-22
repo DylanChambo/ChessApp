@@ -208,13 +208,16 @@ public static class MoveGenerator
 
     public static void AddCaptureMove(Board board, Move move, MoveList list)
     {
+        move.score = Data.MvvLvaScores[Move.Captured(move.move), (int)board.Squares[Move.From(move.move)]];
         list.moves[list.count] = move;
         list.count++;
     }
 
     public static void AddEnPassantMove(Board board, Move move, MoveList list)
     {
+        move.score = 105;
         list.moves[list.count] = move;
+        list.count++;
         list.count++;
     }
 

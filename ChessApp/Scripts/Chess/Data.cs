@@ -8,7 +8,6 @@ public static class Data
     public readonly static int[] PieceValue = { 0, 100, 305, 333, 563, 950, 99999, 100, 305, 333, 563, 950, 99999 };
     public readonly static int[] ActualPieceValue = { 0, 1, 3, 3, 5, 9, 0, 1, 3, 3, 5, 9, 0 };
     public readonly static Sides[] PieceColour = { Sides.Both, Sides.White, Sides.White, Sides.White, Sides.White, Sides.White, Sides.White, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Black, Sides.Both };
-
     public readonly static bool[] IsPiecePawn = { false, true, false, false, false, false, false, true, false, false, false, false, false, false };
     public readonly static bool[] IsPieceKnight = { false, false, true, false, false, false, false, false, true, false, false, false, false, false };
     public readonly static bool[] IsPieceKing = { false, false, false, false, false, false, true, false, false, false, false, false, true, false };
@@ -19,7 +18,8 @@ public static class Data
     public readonly static int[] RookDirection = { -1, -10, 1, 10 };
     public readonly static int[] BishopDirection = { -9, -11, 9, 11 };
     public readonly static int[] KingDirection = { -1, -10, 1, 10, -9, -11, 9, 11 };
-
+    public readonly static int[] VictimScore = { 0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
+    public static int[,] MvvLvaScores { get; set; }
     public static Files[] Files { get; private set; }
     public static Ranks[] Ranks { get; private set; }
 
@@ -48,12 +48,13 @@ public static class Data
         24, 25, 26, 27, 28, 29, 30, 31,
         16, 17, 18, 19, 20, 21, 22, 23,
         8 , 9 , 10, 11, 12, 13, 14, 15,
-        0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 
+        0 , 1 , 2 , 3 , 4 , 5 , 6 , 7
     };
 
     static Data()
     {
         InitFileRankBoard();
+        InitMvvLva();
     }
 
     private static void InitFileRankBoard()
@@ -73,6 +74,18 @@ public static class Data
                 int square = Conversion.ConvertFRTo120((int)file, (int)rank);
                 Files[square] = file;
                 Ranks[square] = rank;
+            }
+        }
+    }
+
+    private static void InitMvvLva()
+    {
+        MvvLvaScores = new int[13, 13];
+        for (Pieces Attacker = Pieces.WhitePawn; Attacker <= Pieces.BlackKing; Attacker++)
+        {
+            for (Pieces Victim = Pieces.WhitePawn; Victim <= Pieces.BlackKing; Victim++)
+            {
+                MvvLvaScores[(int)Victim, (int)Attacker] = VictimScore[(int)Victim] + 6 - (VictimScore[(int)Attacker] / 100);
             }
         }
     }
