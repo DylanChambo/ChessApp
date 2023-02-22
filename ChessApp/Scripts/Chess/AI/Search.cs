@@ -5,7 +5,7 @@ namespace ChessApp.Scripts.Chess.AI;
 public class Search
 {
     const int Infinity = 9999999;
-    const int MaxDepth = 64;
+    public const int MaxDepth = 64;
     const int Mate = 5000;
 
     Board board { get; set; }
@@ -20,6 +20,8 @@ public class Search
     {
         DateTime time = DateTime.Now;
         board.Ply = 0;
+        board.SearchKillers = new int[2, MaxDepth];
+        board.SearchHistory = new int[13, Board.VirtualBoardSize];
         int bestScore = -Infinity;
         int bestMove = 0;
         int depth;
@@ -93,10 +95,19 @@ public class Search
             {
                 if (Score >= beta)
                 {
+                    if (!Move.IsCapture(list.moves[i].move))
+                    {
+                        board.SearchKillers[1, board.Ply] = board.SearchKillers[0, board.Ply];
+                        board.SearchKillers[0, board.Ply] = list.moves[i].move;
+                    }
                     return beta;
                 }
                 alpha = Score;
                 bestMove = list.moves[i].move;
+                if (!Move.IsCapture(list.moves[i].move))
+                {
+                    board.SearchHistory[(int)board.Squares[Move.From(bestMove)], Move.To(bestMove)] += depth;
+                }
             }
         }
 
@@ -112,7 +123,7 @@ public class Search
             }
         }
 
-        if (alpha != oldAlpha)
+        if (alpha != oldAlpha && board.Ply == 0)
         {
             board.positionTable.StoreMove(board.PositionKey, bestMove);
         }

@@ -137,7 +137,7 @@ public class Evaluate
             return score;
         } else
         {
-            return - score;
+            return -score;
         }
     }
 }
