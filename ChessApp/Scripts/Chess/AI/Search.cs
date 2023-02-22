@@ -10,6 +10,7 @@ public class Search
 
     Board board { get; set; }
     bool abortSearch = false;
+    int BestMove = 0;
 
     public Search(Board board)
     {
@@ -23,7 +24,6 @@ public class Search
         board.SearchKillers = new int[2, MaxDepth];
         board.SearchHistory = new int[13, Board.VirtualBoardSize];
         int bestScore = -Infinity;
-        int bestMove = 0;
         int depth;
 
         for (depth = 1; depth <= MaxDepth; depth++)
@@ -33,7 +33,6 @@ public class Search
                 break;
             }
             bestScore = SearchMoves(depth, -Infinity, Infinity);
-            bestMove = board.positionTable.GetMove(board.PositionKey);
             if (abortSearch)
             {
                 depth++;
@@ -41,8 +40,8 @@ public class Search
             }
         }
 
-        Console.WriteLine($"Depth: {--depth}) Best Move: {(Position)Move.From(bestMove)}{(Position)Move.To(bestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
-        return bestMove;
+        Console.WriteLine($"Depth: {--depth}) Best Move: {(Position)Move.From(BestMove)}{(Position)Move.To(BestMove)} Eval: {bestScore}, Time: {DateTime.Now - time}");
+        return BestMove;
     }
 
     private bool IsRepetition()
@@ -125,7 +124,7 @@ public class Search
 
         if (alpha != oldAlpha && board.Ply == 0)
         {
-            board.positionTable.StoreMove(board.PositionKey, bestMove);
+            BestMove = bestMove;
         }
         return alpha;
     }
